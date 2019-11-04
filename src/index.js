@@ -22,4 +22,4 @@ if (GlobalVue) {
 
 D3BarChart.install = install;
 
-export default D3BarChart;
+export default {D3BarChart};
