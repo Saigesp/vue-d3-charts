@@ -1,11 +1,9 @@
-import component from "./VueD3Charts.vue";
-import component2 from "./VueD3Charts2.vue";
+import D3BarChart from "./barchart.vue";
 
 function install(Vue) {
   if (install.installed) return;
   install.installed = true;
-  Vue.component("VueD3Charts", component);
-  Vue.component("VueD3Charts2", component2);
+  Vue.component("D3BarChart", D3BarChart);
 }
 
 const plugin = {
@@ -18,11 +16,10 @@ if (typeof window !== "undefined") {
 } else if (typeof global !== "undefined") {
   GlobalVue = global.vue;
 }
-
 if (GlobalVue) {
   GlobalVue.use(plugin);
 }
 
-component.install = install;
+D3BarChart.install = install;
 
-export {component, component2};
+export default D3BarChart;
