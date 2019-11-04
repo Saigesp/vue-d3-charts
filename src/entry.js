@@ -1,9 +1,11 @@
 import component from "./VueD3Charts.vue";
+import component2 from "./VueD3Charts2.vue";
 
 function install(Vue) {
   if (install.installed) return;
   install.installed = true;
   Vue.component("VueD3Charts", component);
+  Vue.component("VueD3Charts2", component2);
 }
 
 const plugin = {
@@ -23,4 +25,4 @@ if (GlobalVue) {
 
 component.install = install;
 
-export default component;
+export {component, component2};
