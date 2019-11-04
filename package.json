@@ -1,8 +1,8 @@
 
 {
   "name": "vue-d3-charts",
-  "version": "0.1.6",
-  "main": "dist/vue-d3-charts.js",
+  "version": "0.1.7",
+  "main": "src/index.js",
   "scripts": {
     "build": "webpack --config config/webpack.config.js"
   },
