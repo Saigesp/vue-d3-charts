@@ -7,10 +7,7 @@
 </template>
 
 <script>
-
 import {D3BarChart} from 'vue-d3-charts'
-console.log(D3BarChart);
-
 
 export default {
   name: 'home',
