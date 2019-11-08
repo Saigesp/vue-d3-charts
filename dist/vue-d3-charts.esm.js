@@ -1,14 +1,256 @@
 import Vue from 'vue';
+import { select, selectAll } from 'd3-selection';
+import { scaleBand, scaleLinear } from 'd3-scale';
+import { max } from 'd3-array';
+import { axisBottom, axisLeft } from 'd3-axis';
 
-//
-//
-//
-//
-//
+var d3 = {
+    select: select, selectAll: selectAll,
+    scaleBand: scaleBand, scaleLinear: scaleLinear,
+    max: max,
+    axisBottom: axisBottom, axisLeft: axisLeft,
+};
+
+var d3barchart = function d3barchart(selection, data, config) {
+    var this$1 = this;
+    if ( config === void 0 ) config = {};
+
+    this.selection = d3.select(selection);
+    this.data = data;
+
+    // Default configuration
+    this.cfg = {
+        margin: {top: 10, right: 30, bottom: 20, left: 40},
+        key: 'key',
+        value: 'value',
+        labelRotation: 0,
+        color: 'steelblue',
+        yAxis: '',
+        yScaleTicks: 5,
+        yScaleFormat: '.0f',
+    };
+
+    // Set up configuration
+    Object.keys(config).forEach(function (key){
+        if(config[key] instanceof Object && config[key] instanceof Array === false){
+            Object.keys(config[key]).forEach(function (sk){
+                this$1.cfg[key][sk] = config[key][sk];
+            });
+        } else { this$1.cfg[key] = config[key]; }
+    });
+
+    // Set up dimensions
+    this.cfg.width = parseInt(this.selection.node().offsetWidth) - this.cfg.margin.left - this.cfg.margin.right;
+    this.cfg.height = parseInt(this.selection.node().offsetHeight)- this.cfg.margin.top - this.cfg.margin.bottom;
+
+    // Set up scales domain
+    this.xScale = d3.scaleBand().rangeRound([0, this.cfg.width]).padding(0.1);
+    this.yScale = d3.scaleLinear().rangeRound([0, this.cfg.height]);
+
+    // Resize listener
+    window.addEventListener("resize", function (_) {
+        this$1.resize();
+    });
+
+    this.initGraph();
+};
+d3barchart.prototype.initGraph = function initGraph () {
+        var this$1 = this;
+
+
+    this.xScale.domain(this.data.map(function (d){ return d[this$1.cfg.key]; } ));
+    this.yScale.domain([d3.max(this.data, function (d){ return +d[this$1.cfg.value]; }),0]);
+
+    // Wrapper div
+    this.wrap = this.selection.append('div') 
+        .attr("class", "chart__wrap chart__wrap--barchart");
+
+    // SVG element
+    this.svg = this.wrap.append('svg')
+        .attr("class", "chart chart--barchart")
+        .attr("width", this.cfg.width + this.cfg.margin.left + this.cfg.margin.right)
+        .attr("height", this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom);
+
+    // General group for margin convention
+    this.g = this.svg.append("g")
+        .attr('class', 'chart__margin-wrap')
+        .attr("transform", ("translate(" + (this.cfg.margin.left) + "," + (this.cfg.margin.top) + ")"));
+
+    // Axis group
+    this.axisg = this.g.append('g')
+        .attr('class', 'chart__axis chart__axis--barchart');
+
+    // Horizontal grid
+    this.yGrid = this.axisg.append("g")           
+        .attr("class", "chart__grid chart__grid--y chart__grid--barchart")
+        .call(
+            this.make_y_gridlines()
+                .tickSize(-this.cfg.width)
+                .ticks(this.cfg.yScaleTicks, this.cfg.yScaleFormat)
+            );
+
+    // Vertical axis title
+    if(this.cfg.yAxis)
+    { this.yAxisTitle = this.axisg.append('text')
+        .attr('class', 'chart__axis-title chart__axis-title--barchart')
+        .attr("y", -this.cfg.margin.left+10)
+        .attr("x", -this.cfg.height/2)
+        .attr("transform", 'rotate(-90)')
+        .style("text-anchor", "middle")
+        .text(this.cfg.yAxis); }
+
+    // Bottom axis
+    this.xAxis = this.axisg.append("g")
+        .attr("class", "chart__axis-x chart__axis-x--barchart")
+        .attr("transform", "translate(0," + this.cfg.height + ")")
+        .call(d3.axisBottom(this.xScale));
+
+    // Bottom axis label rotation
+    if(this.cfg.labelRotation!=0)
+    { this.xAxis.selectAll('text')
+        .attr("y", Math.cos(this.cfg.labelRotation*Math.PI/180)*9)
+        .attr("x", Math.sin(this.cfg.labelRotation*Math.PI/180)*9)
+        .attr("dy", ".35em")
+        .attr("transform", ("rotate(" + (this.cfg.labelRotation) + ")"))
+        .style("text-anchor", "start"); }
+
+    // Tooltip
+    this.selection.selectAll('.chart__tooltip').remove();
+    this.tooltip = this.wrap
+        .append('div')
+        .attr('class', 'chart__tooltip chart__tooltip--barchart');
+
+    // Bars groups
+    this.itemg = this.g.selectAll('.itemgroup')
+        .data(this.data)
+        .enter().append('g')
+        .attr('class', 'itemgroup')
+        .attr('transform', function (d, i) { return ("translate(" + (this$1.xScale(d[this$1.cfg.key])) + ",0)"); });
+
+    // Bars
+    this.rects = this.itemg.append('rect')
+        .attr('x', 0)
+        .attr('y', function (d, i) { return this$1.yScale(+d[this$1.cfg.value]); })
+        .attr('width', this.xScale.bandwidth())
+        .attr('height', function (d) { return this$1.cfg.height - this$1.yScale(+d[this$1.cfg.value]); })
+        .attr('fill', function (d) {
+            return !this$1.cfg.currentkey || d[this$1.cfg.key] == this$1.cfg.currentkey ? this$1.cfg.color : this$1.cfg.greycolor;
+        })
+        .on('mouseover', function (d) {
+            this$1.tooltip.html(function () {
+                return ("\n                        <div>" + (d[this$1.cfg.key]) + ": " + (d[this$1.cfg.value]) + "</div>\n                    ")
+            })
+            .classed('active', true);
+        })
+        .on('mouseout', function () {
+            this$1.tooltip.classed('active', false);
+        })
+        .on('mousemove', function () {
+            this$1.tooltip
+                .style('left', window.event['pageX'] - 28 + 'px')
+                .style('top', window.event['pageY'] - 40 + 'px');
+        });
+};
+
+d3barchart.prototype.resize = function resize (){
+        var this$1 = this;
+
+    // Get dimensions
+    this.cfg.width = parseInt(this.selection.node().offsetWidth) - this.cfg.margin.left - this.cfg.margin.right;
+    this.cfg.height = parseInt(this.selection.node().offsetHeight)- this.cfg.margin.top - this.cfg.margin.bottom;
+
+    // Set up scales
+    this.xScale.rangeRound([0, this.cfg.width]);
+    this.yScale.rangeRound([0, this.cfg.height]);
+
+    // SVG element
+    this.svg
+        .attr("viewBox", ("0 0 " + (this.cfg.width + this.cfg.margin.left + this.cfg.margin.right) + " " + (this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom)))
+        .attr("width", this.cfg.width + this.cfg.margin.left + this.cfg.margin.right)
+        .attr("height", this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom);
+
+    // Horizontal grid
+    this.yGrid
+        .call(
+            this.make_y_gridlines()
+                .tickSize(-this.cfg.width)
+                .ticks(this.cfg.yScaleTicks, this.cfg.yScaleFormat)
+        );
+        
+    // Bottom axis
+    this.xAxis
+        .attr("transform", ("translate(0," + (this.cfg.height) + ")"))
+        .call(d3.axisBottom(this.xScale));
+
+    // Vertical axis title
+    if(this.cfg.yAxis)
+    { this.yAxisTitle
+        .attr("x", -this.cfg.height/2); }
+
+    // Bars groups
+    this.itemg.attr('transform', function (d) { return ("translate(" + (this$1.xScale(d[this$1.cfg.key])) + ",0)"); });
+
+    // Bars
+    this.rects
+        .attr('width', this.xScale.bandwidth())
+        .attr('y', function (d) { return this$1.yScale(+d[this$1.cfg.value]); })
+        .attr('height', function (d) { return this$1.cfg.height - this$1.yScale(+d[this$1.cfg.value]); } );
+};
+
+// Gridlines in x axis function
+d3barchart.prototype.make_x_gridlines = function make_x_gridlines () {       
+    return d3.axisBottom(this.xScale);
+};
+
+// Gridlines in y axis function
+d3barchart.prototype.make_y_gridlines = function make_y_gridlines () {       
+    return d3.axisLeft(this.yScale);
+};
+
 //
 
 var script = {
-  name: 'D3BarChart',
+    name: 'bar-chart',
+    data: function(){
+        return {
+            chart: {},
+        }
+    },
+    props: {
+        config: {
+            type: Object,
+            required: true,
+            default: function (){
+                return {};
+            }
+        },
+        datum: {
+            type: Array,
+            required: true,
+            default: function (){
+                return [];
+            }
+        },
+        title: {
+            type: String,
+            default: ''
+        },
+        source: {
+            type: String,
+            default: ''
+        },
+        height: {
+            type: Number,
+            default: 300,
+        }
+    },
+    mounted: function(){
+        this.chart = new d3barchart(
+            this.$refs.chart,
+            this.datum,
+            this.config
+        );
+    }
 };
 
 function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier
@@ -100,7 +342,7 @@ var normalizeComponent_1 = normalizeComponent;
 var __vue_script__ = script;
 
 /* template */
-var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._v("\n  D3BarChart\n")])};
+var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"chart__wrapper"},[(_vm.title)?_c('div',{staticClass:"chart__title"},[_vm._v(_vm._s(_vm.title))]):_vm._e(),_vm._v(" "),_c('div',{ref:"chart",style:({height: ((this.height) + "px")})}),_vm._v(" "),(_vm.source)?_c('div',{staticClass:"chart__source"},[_vm._v(_vm._s(_vm.source))]):_vm._e()])};
 var __vue_staticRenderFns__ = [];
 
   /* style */
@@ -170,37 +412,6 @@ var __vue_staticRenderFns__$1 = [];
     undefined,
     undefined
   );
-
-/*
-import D3BarChart from "./barchart.vue";
-import D3LineChart from "./linechart.vue";
-
-function install(Vue) {
-  if (install.installed) return;
-  install.installed = true;
-  Vue.component("D3BarChart", D3BarChart);
-  Vue.component("D3LineChart", D3LineChart);
-}
-
-const plugin = {
-  install
-};
-
-let GlobalVue = null;
-if (typeof window !== "undefined") {
-  GlobalVue = window.Vue;
-} else if (typeof global !== "undefined") {
-  GlobalVue = global.vue;
-}
-if (GlobalVue) {
-  GlobalVue.use(plugin);
-}
-
-D3BarChart.install = install;
-D3LineChart.install = install;
-
-export {D3BarChart, D3LineChart}
-*/
 
 var Components = {
     D3BarChart: D3BarChart,

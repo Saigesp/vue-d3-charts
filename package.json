@@ -18,6 +18,7 @@
     "attributes": "attributes.json"
   },
   "scripts": {
+    "dev": "vue serve ./demo/main.js",
     "build": "npm run build:unpkg & npm run build:es & npm run build:umd",
     "build:umd": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format umd --file dist/vue-d3-charts.umd.js",
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es --file dist/vue-d3-charts.esm.js",
@@ -34,5 +35,8 @@
     "rollup-plugin-vue": "^4.7.2",
     "vue": "^2.6.10",
     "vue-template-compiler": "^2.6.10"
+  },
+  "dependencies": {
+    "d3": "^5.12.0"
   }
 }
