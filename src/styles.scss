@@ -1,0 +1,61 @@
+.chart {
+
+  /* Wrapper div (chart, title and source) */
+  &__wrapper {
+    margin: 20px 0;
+  }
+
+  /* Wrap div (chart only) */
+  &__wrap {
+    margin: 0;
+  }
+
+  /* Title */
+  &__title {
+    text-align: center;
+    font-weight: 700;
+  }
+
+  /* Source */
+  &__source {
+    font-size: 12px;
+  }
+
+  /* Tooltip */
+  &__tooltip {
+    position: absolute;
+    pointer-events: none;
+    display: none;
+
+    &.active {
+      display: block;
+    }
+
+    >div {
+      background: #2b2b2b;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 3px;
+    }
+  }
+
+  /* Axis */
+  &__axis {
+    font-size: 12px;
+
+    /* Axis title */
+    &-title {}
+  }
+
+  /* Grid */
+  &__grid {
+    .domain {
+      stroke: none;
+      fill: none;
+    }
+
+    .tick line {
+      opacity: 0.2;
+    }
+  }
+}

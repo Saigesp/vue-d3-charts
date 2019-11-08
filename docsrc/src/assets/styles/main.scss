@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700&display=swap');
+
+.page {
+    &__wrap {
+        max-width: 870px;
+        padding: 20px;
+        margin: 0 auto;
+    }
+    &__title {
+        margin-top: 10px;
+        font-size: 48px;
+        text-align: center;
+    }
+}

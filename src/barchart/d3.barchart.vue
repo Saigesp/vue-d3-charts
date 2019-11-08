@@ -55,7 +55,7 @@ export default {
 }
 </script>
 
-<!-- 
+
 <style lang="scss">
-@import '../charts-styles';
-</style> -->
+@import '../styles';
+</style>

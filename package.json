@@ -1,6 +1,6 @@
 {
   "name": "vue-d3-charts",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "main": "dist/vue-d3-charts.umd.js",
   "module": "dist/vue-d3-charts.esm.js",
   "unpkg": "dist/vue-d3-charts.min.js",
@@ -27,6 +27,7 @@
   "devDependencies": {
     "cross-env": "^5.2.0",
     "minimist": "^1.2.0",
+    "node-sass": "^4.13.0",
     "rollup": "^1.14.4",
     "rollup-plugin-buble": "^0.19.6",
     "rollup-plugin-commonjs": "^9.3.4",
