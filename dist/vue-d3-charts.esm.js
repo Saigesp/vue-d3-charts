@@ -210,7 +210,7 @@ d3barchart.prototype.make_y_gridlines = function make_y_gridlines () {
 //
 
 var script = {
-    name: 'bar-chart',
+    name: 'D3BarChart',
     data: function(){
         return {
             chart: {},

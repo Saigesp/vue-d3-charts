@@ -212,7 +212,7 @@
     //
 
     var script = {
-        name: 'bar-chart',
+        name: 'D3BarChart',
         data: function(){
             return {
                 chart: {},
