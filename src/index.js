@@ -1,25 +1,14 @@
+import Vue from "vue";
 import D3BarChart from "./barchart.vue";
+import D3LineChart from "./linechart.vue";
 
-function install(Vue) {
-  if (install.installed) return;
-  install.installed = true;
-  Vue.component("D3BarChart", D3BarChart);
+const Components = {
+    D3BarChart,
+    D3LineChart
 }
 
-const plugin = {
-  install
-};
+Object.keys(Components).forEach(name => {
+    Vue.component(name, Components[name]);
+});
 
-let GlobalVue = null;
-if (typeof window !== "undefined") {
-  GlobalVue = window.Vue;
-} else if (typeof global !== "undefined") {
-  GlobalVue = global.vue;
-}
-if (GlobalVue) {
-  GlobalVue.use(plugin);
-}
-
-D3BarChart.install = install;
-
-export default {D3BarChart};
+export default Components;
