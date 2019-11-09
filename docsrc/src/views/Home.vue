@@ -1,9 +1,44 @@
 <template>
   <div class="page page--home">
-    <div class="page__wrap">
-      <h1 class="page__title">vue-d3-charts</h1>
+    <section class="code">
+      <h2>Install with NPM</h2>
+      <code class="align-center">
+        <pre>npm i d3-vue-charts --save</pre>
+      </code>
+    </section>
+    <section class="chart">
       <D3BarChart :config="barconfig" :datum="bardata"></D3BarChart>
-    </div>
+    </section>
+    <section class="text">
+      <h2>Introduction</h2>
+      <p>vue-d3-charts is a charts module build with reusability in mind. It has evolved from a personal bl.ocks collection to a modular charts system, to allow quick implementations and high customatization charts.</p>
+    </section>
+    <section class="code">
+      <h2>How to use</h2>
+      <p>First import your desired charts:</p>
+      <code>
+        <pre>import {D3BarChart} from 'vue-d3-charts'</pre>
+      </code>
+      <p>And then use it on your project, passing them a configuratioin object and a data array:</p>
+      <code>
+        <pre>{{bartext}}</pre>
+      </code>
+      <p>Each chart has it's own configuration options. For example, the <strong>bar chart</strong> has these as default:</p>
+      <code>
+<pre>chart_config = {
+  key: 'key',
+  value: 'value',
+  labelRotation: 0,
+  color: 'steelblue',
+  yAxis: '',
+  yScaleTicks: 5,
+  yScaleFormat: '.0f'
+}</pre>
+      </code>
+    </section>
+    <section>
+      <router-link :to="{name: 'barchart'}">barchar</router-link>
+    </section>
   </div>
 </template>
 
@@ -14,9 +49,11 @@ export default {
   name: 'home',
   data(){
     return {
+      bartext: '<D3BarChart :config="chart_config" :datum="chart_data"></D3BarChart>',
       barconfig: {
         key: 'name',
-        value: 'total'
+        value: 'total',
+        color: '#4295d6'
       },
       bardata: [
         {name: '1992', total: 4748},
