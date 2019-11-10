@@ -1,19 +1,46 @@
 # vue-d3-charts
 
-Vue charts based on pure D3
+Simply yet configurable charts build with D3
 
-### Documentation page
+### Install
 
-Documentation source files are located in `docsrc` folder
-
-##### Serve files
 ```bash
-cd docsrc/
-npm run dev
+npm i vue-d3-charts --save
 ```
 
-##### Build files
-```bash
-cd docsrc/
-npm run build
+### Usage
+
+Import:
+
+```javascript
+import {D3BarChart} from 'vue-d3-charts'
+```
+
+Template:
+
+```html
+<D3BarChart :config="config" :datum="data"></D3BarChart>
+```
+
+Configuration and data:
+
+```javascript
+// data
+data = [{
+  name: "Lorem",
+  total: 30
+},{
+  name: "Ipsum",
+  total: 21
+},{
+  name: "Dolor",
+  total: 20
+}]
+
+// Configuration
+config = {
+  key: "name",
+  value: "total",
+  color: "steelblue",
+}
 ```
