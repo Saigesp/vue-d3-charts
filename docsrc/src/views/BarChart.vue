@@ -5,14 +5,14 @@
       <h2 class="page__title">D3BarChart</h2>
       <p class="page__claim">A <a href="https://en.wikipedia.org/wiki/Bar_chart" target="_blank">bar chart</a> presents categorical data with rectangular bars with heights proportional to the values that they represent.</p>
     </section>
+    
+    <section class="chart">
+      <D3BarChart :config="chartconfig" :datum="chartdata" title="Lorem ipsum dolor sit amet" source="Custom source"></D3BarChart>
+    </section>
 
     <section class="code">
       <h3>Import</h3>
       <pre><code>import {D3BarChart} from 'vue-d3-charts'</code></pre>
-    </section>
-    
-    <section class="chart">
-      <D3BarChart :config="chartconfig" :datum="chartdata" title="Lorem ipsum dolor sit amet" source="Custom source"></D3BarChart>
     </section>
 
     <section class="code">
