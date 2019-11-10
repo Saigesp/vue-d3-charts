@@ -3,23 +3,27 @@
 
     <section class="text">
       <h2 class="page__title">D3BarChart</h2>
-      <p>A <a href="https://en.wikipedia.org/wiki/Bar_chart">bar chart</a> presents categorical data with rectangular bars with heights or lengths proportional to the values that they represent.</p>
+      <p class="page__claim">A <a href="https://en.wikipedia.org/wiki/Bar_chart" target="_blank">bar chart</a> presents categorical data with rectangular bars with heights proportional to the values that they represent.</p>
+    </section>
+
+    <section class="code">
+      <h3>Import</h3>
+      <pre><code>import {D3BarChart} from 'vue-d3-charts'</code></pre>
     </section>
     
     <section class="chart">
-      <D3BarChart :config="barconfig" :datum="bardata" title="Lorem ipsum dolor sit amet" source="Custom source"></D3BarChart>
+      <D3BarChart :config="chartconfig" :datum="chartdata" title="Lorem ipsum dolor sit amet" source="Custom source"></D3BarChart>
     </section>
 
     <section class="code">
       <h3>Template</h3>
-      <code><pre>code here</pre></code>
+      <pre><code>{{chartcode}}</code></pre>
     </section>
 
     <section class="code">
       <h3>Data format</h3>
-      <p>An <strong>objects array</strong> is expected, with each object as a bar. Fields can be changed in configuration object. Example:</p>
-      <code>
-<pre>chart_data = [{
+      <p>An <strong>objects array</strong> is expected, with each object as a bar. Fields can be changed in configuration. Example:</p>
+      <pre><code>chart_data = [{
   name: "Lorem",
   total: 30
 },{
@@ -28,16 +32,14 @@
 },{
   name: "Dolor",
   total: 20
-}]</pre>
-      </code>
+}]</code></pre>
       <p class="note">To work with this data, configuration must be <code>key = "name"</code> and <code>value = "total"</code></p>
     </section>
 
     <section class="code">
       <h3>Configuration</h3>
       <p>Default options:</p>
-      <code>
-<pre>chart_config = {
+      <pre><code>chart_config = {
   margin: {top: 10, right: 30, bottom: 50, left: 40},
   key: "key",
   value: "value",
@@ -46,8 +48,7 @@
   yAxis: ",
   yScaleTicks: 5,
   yScaleFormat: ".0f",
-}</pre>
-      </code>
+}</code></pre>
       <ul>
         <li><strong>margin</strong>: (object). Chart's margins based on <a href="https://bl.ocks.org/mbostock/3019563">d3 margins convention</a>.</li>
         <li><strong>key</strong>: (string). Field to use as name of each bar (bottom axis texts).</li>
@@ -63,9 +64,8 @@
 
     <section class="code">
       <h3>Styles</h3>
-      <p>Default styles are loaded from <code>chartstyles.scss</code>. To customize them use BEM modifiers notation:</p>
-      <code>
-<pre>.chart{
+      <p>Default styles can be easily overrided with BEM modifiers notation:</p>
+      <pre><code>.chart{
   &__label--barchart {
     font-size: 10px;
   }
@@ -75,8 +75,7 @@
   &__bar--barchart {
     fill: red;
   }
-}</pre>
-      </code>
+}</code></pre>
       <p class="note">Note that SVG elements use some special properties in CSS. <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/SVG_and_CSS">More info</a>.</p>
     </section>
   </div>
@@ -84,17 +83,22 @@
 
 
 <script>
+import {D3BarChart} from 'vue-d3-charts'
+
 export default {
   name: 'BarChart',
   data(){
     return {
-      bartext: '<D3BarChart :config="chart_config" :datum="chart_data"></D3BarChart>',
-      barconfig: {
+      chartcode: '<D3BarChart :config="chart_config" :datum="chart_data"></D3BarChart>',
+      chartconfig: {
         key: 'name',
         value: 'total',
-        color: '#da2779'
+        color: '#41B882',
+        yAxis: 'Lorem ipsum dolor sit amet',
+        yScaleTicks: 10,
+        yScaleFormat: '.0s',
       },
-      bardata: [
+      chartdata: [
         {name: '1992', total: 4748},
         {name: '1993', total: 5526},
         {name: '1994', total: 8574},

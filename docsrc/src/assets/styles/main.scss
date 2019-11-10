@@ -5,47 +5,65 @@ body {
 }
 
 code {
+    border-radius: 5px;
     background: #E5E5E5;
     padding: 2px 5px;
-    border-radius: 3px;
-    pre {
-        background: transparent;
-        border: 0;
-        border-radius: 5px;
-        margin: 0;
+}
+
+pre {
+    background: transparent;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    code {
+        padding: 18px 24px;
+        display: block;
     }
     &.align-center {
         text-align: center;
         display: flex;
         justify-content: center;
-        background: transparent;
-        padding: 0;
-        pre {
-            background: #E5E5E5;
-            display: inline-block;
+        code {
+            padding: 12px 24px;
             border-radius: 24px;
-            padding-left: 24px;
-            padding-right: 24px;
+            display: inline-block;
         }
     }
 }
 
 .page {
     &--header {
-        background: #08FFC8;
-        color: #002d23;
+        background: #41B882;
+        color: #222f3e;
         .page__title {
             margin-top: 40px;
             font-size: 48px;
+            cursor: pointer;
+            transition: opacity 200ms ease;
+            a {
+                color: inherit;
+            }
+            &:hover {
+                opacity: 0.7;
+            }
+        }
+        .page__subtitle {
+            cursor: default;
         }
     }
     &__title {
-        font-size: 36px;
         text-align: center;
+        font-size: 36px;
     }
     &__subtitle {
         text-align: center;
         font-size: 24px;
+    }
+    &__claim {
+        text-align: center;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        color: #222f3e;
     }
     h1, h2 {
         text-align: center;
@@ -68,14 +86,14 @@ code {
             margin: 40px auto;
         }
         &.code {
-            > code {
+            > pre {
                 display: block;
                 margin-bottom: 24px;
             }
             .note {
                 border-left: 4px solid #e5e5e5;
                 padding-left: 10px;
-                line-height: 36px;
+                line-height: 28px;
                 color: #7d7d7d;
             }
         }

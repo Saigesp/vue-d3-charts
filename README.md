@@ -2,6 +2,8 @@
 
 Simply yet configurable charts build with D3
 
+See [documentation page](https://saigesp.github.io/vue-d3-charts/).
+
 ### Install
 
 ```bash

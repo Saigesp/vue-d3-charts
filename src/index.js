@@ -1,6 +1,6 @@
 import Vue from "vue";
 import D3BarChart from "./barchart/d3.barchart.vue";
-import D3LineChart from "./linechart.vue";
+import D3LineChart from "./linechart/d3.linechart.vue";
 
 const Components = {
     D3BarChart,
