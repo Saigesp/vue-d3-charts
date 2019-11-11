@@ -42,6 +42,7 @@
   /* Axis */
   &__axis {
     font-size: 12px;
+    shape-rendering: crispEdges;
 
     /* Axis title */
     &-title {}
@@ -57,5 +58,10 @@
     .tick line {
       opacity: 0.2;
     }
+  }
+
+  /* Elements labels */
+  &__label {
+    font-size: 12px;
   }
 }

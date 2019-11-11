@@ -7,7 +7,7 @@
     </section>
     
     <section class="chart">
-      <D3BarChart :config="chartconfig" :datum="chartdata" title="Lorem ipsum dolor sit amet" source="Custom source"></D3BarChart>
+      <D3BarChart :config="chartconfig" :datum="chartdata" title="Lorem ipsum" source="Dolor sit amet"></D3BarChart>
     </section>
 
     <section class="code">

@@ -115,9 +115,7 @@ class d3linechart{
             .y(d => this.yScale(d.y))
 
         // Resize listener
-        this.redraw = () => {
-            this.draw();
-        }
+        this.redraw = () => { this.draw() };
         window.addEventListener("resize", this.redraw);
 
         this.initGraph();

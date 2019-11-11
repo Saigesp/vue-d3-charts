@@ -27,6 +27,7 @@
     <section>
       <router-link :to="{name: 'barchart'}">barchart</router-link><br>
       <router-link :to="{name: 'linechart'}">linechart</router-link><br>
+      <router-link :to="{name: 'slopechart'}">slopechart</router-link><br>
     </section>
   </div>
 </template>
@@ -54,12 +55,6 @@ export default {
         {name: '1998', total: 35205},
         {name: '1999', total: 45944},
         {name: '2000', total: 78595},
-        {name: '2001', total: 78530},
-        {name: '2002', total: 45407},
-        {name: '2003', total: 54044},
-        {name: '2004', total: 69165},
-        {name: '2005', total: 61798},
-        {name: '2006', total: 63686},
       ]
     }
   }
