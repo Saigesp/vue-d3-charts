@@ -50,9 +50,10 @@
         this.yScale = d3.scaleLinear().rangeRound([0, this.cfg.height]);
 
         // Resize listener
-        window.addEventListener("resize", function (_) {
-            this$1.resize();
-        });
+        this.redraw = function () {
+            this$1.draw();
+        };
+        window.addEventListener("resize", this.redraw);
 
         this.initGraph();
     };
@@ -154,7 +155,7 @@
             });
     };
 
-    d3barchart.prototype.resize = function resize (){
+    d3barchart.prototype.draw = function draw (){
             var this$1 = this;
 
         // Get dimensions
@@ -209,6 +210,10 @@
         return d3.axisLeft(this.yScale);
     };
 
+    d3barchart.prototype.destroy = function destroy (){
+        window.removeEventListener("resize", this.redraw);
+    };
+
     //
 
     var script = {
@@ -252,6 +257,9 @@
                 this.datum,
                 this.config
             );
+        },
+        beforeDestroy: function(){
+            this.chart.destroy();
         }
     };
 
@@ -400,7 +408,7 @@
       /* style */
       var __vue_inject_styles__ = function (inject) {
         if (!inject) { return }
-        inject("data-v-199fee6e_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}", map: undefined, media: undefined });
+        inject("data-v-04721bf6_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}", map: undefined, media: undefined });
 
       };
       /* scoped */
@@ -527,9 +535,10 @@
             .y(function (d) { return this$1.yScale(d.y); });
 
         // Resize listener
-        window.addEventListener("resize", function (_) {
+        this.redraw = function () {
             this$1.draw();
-        });
+        };
+        window.addEventListener("resize", this.redraw);
 
         this.initGraph();
     };
@@ -717,6 +726,10 @@
         }
     };
 
+    d3linechart.prototype.destroy = function destroy (){
+        window.removeEventListener("resize", this.redraw);
+    };
+
     //
 
     var script$1 = {
@@ -760,6 +773,9 @@
                 this.datum,
                 this.config
             );
+        },
+        beforeDestroy: function(){
+            this.chart.destroy();
         }
     };
 
@@ -773,7 +789,7 @@
       /* style */
       var __vue_inject_styles__$1 = function (inject) {
         if (!inject) { return }
-        inject("data-v-0bfb02a2_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}", map: undefined, media: undefined });
+        inject("data-v-0b7bc892_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}", map: undefined, media: undefined });
 
       };
       /* scoped */

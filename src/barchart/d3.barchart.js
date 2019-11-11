@@ -46,9 +46,10 @@ class d3barchart{
         this.yScale = d3.scaleLinear().rangeRound([0, this.cfg.height]);
 
         // Resize listener
-        window.addEventListener("resize", _ => {
-            this.resize();
-        });
+        this.redraw = () => {
+            this.draw();
+        }
+        window.addEventListener("resize", this.redraw);
 
         this.initGraph();
     }
@@ -150,7 +151,7 @@ class d3barchart{
             })
     }
 
-    resize(){
+    draw(){
         // Get dimensions
         this.cfg.width = parseInt(this.selection.node().offsetWidth) - this.cfg.margin.left - this.cfg.margin.right;
         this.cfg.height = parseInt(this.selection.node().offsetHeight)- this.cfg.margin.top - this.cfg.margin.bottom;
@@ -201,6 +202,10 @@ class d3barchart{
     // Gridlines in y axis function
     make_y_gridlines() {       
         return d3.axisLeft(this.yScale);
+    }
+
+    destroy(){
+        window.removeEventListener("resize", this.redraw);
     }
 }
 

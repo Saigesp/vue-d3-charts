@@ -115,9 +115,10 @@ class d3linechart{
             .y(d => this.yScale(d.y))
 
         // Resize listener
-        window.addEventListener("resize", _ => {
+        this.redraw = () => {
             this.draw();
-        });
+        }
+        window.addEventListener("resize", this.redraw);
 
         this.initGraph();
     }
@@ -301,6 +302,10 @@ class d3linechart{
         }else{
             return this.colorScale(d.key)
         }
+    }
+
+    destroy(){
+        window.removeEventListener("resize", this.redraw);
     }
 
 }

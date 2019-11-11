@@ -51,6 +51,9 @@ export default {
             this.datum,
             this.config
         )
+    },
+    beforeDestroy: function(){
+        this.chart.destroy();
     }
 }
 </script>
