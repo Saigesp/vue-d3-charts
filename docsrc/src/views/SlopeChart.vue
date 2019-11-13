@@ -57,7 +57,7 @@
       <ul>
         <li><strong>margin</strong>: (object). Chart's margins based on <a href="https://bl.ocks.org/mbostock/3019563">d3 margins convention</a>.</li>
         <li><strong>key</strong>: (string). Field to name.</li>
-        <li><strong>currentKeys</strong>: (string). Key field value to highlight.</li>
+        <li><strong>currentKey</strong>: (string). Key field value to highlight.</li>
         <li><strong>values</strong>: (string). Fields to compute each axis value.</li>
         <li><strong>color</strong>: (string). Color to use on highlighted line.</li>
         <li><strong>defaultColor</strong>: (string). Color to use on no highlighted lines.</li>
@@ -87,6 +87,34 @@
       <p class="note">Note that SVG elements use some special properties in CSS. <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/SVG_and_CSS">More info</a>.</p>
     </section>
 
+    <section class="chart code">
+      <h3>Examples</h3>
+
+      
+      <h4>{{example1.title}}</h4>
+      <D3SlopeChart :config="example1.config" :datum="example1.data"></D3SlopeChart>
+      <pre><code>config = {
+  key: 'name',
+  defaultColor: '#41B882'
+}</code></pre>
+      
+      <h4>{{example2.title}}</h4>
+      <D3SlopeChart :config="example2.config" :datum="example2.data"></D3SlopeChart>
+      <pre><code>config = {
+  key: 'name',
+  currentKey: 'Lorem'
+  color: '#41B882'
+}</code></pre>
+      
+      <h4>{{example3.title}}</h4>
+      <D3SlopeChart :config="example3.config" :datum="example3.data"></D3SlopeChart>
+      <pre><code>config = {
+  key: 'name',
+  axisLabels: ['Start', 'End']
+}</code></pre>
+
+    </section>
+
   </div>
 </template>
 <script>
@@ -99,10 +127,10 @@ export default {
       chartcode: '<D3SlopeChart :config="chart_config" :datum="chart_data"></D3SlopeChart>',
       chartconfig: {
         key: 'name',
-        currentkey: 'Lorem',
-        yscaleformat: '.0s',
+        currentKey: 'Lorem',
         color: ['#41B882'],
-        labels: ['2000', '2015'],
+        axisLabels: ['2000', '2015'],
+        transition: {ease: 'easeBounceOut', duration: 1000}
       },
       chartdata: [
         { start: 5355, end: 5855, name: "Lorem" },
@@ -110,22 +138,53 @@ export default {
         { start: 3029, end: 5138, name: "Dolor" },
         { start: 2116, end: 2904, name: "Sit" },
         { start: 3503, end: 4408, name: "Amet" }
-      ]
+      ],
+      example1: {
+        title: 'Basic chart',
+        config: {key: 'name', defaultColor: '#41B882'},
+        data: [
+          { start: 2355, end: 5855, name: "Lorem" },
+          { start: 4260, end: 6510, name: "Ipsum" },
+          { start: 5029, end: 5138, name: "Dolor" },
+        ]
+      },
+      example2: {
+        title: 'Highlighted value',
+        config: {key: 'name', color: '#41B882', currentKey: 'Lorem'},
+        data: [
+          { start: 2355, end: 5855, name: "Lorem" },
+          { start: 4260, end: 6510, name: "Ipsum" },
+          { start: 5029, end: 5138, name: "Dolor" },
+        ]
+      },
+      example3: {
+        title: 'Axis labels',
+        config: {key: 'name', axisLabels: ['Start', 'End']},
+        data: [
+          { start: 2355, end: 5855, name: "Lorem" },
+          { start: 4260, end: 6510, name: "Ipsum" },
+          { start: 5029, end: 5138, name: "Dolor" },
+        ]
+      }
     }
   },
   mounted(){
 
     setTimeout(()=>{
-      this.chartdata.push([{
-        name: "Elit",
-        start: 8355,
-        end: 9321
-      },{
-        name: "Line",
-        start: 11355,
-        end: 7805
-      }])
+      this.chartdata = this.chartdata.filter(d => d.name != 'Lorem');
+      this.chartdata.push({ start: 5085, end: 9321, name: "Lorem" });
     }, 2000);
+
+    setTimeout(()=>{
+      this.chartdata = this.chartdata.filter(d => d.name != 'Sit')
+    }, 4000);
+
+    setTimeout(()=>{
+      this.chartdata = this.chartdata.concat([
+        {start: 7500, end: 9960, name: "Aperiam"}
+      ])
+    }, 6000);
+
   }
 }
 </script>
