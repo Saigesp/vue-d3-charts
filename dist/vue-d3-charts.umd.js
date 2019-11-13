@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('vue'), require('d3-selection'), require('d3-scale'), require('d3-array'), require('d3-axis'), require('d3-time-format'), require('d3-shape'), require('d3-scale-chromatic'), require('d3-transition')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'vue', 'd3-selection', 'd3-scale', 'd3-array', 'd3-axis', 'd3-time-format', 'd3-shape', 'd3-scale-chromatic', 'd3-transition'], factory) :
-    (global = global || self, factory(global.D3BarChart = {}, global.Vue, global.d3Selection, global.d3Scale, global.d3Array, global.d3Axis, global.d3TimeFormat, global.d3Shape, global.d3ScaleChromatic, global.d3Transition));
-}(this, (function (exports, Vue, d3Selection, d3Scale, d3Array, d3Axis, d3TimeFormat, d3Shape, d3ScaleChromatic, d3Transition) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('vue'), require('d3-selection'), require('d3-scale'), require('d3-array'), require('d3-axis'), require('d3-time-format'), require('d3-shape'), require('d3-scale-chromatic'), require('d3-transition'), require('d3-ease')) :
+    typeof define === 'function' && define.amd ? define(['exports', 'vue', 'd3-selection', 'd3-scale', 'd3-array', 'd3-axis', 'd3-time-format', 'd3-shape', 'd3-scale-chromatic', 'd3-transition', 'd3-ease'], factory) :
+    (global = global || self, factory(global.D3BarChart = {}, global.Vue, global.d3Selection, global.d3Scale, global.d3Array, global.d3Axis, global.d3TimeFormat, global.d3Shape, global.d3ScaleChromatic, global.d3Transition, global.d3Ease));
+}(this, (function (exports, Vue, d3Selection, d3Scale, d3Array, d3Axis, d3TimeFormat, d3Shape, d3ScaleChromatic, d3Transition, d3Ease) { 'use strict';
 
     Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
 
@@ -210,7 +210,7 @@
         return d3.axisLeft(this.yScale);
     };
 
-    d3barchart.prototype.destroy = function destroy (){
+    d3barchart.prototype.destroyChart = function destroyChart (){
         window.removeEventListener("resize", this.redraw);
     };
 
@@ -254,12 +254,12 @@
         mounted: function(){
             this.chart = new d3barchart(
                 this.$refs.chart,
-                this.datum,
+                [].concat( this.datum ),
                 this.config
             );
         },
         beforeDestroy: function(){
-            this.chart.destroy();
+            this.chart.destroyChart();
         }
     };
 
@@ -408,7 +408,7 @@
       /* style */
       var __vue_inject_styles__ = function (inject) {
         if (!inject) { return }
-        inject("data-v-04721bf6_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}", map: undefined, media: undefined });
+        inject("data-v-19acfb40_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}", map: undefined, media: undefined });
 
       };
       /* scoped */
@@ -724,7 +724,7 @@
         }
     };
 
-    d3linechart.prototype.destroy = function destroy (){
+    d3linechart.prototype.destroyChart = function destroyChart (){
         window.removeEventListener("resize", this.redraw);
     };
 
@@ -768,12 +768,12 @@
         mounted: function(){
             this.chart = new d3linechart(
                 this.$refs.chart,
-                this.datum,
+                [].concat( this.datum ),
                 this.config
             );
         },
         beforeDestroy: function(){
-            this.chart.destroy();
+            this.chart.destroyChart();
         }
     };
 
@@ -787,7 +787,7 @@
       /* style */
       var __vue_inject_styles__$1 = function (inject) {
         if (!inject) { return }
-        inject("data-v-0b7bc892_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}", map: undefined, media: undefined });
+        inject("data-v-40b184e1_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}", map: undefined, media: undefined });
 
       };
       /* scoped */
@@ -811,13 +811,18 @@
         undefined
       );
 
-    var d3$2 = {
-        select: d3Selection.select, selectAll: d3Selection.selectAll,
-        scaleLinear: d3Scale.scaleLinear,
-        max: d3Array.max, min: d3Array.min,
-        transition: d3Transition.transition,
-    };
+    var d3$2 = {select: d3Selection.select, selectAll: d3Selection.selectAll, scaleLinear: d3Scale.scaleLinear, max: d3Array.max, min: d3Array.min, transition: d3Transition.transition, easeLinear: d3Ease.easeLinear,
+        easePolyIn: d3Ease.easePolyIn, easePolyOut: d3Ease.easePolyOut, easePoly: d3Ease.easePoly, easePolyInOut: d3Ease.easePolyInOut, easeQuadIn: d3Ease.easeQuadIn, easeQuadOut: d3Ease.easeQuadOut,
+        easeQuad: d3Ease.easeQuad, easeQuadInOut: d3Ease.easeQuadInOut, easeCubicIn: d3Ease.easeCubicIn, easeCubicOut: d3Ease.easeCubicOut, easeCubic: d3Ease.easeCubic, easeCubicInOut: d3Ease.easeCubicInOut,
+        easeSinIn: d3Ease.easeSinIn, easeSinOut: d3Ease.easeSinOut, easeSin: d3Ease.easeSin, easeSinInOut: d3Ease.easeSinInOut, easeExpIn: d3Ease.easeExpIn, easeExpOut: d3Ease.easeExpOut, easeExp: d3Ease.easeExp,
+        easeExpInOut: d3Ease.easeExpInOut, easeCircleIn: d3Ease.easeCircleIn, easeCircleOut: d3Ease.easeCircleOut, easeCircle: d3Ease.easeCircle, easeCircleInOut: d3Ease.easeCircleInOut,
+        easeElasticIn: d3Ease.easeElasticIn, easeElastic: d3Ease.easeElastic, easeElasticOut: d3Ease.easeElasticOut, easeElasticInOut: d3Ease.easeElasticInOut, easeBackIn: d3Ease.easeBackIn,
+        easeBackOut: d3Ease.easeBackOut, easeBack: d3Ease.easeBack, easeBackInOut: d3Ease.easeBackInOut, easeBounceIn: d3Ease.easeBounceIn, easeBounce: d3Ease.easeBounce, easeBounceOut: d3Ease.easeBounceOut,
+        easeBounceInOut: d3Ease.easeBounceInOut};
 
+    /**
+    * D3 Slope Chart
+    */
     var d3slopechart = function d3slopechart(selection, data, config) {
         var this$1 = this;
         if ( config === void 0 ) config = {};
@@ -836,7 +841,7 @@
             opacity: 0.5,
             radius: 3,
             axisLabels: false,
-            transition: {duration: 550}
+            transition: {duration: 550, ease: 'easeLinear'}
         };
 
         // Set up configuration
@@ -849,27 +854,22 @@
         });
 
         // Set up dimensions
-        this.cfg.width = parseInt(this.selection.node().offsetWidth) - this.cfg.margin.left - this.cfg.margin.right;
-        this.cfg.height = parseInt(this.selection.node().offsetHeight)- this.cfg.margin.top - this.cfg.margin.bottom;
+        this.setDimensions();
 
         // Set up scales
-        this.yScale = d3$2.scaleLinear().rangeRound([this.cfg.height, 0]);
+        this.yScale = d3$2.scaleLinear();
 
         // Resize listener
-        this.redraw = function () { this$1.draw(); };
-        window.addEventListener("resize", this.redraw);
+        this.onResize = function () {this$1.resizeChart();};
+        window.addEventListener("resize", this.onResize);
 
-        this.initGraph();
+        this.initChart();
     };
 
-    d3slopechart.prototype.initGraph = function initGraph () {
-            var this$1 = this;
-
-
-        this.yScale.domain([
-            d3$2.min(this.data, function (d) { return d[this$1.cfg.values[0]] < d[this$1.cfg.values[1]] ? d[this$1.cfg.values[0]]*0.9 : d[this$1.cfg.values[1]]*0.9; } ),
-            d3$2.max(this.data, function (d) { return d[this$1.cfg.values[0]] > d[this$1.cfg.values[1]] ? d[this$1.cfg.values[0]]*1.1 : d[this$1.cfg.values[1]]*1.1; } )
-        ]);
+    /**
+    * Init chart
+    */
+    d3slopechart.prototype.initChart = function initChart () {
 
         // Wrapper div
         this.wrap = this.selection.append('div') 
@@ -885,11 +885,11 @@
             .attr("transform", ("translate(" + (this.cfg.margin.left) + "," + (this.cfg.margin.top) + ")"));
 
         // Axis group
-        this.axisg = this.g.append('g')
+        var axisg = this.g.append('g')
             .attr('class', 'chart__axis chart__axis--slopechart');
 
         // Vertical left axis
-        this.startAxis = this.axisg.append('line')
+        this.startAxis = axisg.append('line')
             .attr("class", "chart__axis-y chart__axis-y--slopechart chart__axis-y--start")
             .attr('x1', 0)
             .attr('x2', 0)
@@ -897,95 +897,34 @@
             .attr('stroke', 'black');
 
         // Vertical right axis
-        this.endAxis = this.axisg.append('line')
+        this.endAxis = axisg.append('line')
             .attr("class", "chart__axis-y chart__axis-y--slopechart chart__axis-y--end")
             .attr('stroke', 'black')
             .attr('y1', 0);
 
         // Axis labels
         if(this.cfg.axisLabels){
-            this.startl = this.axisg.append('text')
+            this.startl = axisg.append('text')
                 .attr('class', 'chart__axis-text chart__axis-text--slopechart chart__axis-text--start')
                 .attr('text-anchor', 'middle')
                 .attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12)
                 .text(this.cfg.axisLabels[0]);
 
-            this.endl = this.axisg.append('text')
+            this.endl = axisg.append('text')
                 .attr('class', 'chart__axis-text chart__axis-text--slopechart chart__axis-text--end')
                 .attr('text-anchor', 'middle')
                 .attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12)
                 .text(this.cfg.axisLabels[1]);
         }
 
-        // Line selector
-        this.lin = this.g.selectAll(".chart__lines-group")
-            .data(this.data);
-
-        // Line group
-        this.lineg = this.lin
-            .enter().append('g')
-            .attr("class", "chart__lines-group chart__lines-group--slopechart");
-
-        // Lines element
-        this.lines = this.lineg.append('line')
-            .attr("class", "chart__line chart__line--slopechart")
-            .attr('stroke', function (d, i) { return d[this$1.cfg.key] == this$1.cfg.currentKey ? this$1.cfg.color : this$1.cfg.defaultColor; }
-            )
-            .style("stroke-width", function (d) { return d[this$1.cfg.key] == this$1.cfg.currentKey ? '2px' : '1px'; })
-            .style("opacity", this.cfg.opacity);
-
-        // Vertical left axis points group
-        this.startg = this.lineg.append('g')
-            .attr('class', 'chart__points-group chart__points-group--slopechart chart__points-group--start')
-            .classed('current', function (d) { return d[this$1.cfg.key] == this$1.cfg.currentKey; });
-
-        // Vertical right axis points group
-        this.endg = this.lineg.append('g')
-            .attr('class', 'chart__points-group chart__points-group--slopechart chart__points-group--end')
-            .classed('current', function (d) { return d[this$1.cfg.key] == this$1.cfg.currentKey; })
-            .attr('transform', 'translate('+this.cfg.width+',0)');
-
-        // Vertical left axis points
-        this.startg.append('circle')
-            .attr('class', 'chart__point chart__point--slopechart chart__point--start')
-            .attr('fill', function (d) { return d[this$1.cfg.key] == this$1.cfg.currentKey ? this$1.cfg.color : this$1.cfg.defaultColor; }
-            )
-            .attr('r', this.cfg.radius);
-
-        // Vertical right axis points
-        this.endg.append('circle')
-            .attr('class', 'chart__point chart__point--slopechart chart__point--end')
-            .attr('fill', function (d) { return d[this$1.cfg.key] == this$1.cfg.currentKey ? this$1.cfg.color : this$1.cfg.defaultColor; }
-            )
-            .attr('r', this.cfg.radius);
-
-        // Vertical left axis labels
-        this.startg.append('text')
-            .attr('class', 'chart__label chart__label--slopechart chart__label--start')
-            .attr('text-anchor', 'end')
-            .attr('y', 3)
-            .attr('x', -5)
-            .text(function (d) { return d[this$1.cfg.key] +' '+ d[this$1.cfg.values[0]]; });
-
-        // Vertical right axis labels
-        this.endg.append('text')
-            .attr('class', 'chart__label chart__label--slopechart chart__label--end')
-            .attr('text-anchor', 'start')
-            .attr('y', 3)
-            .attr('x', 5)
-            .text(function (d) { return d[this$1.cfg.values[1]] + '  ' + d[this$1.cfg.key]; });
-
-        this.draw();
+        this.setChartDimension();
+        this.updateChart();
     };
 
-    d3slopechart.prototype.draw = function draw (){
-        // Set up dimensions
-        this.cfg.width = parseInt(this.selection.node().offsetWidth) - this.cfg.margin.left - this.cfg.margin.right;
-        this.cfg.height = parseInt(this.selection.node().offsetHeight)- this.cfg.margin.top - this.cfg.margin.bottom;
-
-        // Set scales
-        this.yScale.rangeRound([this.cfg.height, 0]);
-
+    /**
+    * Set up chart dimensions (non depending on data)
+    */
+    d3slopechart.prototype.setChartDimension = function setChartDimension (){
         // SVG element
         this.svg
             .attr("viewBox", ("0 0 " + (this.cfg.width+this.cfg.margin.left+this.cfg.margin.right) + " " + (this.cfg.height+this.cfg.margin.top+this.cfg.margin.bottom)))
@@ -1007,35 +946,35 @@
             this.startl.attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12);
             this.endl.attr('x', this.cfg.width).attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12);
         }
-
-        this.update();
-
     };
 
+    /**
+    * Returns chart's data
+    */
     d3slopechart.prototype.getData = function getData (){
         return this.data;
     };
 
-    d3slopechart.prototype.addData = function addData (data){
+    /**
+    * Add new data elements
+    */
+    d3slopechart.prototype.enterData = function enterData (data){
         this.data = this.data.concat(data);
-        this.update();
+        this.updateChart();
     };
 
+    /**
+    * Update existing data elements
+    */
     d3slopechart.prototype.updateData = function updateData (data){
-            var this$1 = this;
-
-        var existingkeys = this.data.map(function (d){ return d[this$1.cfg.key]; });
-        var newkeys = data.map(function (d){ return d[this$1.cfg.key]; });
-        // Remove non passed data items
-        this.data = this.data.filter(function (d){ return newkeys.indexOf(d[this$1.cfg.key]) > -1; });
-        // Update existing passed data items
-        this.data.forEach(function (d){ d = data[newkeys.indexOf(d[this$1.cfg.key])]; });
-        // Add non existing passed data items
-        this.data = this.data.concat(data.filter(function (d){ return existingkeys.indexOf(d[this$1.cfg.key]) == -1; }));
-        this.update();
+        this.data = [].concat( data );
+        this.updateChart();
     };
 
-    d3slopechart.prototype.removeData = function removeData (filter){
+    /**
+    * Remove data elements
+    */
+    d3slopechart.prototype.exitData = function exitData (filter){
             var this$1 = this;
 
         this.data.forEach(function (d,i) {
@@ -1047,82 +986,79 @@
                 this$1.data.splice(i,1);
             }
         });
-        this.update();
+        this.updateChart();
     };
 
-    d3slopechart.prototype.update = function update (){
+    /**
+    * Set up chart dimensions
+    */
+    d3slopechart.prototype.setDimensions = function setDimensions (){
+        this.cfg.width = parseInt(this.selection.node().offsetWidth) - this.cfg.margin.left - this.cfg.margin.right;
+        this.cfg.height = parseInt(this.selection.node().offsetHeight)- this.cfg.margin.top - this.cfg.margin.bottom;
+    };
+
+    /**
+    * Set up scales
+    */
+    d3slopechart.prototype.setScales = function setScales (){
             var this$1 = this;
 
-        // Set transition
-        var t = d3$2.transition().duration(this.cfg.transition.duration);
+        this.yScale
+            .rangeRound([this.cfg.height, 0])
+            .domain([
+                d3$2.min(this.data, function (d) { return d[this$1.cfg.values[0]] < d[this$1.cfg.values[1]] ? d[this$1.cfg.values[0]]*0.9 : d[this$1.cfg.values[1]]*0.9; } ),
+                d3$2.max(this.data, function (d) { return d[this$1.cfg.values[0]] > d[this$1.cfg.values[1]] ? d[this$1.cfg.values[0]]*1.1 : d[this$1.cfg.values[1]]*1.1; } )
+            ]);
+    };
 
-        // Set scale
-        this.yScale.domain([
-            d3$2.min(this.data, function (d) { return d[this$1.cfg.values[0]] < d[this$1.cfg.values[1]] ? d[this$1.cfg.values[0]]*0.9 : d[this$1.cfg.values[1]]*0.9; } ),
-            d3$2.max(this.data, function (d) { return d[this$1.cfg.values[0]] > d[this$1.cfg.values[1]] ? d[this$1.cfg.values[0]]*1.1 : d[this$1.cfg.values[1]]*1.1; } )
-        ]);
+    /**
+    * Bind data to main elements groups
+    */
+    d3slopechart.prototype.bindData = function bindData (){
+            var this$1 = this;
 
         // Lines group selection data
-        this.lin = this.g.selectAll(".chart__lines-group")
+        this.linesgroup = this.g.selectAll(".chart__lines-group")
             .data(this.data, function (d) { return d[this$1.cfg.key]; });
 
-        // Elements to remove
-        this.lin.exit().transition(t)
-            .style("opacity", 0)
-            .remove();
+        // Set transition
+        this.transition = d3$2.transition('t')
+            .duration(this.cfg.transition.duration)
+            .ease(d3$2[this.cfg.transition.ease]);
+    };
 
-        // Left axis points to modify
-        this.startg = this.lineg.selectAll('.chart__points-group--start')
-            .transition(t)
-            .attr('transform', function (d) { return 'translate(0,'+this$1.yScale(d[this$1.cfg.values[0]])+')'; });
+    /**
+    * Add new chart's elements
+    */
+    d3slopechart.prototype.enterElements = function enterElements (){
+            var this$1 = this;
 
-        // Right axis points to modify
-        this.endg = this.lineg.selectAll('.chart__points-group--end')
-            .transition(t)
-            .attr('transform', function (d) { return 'translate('+this$1.cfg.width+','+this$1.yScale(d[this$1.cfg.values[1]])+')'; });
-
-        // Lines to modify
-        this.lines = this.lineg.selectAll('.chart__line')
-            .transition(t)
-            .attr("x1", 0)
-            .attr("x2", this.cfg.width)
-            .attr("y1", function (d) { return this$1.yScale(d[this$1.cfg.values[0]]); })
-            .attr("y2", function (d) { return this$1.yScale(d[this$1.cfg.values[1]]); });
 
         // Elements to add
-        var news = this.lin
-            .enter().append('g')
-            .attr("class", "chart__lines-group chart__lines-group--slopechart");
+        var newlines = this.linesgroup.enter().append('g')
+            .attr("class", function (d) { return "chart__lines-group chart__lines-group--slopechart"; });
 
         // Lines to add
-        news.append('line') 
+        newlines.append('line') 
             .attr("class", "chart__line chart__line--slopechart")
+            .classed('chart__line--current', function (d) { return this$1.cfg.currentKey && d[this$1.cfg.key] == this$1.cfg.currentKey; })
             .attr('stroke', function (d, i) {
                 return d[this$1.cfg.key] == this$1.cfg.currentKey ? this$1.cfg.color : this$1.cfg.defaultColor;
             })
             .style("opacity", this.cfg.opacity)
-            .transition(t)
             .attr("x1", 0)
             .attr("x2", this.cfg.width)
+            .transition(this.transition)
             .attr("y1", function (d) { return this$1.yScale(d[this$1.cfg.values[0]]); })
             .attr("y2", function (d) { return this$1.yScale(d[this$1.cfg.values[1]]); });
 
         // Vertical left axis points group to add
-        var gstart = news.append('g')
+        var gstart = newlines.append('g')
             .attr('class', 'chart__points-group chart__points-group--slopechart chart__points-group--start');
             
         gstart
-            .transition(t)
+            .transition(this.transition)
             .attr('transform', function (d) { return 'translate(0,'+this$1.yScale(d[this$1.cfg.values[0]])+')'; });
-
-        // Vertical right axis points group to add
-        var gend = news.append('g')
-            .attr('class', 'chart__points-group chart__points-group--slopechart chart__points-group--end')
-            .attr('transform', 'translate('+this.cfg.width+',0)');
-
-        gend
-            .transition(t)
-            .attr('transform', function (d) { return 'translate('+this$1.cfg.width+','+this$1.yScale(d[this$1.cfg.values[1]])+')'; });
 
         // Vertical left axis points to add
         gstart.append('circle')
@@ -1131,13 +1067,7 @@
             )
             .attr('r', this.cfg.radius);
 
-        // Vertical right axis points to add
-        gend.append('circle')
-            .attr('class', 'chart__point chart__point--slopechart chart__point--end')
-            .attr('fill', function (d) { return d[this$1.cfg.key] == this$1.cfg.currentKey ? this$1.cfg.color : this$1.cfg.defaultColor; }
-            )
-            .attr('r', this.cfg.radius);
-
+        // Vertical left axis label to add
         gstart.append('text')
             .attr('class', 'chart__label chart__label--slopechart chart__label--start')
             .attr('text-anchor', 'end')
@@ -1145,17 +1075,106 @@
             .attr('x', -5)
             .text(function (d) { return d[this$1.cfg.key] +' '+ d[this$1.cfg.values[0]]; });
 
+        // Vertical right axis points group to add
+        var gend = newlines.append('g')
+            .attr('class', 'chart__points-group chart__points-group--slopechart chart__points-group--end')
+            .attr('transform', 'translate('+this.cfg.width+',0)');
+
+        gend
+            .transition(this.transition)
+            .attr('transform', function (d) { return 'translate('+this$1.cfg.width+','+this$1.yScale(d[this$1.cfg.values[1]])+')'; });
+
+        // Vertical right axis points to add
+        gend.append('circle')
+            .attr('class', 'chart__point chart__point--slopechart chart__point--end')
+            .attr('fill', function (d) { return d[this$1.cfg.key] == this$1.cfg.currentKey ? this$1.cfg.color : this$1.cfg.defaultColor; }
+            )
+            .attr('r', this.cfg.radius);
+
+        // Vertical right axis label to add
         gend.append('text')
             .attr('class', 'chart__label chart__label--slopechart chart__label--end')
             .attr('text-anchor', 'start')
             .attr('y', 3)
             .attr('x', 5)
             .text(function (d) { return d[this$1.cfg.values[1]] + '  ' + d[this$1.cfg.key]; });
-
     };
 
-    d3slopechart.prototype.destroy = function destroy (){
-        window.removeEventListener("resize", this.redraw);
+    /**
+    * Update chart's elements based on data change
+    */
+    d3slopechart.prototype.updateElements = function updateElements (){
+            var this$1 = this;
+
+        // Lines to modify
+        this.linesgroup.selectAll('.chart__line')
+            .data(this.data, function (d){ return d[this$1.cfg.key]; })
+            .transition(this.transition)
+            .attr("x1", 0)
+            .attr("x2", this.cfg.width)
+            .attr("y1", function (d) { return this$1.yScale(d[this$1.cfg.values[0]]); })
+            .attr("y2", function (d) { return this$1.yScale(d[this$1.cfg.values[1]]); });
+
+        // Left axis points to modify
+        this.linesgroup.selectAll('.chart__points-group--start')
+            .data(this.data, function (d){ return d[this$1.cfg.key]; })
+            .transition(this.transition)
+            .attr('transform', function (d) { return 'translate(0,'+this$1.yScale(d[this$1.cfg.values[0]])+')'; });
+
+        // Left axis labels to modify
+        this.linesgroup.selectAll('.chart__label--start')
+            .data(this.data, function (d){ return d[this$1.cfg.key]; })
+            .text(function (d) {return d[this$1.cfg.key] +' '+ d[this$1.cfg.values[0]]});
+
+        // Right axis points to modify
+        this.linesgroup.selectAll('.chart__points-group--end')
+            .data(this.data, function (d){ return d[this$1.cfg.key]; })
+            .transition(this.transition)
+            .attr('transform', function (d) { return 'translate('+this$1.cfg.width+','+this$1.yScale(d[this$1.cfg.values[1]])+')'; });
+
+        // Right axis labels to modify
+        this.linesgroup.selectAll('.chart__label--end')
+            .data(this.data, function (d){ return d[this$1.cfg.key]; })
+            .text(function (d) { return d[this$1.cfg.values[1]] + '  ' + d[this$1.cfg.key]; });
+    };
+
+    /**
+    * Remove chart's elements without data
+    */
+    d3slopechart.prototype.exitElements = function exitElements (){
+        // Elements to remove
+        this.linesgroup.exit()
+            .transition(this.transition)
+            .style("opacity", 0)
+            .remove();
+    };
+
+    /**
+    * Update chart methods
+    */
+    d3slopechart.prototype.updateChart = function updateChart (){
+        this.setScales();
+        this.bindData();
+        this.enterElements();
+        this.updateElements();
+        this.exitElements();
+    };
+
+    /**
+    * Resize chart methods
+    */
+    d3slopechart.prototype.resizeChart = function resizeChart (){
+        this.setDimensions();
+        this.setScales();
+        this.setChartDimension();
+        this.updateChart();
+    };
+
+    /**
+    * Destroy chart methods
+    */
+    d3slopechart.prototype.destroyChart = function destroyChart (){
+        window.removeEventListener("resize", this.onResize);
     };
 
     //
@@ -1198,17 +1217,17 @@
         mounted: function(){
             this.chart = new d3slopechart(
                 this.$refs.chart,
-                this.datum,
+                [].concat( this.datum ),
                 this.config
             );
         },
         watch: {
             datum: function datum(vals){
-                this.chart.updateData(vals);
+                this.chart.updateData([].concat( vals ));
             }
         },
         beforeDestroy: function(){
-            this.chart.destroy();
+            this.chart.destroyChart();
         }
     };
 
@@ -1222,7 +1241,7 @@
       /* style */
       var __vue_inject_styles__$2 = function (inject) {
         if (!inject) { return }
-        inject("data-v-744662b4_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}", map: undefined, media: undefined });
+        inject("data-v-7b4328a4_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}.chart--slopegraph .chart__line--current{stroke-width:2px}", map: undefined, media: undefined });
 
       };
       /* scoped */

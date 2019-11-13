@@ -204,7 +204,7 @@ class d3barchart{
         return d3.axisLeft(this.yScale);
     }
 
-    destroy(){
+    destroyChart(){
         window.removeEventListener("resize", this.redraw);
     }
 }

@@ -302,7 +302,7 @@ class d3linechart{
         }
     }
 
-    destroy(){
+    destroyChart(){
         window.removeEventListener("resize", this.redraw);
     }
 

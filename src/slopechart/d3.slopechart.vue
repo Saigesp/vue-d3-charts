@@ -48,17 +48,17 @@ export default {
     mounted: function(){
         this.chart = new d3slopechart(
             this.$refs.chart,
-            this.datum,
+            [...this.datum],
             this.config
         )
     },
     watch: {
         datum(vals){
-            this.chart.updateData(vals);
+            this.chart.updateData([...vals]);
         }
     },
     beforeDestroy: function(){
-        this.chart.destroy();
+        this.chart.destroyChart();
     }
 }
 </script>
@@ -66,4 +66,10 @@ export default {
 
 <style lang="scss">
 @import '../styles';
+
+.chart--slopegraph {
+    .chart__line--current {
+        stroke-width: 2px;
+    }
+}
 </style>

@@ -48,12 +48,12 @@ export default {
     mounted: function(){
         this.chart = new d3linechart(
             this.$refs.chart,
-            this.datum,
+            [...this.datum],
             this.config
         )
     },
     beforeDestroy: function(){
-        this.chart.destroy();
+        this.chart.destroyChart();
     }
 }
 </script>
