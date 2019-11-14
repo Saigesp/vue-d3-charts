@@ -21,7 +21,7 @@
       <pre><code>import {D3BarChart} from 'vue-d3-charts'</code></pre>
       <p>And then use it on your project, passing them a configuratioin object and a data array:</p>
       <pre><code>{{bartext}}</code></pre>
-      <p>Each chart has it's own configuration options. For example, the <strong>bar chart</strong> has these as default:</p>
+      <p>Each chart has it's own configuration options. For example, the <strong>bar chart</strong> has these:</p>
       <pre><code>chart_config = {
   key: 'name',
   value: 'production',
@@ -29,12 +29,7 @@
 }</code></pre>
     </section>
 
-    <section class="chart-grid">
-      <h2>Charts</h2>
-      <router-link :to="{name: 'barchart'}">barchart</router-link><br>
-      <router-link :to="{name: 'linechart'}">linechart</router-link><br>
-      <router-link :to="{name: 'slopechart'}">slopechart</router-link><br>
-    </section>
+    <ChartIndexComponent/>
     
     <section class="code">
       <h2>Common features</h2>
@@ -48,28 +43,28 @@ export default {
   name: 'my-component',
   data() {
     return {
-      chartdata: [
+
+      // Chart's initial data
+      chart_data: [
         { start: 5355, end: 5855, name: "Lorem" },
         { start: 6160, end: 6510, name: "Ipsum" }
-      ]
+      ],
+
+      // Chart's configuration
+      chart_config: {
+        key: "name",
+        values: ["start", "end"]
+      }
+
     }
   },
-  mounted(){
-    
-    setTimeout(()=>{ // Update item
-      this.chartdata = this.chartdata.filter(d => d.name != 'Lorem');
-      this.chartdata.push({ start: 5085, end: 9321, name: "Lorem" });
-    }, 2000);
+  methods:{
 
-    setTimeout(()=>{ // Remove item
-      this.chartdata = this.chartdata.filter(d => d.name != 'Sit')
-    }, 4000);
+    // Add item to chart
+    yourFunction(){
+      this.chartdata.push({ start: 5085, end: 9321, name: "Dolor" });
+    }
 
-    setTimeout(()=>{ // Add item
-      this.chartdata = this.chartdata.concat([
-        {start: 7500, end: 9960, name: "Aperiam"}
-      ])
-    }, 6000);
   }
 }</code></pre>
 

@@ -814,14 +814,16 @@ var __vue_staticRenderFns__$1 = [];
     undefined
   );
 
-var d3$2 = {select: select, selectAll: selectAll, scaleLinear: scaleLinear, max: max, min: min, transition: transition, easeLinear: easeLinear,
+var d3$2 = {select: select, selectAll: selectAll, scaleLinear: scaleLinear, scaleOrdinal: scaleOrdinal, max: max, min: min, transition: transition, easeLinear: easeLinear,
     easePolyIn: easePolyIn, easePolyOut: easePolyOut, easePoly: easePoly, easePolyInOut: easePolyInOut, easeQuadIn: easeQuadIn, easeQuadOut: easeQuadOut,
     easeQuad: easeQuad, easeQuadInOut: easeQuadInOut, easeCubicIn: easeCubicIn, easeCubicOut: easeCubicOut, easeCubic: easeCubic, easeCubicInOut: easeCubicInOut,
     easeSinIn: easeSinIn, easeSinOut: easeSinOut, easeSin: easeSin, easeSinInOut: easeSinInOut, easeExpIn: easeExpIn, easeExpOut: easeExpOut, easeExp: easeExp,
     easeExpInOut: easeExpInOut, easeCircleIn: easeCircleIn, easeCircleOut: easeCircleOut, easeCircle: easeCircle, easeCircleInOut: easeCircleInOut,
     easeElasticIn: easeElasticIn, easeElastic: easeElastic, easeElasticOut: easeElasticOut, easeElasticInOut: easeElasticInOut, easeBackIn: easeBackIn,
     easeBackOut: easeBackOut, easeBack: easeBack, easeBackInOut: easeBackInOut, easeBounceIn: easeBounceIn, easeBounce: easeBounce, easeBounceOut: easeBounceOut,
-    easeBounceInOut: easeBounceInOut};
+    easeBounceInOut: easeBounceInOut, schemeCategory10: schemeCategory10, schemeAccent: schemeAccent, schemeDark2: schemeDark2, schemePaired: schemePaired,
+    schemePastel1: schemePastel1, schemePastel2: schemePastel2, schemeSet1: schemeSet1, schemeSet2: schemeSet2, schemeSet3: schemeSet3,
+    schemeTableau10: schemeTableau10};
 
 /**
 * D3 Slope Chart
@@ -837,14 +839,13 @@ var d3slopechart = function d3slopechart(selection, data, config) {
     this.cfg = {
         margin: {top: 10, right: 100, bottom: 20, left: 100},
         key: '',
-        currentKey: '',
+        currentKey: false,
         values: ['start', 'end'],
-        color: '#1f77b4',
-        defaultColor: '#AAA',
+        color : {key: false, keys: false, scheme: false, current: '#1f77b4', default: '#AAA', axis: '#000'},
+        axis: {titles: false},
+        points: {visibleRadius: 3},
         opacity: 0.5,
-        radius: 3,
-        axisLabels: false,
-        transition: {duration: 550, ease: 'easeLinear'}
+        transition: {duration: 350, ease: 'easeLinear'}
     };
 
     // Set up configuration
@@ -897,27 +898,27 @@ d3slopechart.prototype.initChart = function initChart () {
         .attr('x1', 0)
         .attr('x2', 0)
         .attr('y1', 0)
-        .attr('stroke', 'black');
+        .attr('stroke', this.cfg.color.axis);
 
     // Vertical right axis
     this.endAxis = axisg.append('line')
         .attr("class", "chart__axis-y chart__axis-y--slopechart chart__axis-y--end")
-        .attr('stroke', 'black')
-        .attr('y1', 0);
+        .attr('y1', 0)
+        .attr('stroke', this.cfg.color.axis);
 
     // Axis labels
-    if(this.cfg.axisLabels){
+    if(this.cfg.axis.titles){
         this.startl = axisg.append('text')
             .attr('class', 'chart__axis-text chart__axis-text--slopechart chart__axis-text--start')
             .attr('text-anchor', 'middle')
             .attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12)
-            .text(this.cfg.axisLabels[0]);
+            .text(this.cfg.axis.titles[0]);
 
         this.endl = axisg.append('text')
             .attr('class', 'chart__axis-text chart__axis-text--slopechart chart__axis-text--end')
             .attr('text-anchor', 'middle')
             .attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12)
-            .text(this.cfg.axisLabels[1]);
+            .text(this.cfg.axis.titles[1]);
     }
 
     this.setChartDimension();
@@ -945,7 +946,7 @@ d3slopechart.prototype.setChartDimension = function setChartDimension (){
         .attr('y2', this.cfg.height);
 
     // Axis labels
-    if(this.cfg.axisLabels){
+    if(this.cfg.axis.titles){
         this.startl.attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12);
         this.endl.attr('x', this.cfg.width).attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12);
     }
@@ -1012,6 +1013,15 @@ d3slopechart.prototype.setScales = function setScales (){
             d3$2.min(this.data, function (d) { return d[this$1.cfg.values[0]] < d[this$1.cfg.values[1]] ? d[this$1.cfg.values[0]]*0.9 : d[this$1.cfg.values[1]]*0.9; } ),
             d3$2.max(this.data, function (d) { return d[this$1.cfg.values[0]] > d[this$1.cfg.values[1]] ? d[this$1.cfg.values[0]]*1.1 : d[this$1.cfg.values[1]]*1.1; } )
         ]);
+
+    // Set up color scheme
+    if(this.cfg.color.scheme){
+        if(this.cfg.color.scheme instanceof Array === true){
+            this.colorScale = d3$2.scaleOrdinal().range(this.cfg.color.scheme);
+        }else{
+            this.colorScale = d3$2.scaleOrdinal(d3$2[this.cfg.color.scheme]);
+        }
+    }
 };
 
 /**
@@ -1045,9 +1055,7 @@ d3slopechart.prototype.enterElements = function enterElements (){
     newlines.append('line') 
         .attr("class", "chart__line chart__line--slopechart")
         .classed('chart__line--current', function (d) { return this$1.cfg.currentKey && d[this$1.cfg.key] == this$1.cfg.currentKey; })
-        .attr('stroke', function (d, i) {
-            return d[this$1.cfg.key] == this$1.cfg.currentKey ? this$1.cfg.color : this$1.cfg.defaultColor;
-        })
+        .attr('stroke', function (d) { return this$1.colorElement(d); })
         .style("opacity", this.cfg.opacity)
         .attr("x1", 0)
         .attr("x2", this.cfg.width)
@@ -1059,16 +1067,14 @@ d3slopechart.prototype.enterElements = function enterElements (){
     var gstart = newlines.append('g')
         .attr('class', 'chart__points-group chart__points-group--slopechart chart__points-group--start');
         
-    gstart
-        .transition(this.transition)
+    gstart.transition(this.transition)
         .attr('transform', function (d) { return 'translate(0,'+this$1.yScale(d[this$1.cfg.values[0]])+')'; });
 
     // Vertical left axis points to add
     gstart.append('circle')
         .attr('class', 'chart__point chart__point--slopechart chart__point--start')
-        .attr('fill', function (d) { return d[this$1.cfg.key] == this$1.cfg.currentKey ? this$1.cfg.color : this$1.cfg.defaultColor; }
-        )
-        .attr('r', this.cfg.radius);
+        .attr('fill', function (d) { return this$1.colorElement(d); })
+        .attr('r', this.cfg.points.visibleRadius);
 
     // Vertical left axis label to add
     gstart.append('text')
@@ -1083,16 +1089,14 @@ d3slopechart.prototype.enterElements = function enterElements (){
         .attr('class', 'chart__points-group chart__points-group--slopechart chart__points-group--end')
         .attr('transform', 'translate('+this.cfg.width+',0)');
 
-    gend
-        .transition(this.transition)
+    gend.transition(this.transition)
         .attr('transform', function (d) { return 'translate('+this$1.cfg.width+','+this$1.yScale(d[this$1.cfg.values[1]])+')'; });
 
     // Vertical right axis points to add
     gend.append('circle')
         .attr('class', 'chart__point chart__point--slopechart chart__point--end')
-        .attr('fill', function (d) { return d[this$1.cfg.key] == this$1.cfg.currentKey ? this$1.cfg.color : this$1.cfg.defaultColor; }
-        )
-        .attr('r', this.cfg.radius);
+        .attr('fill', function (d) { return this$1.colorElement(d); })
+        .attr('r', this.cfg.points.visibleRadius);
 
     // Vertical right axis label to add
     gend.append('text')
@@ -1145,11 +1149,44 @@ d3slopechart.prototype.updateElements = function updateElements (){
 * Remove chart's elements without data
 */
 d3slopechart.prototype.exitElements = function exitElements (){
-    // Elements to remove
     this.linesgroup.exit()
         .transition(this.transition)
         .style("opacity", 0)
         .remove();
+};
+
+/**
+* Compute element color
+*/
+d3slopechart.prototype.colorElement = function colorElement (d) {
+
+    // if key is set, return own object color key
+    if(this.cfg.color.key) { return  d[this.cfg.color.key]; }
+
+    // base color is default one if current key is set, else current one
+    var baseColor = this.cfg.currentKey
+        ? this.cfg.color.default
+        : this.cfg.color.current;
+
+    // if scheme is set, base color is color scheme
+    if(this.cfg.color.scheme){
+        baseColor = this.colorScale(d[this.cfg.key]);
+    }
+
+    // if keys is an object, base color is color key if exists
+    if(this.cfg.color.keys
+        && this.cfg.color.keys instanceof Object
+        && this.cfg.color.keys instanceof Array === false
+        && this.cfg.color.keys[d[this.cfg.key]]){
+        baseColor = this.cfg.color.keys[d[this.cfg.key]];
+    }
+
+    // if current key is set and key is current, base color is current
+    if(this.cfg.currentKey && d[this.cfg.key] === this.cfg.currentKey){
+        baseColor = this.cfg.color.current;
+    }
+
+    return baseColor;
 };
 
 /**

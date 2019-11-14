@@ -1,0 +1,28 @@
+<template>
+    <section class="code">
+      <h3>Import</h3>
+      <pre><code>{{chartcode}}</code></pre>
+      <p v-if="link" class="note">See chart's code on <a :href="link">GitHub</a>.</p>
+    </section>
+</template>
+
+<script>
+export default {
+    name: 'ChartImportComponent',
+    props: {
+        code: {
+            type: String,
+            required: true,
+        },
+        link: {
+            type: String,
+            required: false
+        },
+    },
+    computed: {
+        chartcode(){
+            return `import {${this.code}} from 'vue-d3-charts'`;
+        }
+    }
+}
+</script>
