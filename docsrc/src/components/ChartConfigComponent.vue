@@ -2,14 +2,21 @@
     <section class="code">
         <h3>Configuration</h3>
         <p>Default options:</p>
-        <pre><code>chart_config = {
-<div v-for="o in sortedOpts">  {{opts(o, 'default')}},</div>}</code></pre>
-        <p class="note">Chart's width is automatically calculed based on component's available space and chart's height is setted up as a prop.</p>
+        <div v-highlight>
+            <pre class="language-js"><code>chart_config = {
+<div v-for="o in sortedOpts">  {{opts(o, 'default')}},
+</div>}</code></pre>
+        </div>
+        <p class="note">The <strong>width</strong> is adjusted to the available space; <strong>height</strong> can be passed as a prop.</p>
         <ul>
             <li class="option" v-for="o in sortedOpts">
                 <div><strong>{{o}}</strong></div>
                 <table class="option__table">
                     <tbody>
+                        <tr>
+                            <td>Description</td>
+                            <td v-html="opts(o, 'desc')"></td>
+                        </tr>
                         <tr>
                             <td>Required</td>
                             <td><span v-if="opts(o, 'required')" class="option__required">true</span><span class="option__nonrequired" v-else>false</span></td>
@@ -22,17 +29,13 @@
                             <td>Limits</td>
                             <td v-html="opts(o, 'limits')"></td>
                         </tr>
-                        <tr>
-                            <td>Description</td>
-                            <td v-html="opts(o, 'desc')"></td>
-                        </tr>
                         <tr v-if="!opts(o, 'required')">
                             <td>Default</td>
-                            <td><code>{{opts(o, 'default')}}</code></td>
+                            <td><div v-highlight><pre class="language-js"><code>{{opts(o, 'default')}}</code></pre></div></td>
                         </tr>
                         <tr v-if="opts(o, 'example')">
                             <td>Example</td>
-                            <td v-html="opts(o, 'example')"></td>
+                            <td><div v-highlight><pre class="language-js" v-html="opts(o, 'example')"></pre></div></td>
                         </tr>
                         <tr v-if="opts(o, 'link')">
                             <td>See more</td>
@@ -132,7 +135,7 @@ export default {
                     type: 'Object',
                     desc: "Chart's transition options. <code>ease</code> must be a d3-ease function name.",
                     link: 'https://github.com/d3/d3-ease',
-                    example: 'Easing examples are <code>easeSinOut</code>, <code>easeElastic</code>, <code>easeBounceOut</code>'
+                    example: '<code>ease: "easeBounceOut"</code>'
                 },
                 curve: {
                     required: false,
@@ -237,14 +240,17 @@ export default {
 
     &__type {
         color: #41b882;
+        font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
     }
 
     &__required {
         color: #dc1313;
+        font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
     }
 
     &__nonrequired {
         color: #585858;
+        font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
     }
 
     &__table {
@@ -256,7 +262,10 @@ export default {
             width: 76px;
             font-size: 12px;
             text-transform: uppercase;
-            opacity: 0.4;
+            opacity: 0.6;
+        }
+        pre {
+            margin: 0 !important;
         }
     }
 }

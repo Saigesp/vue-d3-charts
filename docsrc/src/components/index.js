@@ -18,3 +18,4 @@ Vue.component('ChartTitleComponent',                require('./ChartTitleCompone
 Vue.component('SlopeChartExampleBasic',             require('./examples/SlopeChartExampleBasic').default);
 Vue.component('SlopeChartExampleHighlight',         require('./examples/SlopeChartExampleHighlight').default);
 Vue.component('SlopeChartExampleColors',            require('./examples/SlopeChartExampleColors').default);
+Vue.component('SlopeChartExampleDataUpdate',        require('./examples/SlopeChartExampleDataUpdate').default);

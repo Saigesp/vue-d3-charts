@@ -1,7 +1,7 @@
 <template>
     <section class="code">
       <h3>Import</h3>
-      <pre><code>{{chartcode}}</code></pre>
+      <div v-highlight><pre class="language-js"><code>{{chartcode}}</code></pre></div>
       <p v-if="link" class="note">See chart's code on <a :href="link">GitHub</a>.</p>
     </section>
 </template>

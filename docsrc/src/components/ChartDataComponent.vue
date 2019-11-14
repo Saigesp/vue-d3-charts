@@ -2,7 +2,7 @@
   <section class="code">
     <h3>Data format</h3>
     <p><span v-html="desc"></span>. Fields can be changed in configuration. Example:</p>
-    <pre><code>{{code}}</code></pre>
+    <div v-highlight><pre class="language-js"><code>{{code}}</code></pre></div>
     <p class="note">To work with this data, configuration must be <span v-html="config"></span>.</p>
   </section>
 </template>

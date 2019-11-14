@@ -162,8 +162,9 @@ class d3slopechart {
     * Add new data elements
     */
     enterData(data){
-        this.data = this.data.concat(data)
-        this.updateChart()
+        this.data = this.data.concat(data);
+        this.setColorScales();
+        this.updateChart();
     }
 
     /**
@@ -171,7 +172,8 @@ class d3slopechart {
     */
     updateData(data){
         this.data = [...data];
-        this.updateChart()
+        this.setColorScales();
+        this.updateChart();
     }
 
     /**
@@ -186,8 +188,9 @@ class d3slopechart {
             if(c == Object.keys(filter).length){
                 this.data.splice(i,1)
             }
-        })
-        this.updateChart()
+        });
+        this.setColorScales();
+        this.updateChart();
     }
 
     /**
@@ -202,19 +205,35 @@ class d3slopechart {
     * Set up scales
     */
     setScales(){
+        this.setDimensionScales();
+        this.setColorScales();
+    }
+
+    /**
+    * Set up dimensional scales
+    */
+    setDimensionScales(){
         this.yScale
             .rangeRound([this.cfg.height, 0])
             .domain([
                 d3.min(this.data, d => d[this.cfg.values[0]] < d[this.cfg.values[1]] ? d[this.cfg.values[0]]*0.9 : d[this.cfg.values[1]]*0.9 ),
                 d3.max(this.data, d => d[this.cfg.values[0]] > d[this.cfg.values[1]] ? d[this.cfg.values[0]]*1.1 : d[this.cfg.values[1]]*1.1 )
             ]);
+    }
 
+    /**
+    * Set up color scales
+    */
+    setColorScales(){
         // Set up color scheme
         if(this.cfg.color.scheme){
             if(this.cfg.color.scheme instanceof Array === true){
-                this.colorScale = d3.scaleOrdinal().range(this.cfg.color.scheme)
+                this.colorScale = d3.scaleOrdinal()
+                    .domain(this.data.map(d=>d[this.cfg.key]))
+                    .range(this.cfg.color.scheme);
             }else{
-                this.colorScale = d3.scaleOrdinal(d3[this.cfg.color.scheme]);
+                this.colorScale = d3.scaleOrdinal(d3[this.cfg.color.scheme])
+                    .domain(this.data.map(d=>d[this.cfg.key]));
             }
         }
     }

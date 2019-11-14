@@ -964,6 +964,7 @@ d3slopechart.prototype.getData = function getData (){
 */
 d3slopechart.prototype.enterData = function enterData (data){
     this.data = this.data.concat(data);
+    this.setColorScales();
     this.updateChart();
 };
 
@@ -972,6 +973,7 @@ d3slopechart.prototype.enterData = function enterData (data){
 */
 d3slopechart.prototype.updateData = function updateData (data){
     this.data = [].concat( data );
+    this.setColorScales();
     this.updateChart();
 };
 
@@ -990,6 +992,7 @@ d3slopechart.prototype.exitData = function exitData (filter){
             this$1.data.splice(i,1);
         }
     });
+    this.setColorScales();
     this.updateChart();
 };
 
@@ -1005,6 +1008,14 @@ d3slopechart.prototype.setDimensions = function setDimensions (){
 * Set up scales
 */
 d3slopechart.prototype.setScales = function setScales (){
+    this.setDimensionScales();
+    this.setColorScales();
+};
+
+/**
+* Set up dimensional scales
+*/
+d3slopechart.prototype.setDimensionScales = function setDimensionScales (){
         var this$1 = this;
 
     this.yScale
@@ -1013,13 +1024,23 @@ d3slopechart.prototype.setScales = function setScales (){
             d3$2.min(this.data, function (d) { return d[this$1.cfg.values[0]] < d[this$1.cfg.values[1]] ? d[this$1.cfg.values[0]]*0.9 : d[this$1.cfg.values[1]]*0.9; } ),
             d3$2.max(this.data, function (d) { return d[this$1.cfg.values[0]] > d[this$1.cfg.values[1]] ? d[this$1.cfg.values[0]]*1.1 : d[this$1.cfg.values[1]]*1.1; } )
         ]);
+};
+
+/**
+* Set up color scales
+*/
+d3slopechart.prototype.setColorScales = function setColorScales (){
+        var this$1 = this;
 
     // Set up color scheme
     if(this.cfg.color.scheme){
         if(this.cfg.color.scheme instanceof Array === true){
-            this.colorScale = d3$2.scaleOrdinal().range(this.cfg.color.scheme);
+            this.colorScale = d3$2.scaleOrdinal()
+                .domain(this.data.map(function (d){ return d[this$1.cfg.key]; }))
+                .range(this.cfg.color.scheme);
         }else{
-            this.colorScale = d3$2.scaleOrdinal(d3$2[this.cfg.color.scheme]);
+            this.colorScale = d3$2.scaleOrdinal(d3$2[this.cfg.color.scheme])
+                .domain(this.data.map(function (d){ return d[this$1.cfg.key]; }));
         }
     }
 };

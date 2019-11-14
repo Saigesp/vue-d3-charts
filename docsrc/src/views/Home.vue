@@ -3,7 +3,7 @@
 
     <section class="code">
       <h2>Install</h2>
-      <pre class="align-center"><code>npm i d3-vue-charts --save</code></pre>
+      <div v-highlight><pre class="language-shell align-center"><code>npm i d3-vue-charts --save</code></pre></div>
     </section>
 
     <section class="chart">
@@ -18,15 +18,17 @@
     <section class="code">
       <h2>How to use</h2>
       <p>First import your desired charts:</p>
-      <pre><code>import {D3BarChart} from 'vue-d3-charts'</code></pre>
+      <div v-highlight><pre class="language-javascript"><code>import {D3BarChart} from 'vue-d3-charts'</code></pre></div>
       <p>And then use it on your project, passing them a configuratioin object and a data array:</p>
-      <pre><code>{{bartext}}</code></pre>
+      <div v-highlight><pre class="language-html"><code>{{bartext}}</code></pre></div>
       <p>Each chart has it's own configuration options. For example, the <strong>bar chart</strong> has these:</p>
-      <pre><code>chart_config = {
+      <div v-highlight>
+        <pre class="language-javascript"><code>chart_config = {
   key: 'name',
   value: 'production',
   color: 'steelblue',
 }</code></pre>
+      </div>
     </section>
 
     <ChartIndexComponent/>
@@ -37,7 +39,8 @@
       
       <h4>Data update</h4>
       <p>Simply change your binding data as you want:</p>
-      <pre><code>import {D3SlopeChart} from 'vue-d3-charts'
+      <div v-highlight>
+        <pre class="language-javascript"><code>import {D3SlopeChart} from 'vue-d3-charts'
 
 export default {
   name: 'my-component',
@@ -67,14 +70,15 @@ export default {
 
   }
 }</code></pre>
+        </div>
 
       <h4>Title</h4>
       <p>Set up a title (top text) on the component</p>
-      <pre><code>{{titlechart}}</code></pre>
+      <div v-highlight><pre class="language-html"><code>{{titlechart}}</code></pre></div>
 
       <h4>Source</h4>
       <p>Set up a source (bottom text) on the component</p>
-      <pre><code>{{sourcechart}}</code></pre>
+      <div v-highlight><pre class="language-html"><code>{{sourcechart}}</code></pre></div>
 
     </section>
 

@@ -24,6 +24,7 @@
       <SlopeChartExampleBasic/>
       <SlopeChartExampleHighlight/>
       <SlopeChartExampleColors/>
+      <SlopeChartExampleDataUpdate/>
     </section>
 
   </div>
