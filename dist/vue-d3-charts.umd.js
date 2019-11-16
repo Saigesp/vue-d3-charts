@@ -1,36 +1,22 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('vue'), require('d3-selection'), require('d3-scale'), require('d3-array'), require('d3-axis'), require('d3-time-format'), require('d3-shape'), require('d3-transition'), require('d3-ease'), require('d3-scale-chromatic')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'vue', 'd3-selection', 'd3-scale', 'd3-array', 'd3-axis', 'd3-time-format', 'd3-shape', 'd3-transition', 'd3-ease', 'd3-scale-chromatic'], factory) :
-    (global = global || self, factory(global.D3BarChart = {}, global.Vue, global.d3Selection, global.d3Scale, global.d3Array, global.d3Axis, global.d3TimeFormat, global.d3Shape, global.d3Transition, global.d3Ease, global.d3ScaleChromatic));
-}(this, (function (exports, Vue, d3Selection, d3Scale, d3Array, d3Axis, d3TimeFormat, d3Shape, d3Transition, d3Ease, d3ScaleChromatic) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('vue'), require('d3-selection'), require('d3-scale'), require('d3-array'), require('d3-transition'), require('d3-axis'), require('d3-ease'), require('d3-scale-chromatic'), require('d3-time-format'), require('d3-shape')) :
+    typeof define === 'function' && define.amd ? define(['exports', 'vue', 'd3-selection', 'd3-scale', 'd3-array', 'd3-transition', 'd3-axis', 'd3-ease', 'd3-scale-chromatic', 'd3-time-format', 'd3-shape'], factory) :
+    (global = global || self, factory(global.D3BarChart = {}, global.Vue, global.d3Selection, global.d3Scale, global.d3Array, global.d3Transition, global.d3Axis, global.d3Ease, global.d3ScaleChromatic, global.d3TimeFormat, global.d3Shape));
+}(this, (function (exports, Vue, d3Selection, d3Scale, d3Array, d3Transition, d3Axis, d3Ease, d3ScaleChromatic, d3TimeFormat, d3Shape) { 'use strict';
 
     Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
 
-    var d3 = {
-        select: d3Selection.select, selectAll: d3Selection.selectAll,
-        scaleBand: d3Scale.scaleBand, scaleLinear: d3Scale.scaleLinear,
-        max: d3Array.max,
-        axisBottom: d3Axis.axisBottom, axisLeft: d3Axis.axisLeft,
-    };
+    var d3 = {select: d3Selection.select};
 
-    var d3barchart = function d3barchart(selection, data, config) {
+    /**
+    * D3 Chart Base
+    */
+    var d3chart = function d3chart(selection, data, config, cfg) {
         var this$1 = this;
-        if ( config === void 0 ) config = {};
 
         this.selection = d3.select(selection);
         this.data = data;
-
-        // Default configuration
-        this.cfg = {
-            margin: {top: 10, right: 30, bottom: 20, left: 40},
-            key: 'key',
-            value: 'value',
-            labelRotation: 0,
-            color: 'steelblue',
-            yAxis: '',
-            yScaleTicks: 5,
-            yScaleFormat: '.0f',
-        };
+        this.cfg = cfg;
 
         // Set up configuration
         Object.keys(config).forEach(function (key){
@@ -41,178 +27,438 @@
             } else { this$1.cfg[key] = config[key]; }
         });
 
-        // Set up dimensions
+        // Resize listener
+        this.onResize = function () {this$1.resizeChart();};
+        window.addEventListener("resize", this.onResize);
+
+        this.initChart();
+    };
+
+    /**
+    * Init chart
+    */
+    d3chart.prototype.initChart = function initChart (){
+        console.error('d3chart.initChart not implemented');
+    };
+
+    /**
+    * Resize chart pipe
+    */
+    d3chart.prototype.setScales = function setScales (){
+        console.error('d3chart.setScales not implemented');
+    };
+
+    /**
+    * Set chart dimensional sizes
+    */
+    d3chart.prototype.setChartDimension = function setChartDimension (){
+        console.error('d3chart.setChartDimension not implemented');
+    };
+
+    /**
+    * Bind data to main elements groups
+    */
+    d3chart.prototype.bindData = function bindData (){
+        console.error('d3.chart.bindData not implemented');
+    };
+
+    /**
+    * Add new chart's elements
+    */
+    d3chart.prototype.enterElements = function enterElements (){
+        console.error('d3.chart.enterElements not implemented');
+    };
+
+    /**
+    * Update chart's elements based on data change
+    */
+    d3chart.prototype.updateElements = function updateElements (){
+        console.error('d3.chart.updateElements not implemented');
+    };
+
+    /**
+    * Remove chart's elements without data
+    */
+    d3chart.prototype.exitElements = function exitElements (){
+        console.error('d3.chart.exitElements not implemented');
+    };
+
+
+    /**
+    * Set up chart dimensions
+    */
+    d3chart.prototype.getDimensions = function getDimensions (){
         this.cfg.width = parseInt(this.selection.node().offsetWidth) - this.cfg.margin.left - this.cfg.margin.right;
         this.cfg.height = parseInt(this.selection.node().offsetHeight)- this.cfg.margin.top - this.cfg.margin.bottom;
-
-        // Set up scales domain
-        this.xScale = d3.scaleBand().rangeRound([0, this.cfg.width]).padding(0.1);
-        this.yScale = d3.scaleLinear().rangeRound([0, this.cfg.height]);
-
-        // Resize listener
-        this.redraw = function () {
-            this$1.draw();
-        };
-        window.addEventListener("resize", this.redraw);
-
-        this.initGraph();
     };
-    d3barchart.prototype.initGraph = function initGraph () {
+
+    /**
+    * Returns chart's data
+    */
+    d3chart.prototype.getData = function getData (){
+        return this.data;
+    };
+
+    /**
+    * Add new data elements
+    */
+    d3chart.prototype.enterData = function enterData (data){
+        this.data = this.data.concat(data);
+        this.setScales();
+        this.updateChart();
+    };
+
+    /**
+    * Update existing data elements
+    */
+    d3chart.prototype.updateData = function updateData (data){
+        this.data = [].concat( data );
+        this.setScales();
+        this.updateChart();
+    };
+
+    /**
+    * Compute data before operate
+    */
+    d3chart.prototype.computeData = function computeData (){
+    };
+
+    /**
+    * Remove data elements
+    */
+    d3chart.prototype.exitData = function exitData (filter){
             var this$1 = this;
 
+        this.data.forEach(function (d,i) {
+            var c = 0;
+            Object.keys(filter).forEach(function (key) {
+                if(filter[key] == d[key]) { c++; }
+            });
+            if(c == Object.keys(filter).length){
+                this$1.data.splice(i,1);
+            }
+        });
+        this.setScales();
+        this.updateChart();
+    };
 
-        this.xScale.domain(this.data.map(function (d){ return d[this$1.cfg.key]; } ));
-        this.yScale.domain([d3.max(this.data, function (d){ return +d[this$1.cfg.value]; }),0]);
+    /**
+    * Init chart commons elements (div > svg > g; tooltip)
+    */
+    d3chart.prototype.initChartFrame = function initChartFrame (classname){
+            if ( classname === void 0 ) classname='undefined';
 
         // Wrapper div
         this.wrap = this.selection.append('div') 
-            .attr("class", "chart__wrap chart__wrap--barchart");
+            .attr("class", "chart__wrap chart__wrap--"+classname);
 
         // SVG element
         this.svg = this.wrap.append('svg')
-            .attr("class", "chart chart--barchart")
-            .attr("width", this.cfg.width + this.cfg.margin.left + this.cfg.margin.right)
-            .attr("height", this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom);
+            .attr("class", "chart chart--"+classname);
 
         // General group for margin convention
         this.g = this.svg.append("g")
-            .attr('class', 'chart__margin-wrap')
+            .attr("class", "chart__margin-wrap chart__margin-wrap--"+classname)
             .attr("transform", ("translate(" + (this.cfg.margin.left) + "," + (this.cfg.margin.top) + ")"));
+
+        // Tooltip
+        this.selection.selectAll('.chart__tooltip').remove();
+        this.tooltip = this.wrap
+            .append('div')
+            .attr('class', "chart__tooltip chart__tooltip--"+classname);
+    };
+
+    /**
+    * Compute element color
+    */
+    d3chart.prototype.colorElement = function colorElement (d, key) {
+            if ( key === void 0 ) key=undefined;
+
+        key = key ? key : this.cfg.key;
+
+        // if key is set, return own object color key
+        if(this.cfg.color.key) { return d[this.cfg.color.key]; }
+
+        // base color is default one if current key is set, else current one
+        var baseColor = this.cfg.currentKey
+            ? this.cfg.color.default
+            : this.cfg.color.current;
+
+        // if scheme is set, base color is color scheme
+        if(this.cfg.color.scheme){
+            baseColor = this.colorScale(d[key]);
+        }
+
+        // if keys is an object, base color is color key if exists
+        if(this.cfg.color.keys
+            && this.cfg.color.keys instanceof Object
+            && this.cfg.color.keys instanceof Array === false
+            && this.cfg.color.keys[d[key]]){
+            baseColor = this.cfg.color.keys[d[key]];
+        }
+
+        // if current key is set and key is current, base color is current
+        if(this.cfg.currentKey && d[this.cfg.key] === this.cfg.currentKey){
+            baseColor = this.cfg.color.current;
+        }
+
+        return baseColor;
+    };
+
+    /**
+    * Update chart methods
+    */
+    d3chart.prototype.updateChart = function updateChart (){
+        this.computeData();
+        this.setScales();
+        this.bindData();
+        this.enterElements();
+        this.updateElements();
+        this.exitElements();
+    };
+
+    /**
+    * Resize chart methods
+    */
+    d3chart.prototype.resizeChart = function resizeChart (){
+        this.getDimensions();
+        this.setScales();
+        this.setChartDimension();
+        this.updateChart();
+    };
+
+    /**
+    * Destroy chart methods
+    */
+    d3chart.prototype.destroyChart = function destroyChart (){
+        window.removeEventListener("resize", this.onResize);
+    };
+
+    var d3$1 = {
+      select: d3Selection.select, selectAll: d3Selection.selectAll,
+      scaleBand: d3Scale.scaleBand, scaleLinear: d3Scale.scaleLinear, scaleOrdinal: d3Scale.scaleOrdinal,
+      max: d3Array.max,
+      transition: d3Transition.transition,
+      axisBottom: d3Axis.axisBottom, axisLeft: d3Axis.axisLeft,
+      easeLinear: d3Ease.easeLinear, easePolyIn: d3Ease.easePolyIn, easePolyOut: d3Ease.easePolyOut, easePoly: d3Ease.easePoly, easePolyInOut: d3Ease.easePolyInOut,
+      easeQuadIn: d3Ease.easeQuadIn, easeQuadOut: d3Ease.easeQuadOut, easeQuad: d3Ease.easeQuad, easeQuadInOut: d3Ease.easeQuadInOut, easeCubicIn: d3Ease.easeCubicIn, easeCubicOut: d3Ease.easeCubicOut,
+      easeCubic: d3Ease.easeCubic, easeCubicInOut: d3Ease.easeCubicInOut, easeSinIn: d3Ease.easeSinIn, easeSinOut: d3Ease.easeSinOut, easeSin: d3Ease.easeSin, easeSinInOut: d3Ease.easeSinInOut,
+      easeExpIn: d3Ease.easeExpIn, easeExpOut: d3Ease.easeExpOut, easeExp: d3Ease.easeExp, easeExpInOut: d3Ease.easeExpInOut, easeCircleIn: d3Ease.easeCircleIn, easeCircleOut: d3Ease.easeCircleOut,
+      easeCircle: d3Ease.easeCircle, easeCircleInOut: d3Ease.easeCircleInOut, easeElasticIn: d3Ease.easeElasticIn, easeElastic: d3Ease.easeElastic, easeElasticOut: d3Ease.easeElasticOut,
+      easeElasticInOut: d3Ease.easeElasticInOut, easeBackIn: d3Ease.easeBackIn, easeBackOut: d3Ease.easeBackOut, easeBack: d3Ease.easeBack, easeBackInOut: d3Ease.easeBackInOut, easeBounceIn: d3Ease.easeBounceIn,
+      easeBounce: d3Ease.easeBounce, easeBounceOut: d3Ease.easeBounceOut, easeBounceInOut: d3Ease.easeBounceInOut,
+      schemeCategory10: d3ScaleChromatic.schemeCategory10, schemeAccent: d3ScaleChromatic.schemeAccent, schemeDark2: d3ScaleChromatic.schemeDark2, schemePaired: d3ScaleChromatic.schemePaired, schemePastel1: d3ScaleChromatic.schemePastel1,
+      schemePastel2: d3ScaleChromatic.schemePastel2, schemeSet1: d3ScaleChromatic.schemeSet1, schemeSet2: d3ScaleChromatic.schemeSet2, schemeSet3: d3ScaleChromatic.schemeSet3, schemeTableau10: d3ScaleChromatic.schemeTableau10
+    };
+
+    /**
+     * D3 Bar Chart
+     */
+    var d3barchart = /*@__PURE__*/(function (d3chart) {
+      function d3barchart(selection, data, config) {
+        d3chart.call(this, selection, data, config, {
+          margin: { top: 10, right: 30, bottom: 20, left: 40 },
+          key: 'key',
+          currentKey: false,
+          value: 'value',
+          labelRotation: 0,
+          color: { key: false, keys: false, scheme: false, current: "#1f77b4", default: "#AAA", axis: "#000" },
+          axis: { yTitle: false, xTitle: false, yFormat: ".0f", xFormat: ".0f", yTicks: 10, xTicks: 10 },
+          tooltip: { label: false },
+          transition: { duration: 350, ease: "easeLinear" },
+        });
+      }
+
+      if ( d3chart ) d3barchart.__proto__ = d3chart;
+      d3barchart.prototype = Object.create( d3chart && d3chart.prototype );
+      d3barchart.prototype.constructor = d3barchart;
+
+      /**
+       * Init chart
+       */
+      d3barchart.prototype.initChart = function initChart () {
+
+        // Set up dimensions
+        this.getDimensions();
+        this.initChartFrame('barchart');
+
+        // Set up scales
+        this.xScale = d3$1.scaleBand();
+        this.yScale = d3$1.scaleLinear();
+
+        // Set up scales
+        this.xScale = d3$1.scaleBand();
+        this.yScale = d3$1.scaleLinear();
 
         // Axis group
         this.axisg = this.g.append('g')
             .attr('class', 'chart__axis chart__axis--barchart');
 
         // Horizontal grid
-        this.yGrid = this.axisg.append("g")           
-            .attr("class", "chart__grid chart__grid--y chart__grid--barchart")
-            .call(
-                this.make_y_gridlines()
-                    .tickSize(-this.cfg.width)
-                    .ticks(this.cfg.yScaleTicks, this.cfg.yScaleFormat)
-                );
-
-        // Vertical axis title
-        if(this.cfg.yAxis)
-        { this.yAxisTitle = this.axisg.append('text')
-            .attr('class', 'chart__axis-title chart__axis-title--barchart')
-            .attr("y", -this.cfg.margin.left+10)
-            .attr("x", -this.cfg.height/2)
-            .attr("transform", 'rotate(-90)')
-            .style("text-anchor", "middle")
-            .text(this.cfg.yAxis); }
+        this.yGrid = this.axisg.append("g")
+            .attr("class", "chart__grid chart__grid--y chart__grid--barchart");
 
         // Bottom axis
         this.xAxis = this.axisg.append("g")
-            .attr("class", "chart__axis-x chart__axis-x--barchart")
-            .attr("transform", "translate(0," + this.cfg.height + ")")
-            .call(d3.axisBottom(this.xScale));
+            .attr("class", "chart__axis-x chart__axis-x--barchart");
+
+        // Vertical axis title
+        if (this.cfg.axis.yTitle)
+            { this.yAxisTitle = this.axisg.append('text')
+            .attr('class', 'chart__axis-title chart__axis-title--barchart')
+            .attr("transform", 'rotate(-90)')
+            .style("text-anchor", "middle"); }
+
+        this.setChartDimension();
+        this.updateChart();
+      };
+
+      /**
+       * Resize chart pipe
+       */
+      d3barchart.prototype.setScales = function setScales () {
+        var this$1 = this;
+
+
+        this.xScale
+          .rangeRound([0, this.cfg.width])
+          .padding(0.1)
+          .domain(this.data.map(function (d) { return d[this$1.cfg.key]; }));
+
+        this.yScale
+          .rangeRound([0, this.cfg.height])
+          .domain([d3$1.max(this.data, function (d) { return +d[this$1.cfg.value]; }), 0]);
+
+        if (this.cfg.color.scheme instanceof Array === true) {
+          this.colorScale = d3$1.scaleOrdinal().range(this.cfg.color.scheme);
+        } else if (typeof this.cfg.color.scheme === 'string') {
+          this.colorScale = d3$1.scaleOrdinal(d3$1[this.cfg.color.scheme]);
+        }
+
+        // Horizontal grid
+        this.yGrid
+          .call(
+            d3$1.axisLeft(this.yScale)
+              .tickSize(-this.cfg.width)
+              .ticks(this.cfg.axis.yTicks, this.cfg.axis.yFormat)
+          );
+
+        // Bottom axis
+        this.xAxis
+            .attr("transform", ("translate(0," + (this.cfg.height) + ")"))
+            .call(d3$1.axisBottom(this.xScale));
+      };
+
+      /**
+       * Set chart dimensional sizes
+       */
+      d3barchart.prototype.setChartDimension = function setChartDimension () {
+        // SVG element
+        this.svg
+          .attr("viewBox", ("0 0 " + (this.cfg.width + this.cfg.margin.left + this.cfg.margin.right) + " " + (this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom)))
+          .attr("width", this.cfg.width + this.cfg.margin.left + this.cfg.margin.right)
+          .attr("height", this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom);
+
+        // Vertical axis title
+        if (this.cfg.axis.yTitle)
+          { this.yAxisTitle
+            .attr("y", -this.cfg.margin.left + 10)
+            .attr("x", -this.cfg.height / 2)
+            .text(this.cfg.axis.yTitle); }
 
         // Bottom axis label rotation
         if(this.cfg.labelRotation!=0)
-        { this.xAxis.selectAll('text')
+          { this.xAxis.selectAll('text')
             .attr("y", Math.cos(this.cfg.labelRotation*Math.PI/180)*9)
             .attr("x", Math.sin(this.cfg.labelRotation*Math.PI/180)*9)
             .attr("dy", ".35em")
             .attr("transform", ("rotate(" + (this.cfg.labelRotation) + ")"))
             .style("text-anchor", "start"); }
+      };
 
-        // Tooltip
-        this.selection.selectAll('.chart__tooltip').remove();
-        this.tooltip = this.wrap
-            .append('div')
-            .attr('class', 'chart__tooltip chart__tooltip--barchart');
+      /**
+       * Bind data to main elements groups
+       */
+      d3barchart.prototype.bindData = function bindData () {
 
-        // Bars groups
-        this.itemg = this.g.selectAll('.itemgroup')
-            .data(this.data)
-            .enter().append('g')
-            .attr('class', 'itemgroup')
-            .attr('transform', function (d, i) { return ("translate(" + (this$1.xScale(d[this$1.cfg.key])) + ",0)"); });
-
-        // Bars
-        this.rects = this.itemg.append('rect')
-            .attr('x', 0)
-            .attr('y', function (d, i) { return this$1.yScale(+d[this$1.cfg.value]); })
-            .attr('width', this.xScale.bandwidth())
-            .attr('height', function (d) { return this$1.cfg.height - this$1.yScale(+d[this$1.cfg.value]); })
-            .attr('fill', function (d) {
-                return !this$1.cfg.currentkey || d[this$1.cfg.key] == this$1.cfg.currentkey ? this$1.cfg.color : this$1.cfg.greycolor;
-            })
-            .on('mouseover', function (d) {
-                this$1.tooltip.html(function () {
-                    return ("\n                        <div>" + (d[this$1.cfg.key]) + ": " + (d[this$1.cfg.value]) + "</div>\n                    ")
-                })
-                .classed('active', true);
-            })
-            .on('mouseout', function () {
-                this$1.tooltip.classed('active', false);
-            })
-            .on('mousemove', function () {
-                this$1.tooltip
-                    .style('left', window.event['pageX'] - 28 + 'px')
-                    .style('top', window.event['pageY'] - 40 + 'px');
-            });
-    };
-
-    d3barchart.prototype.draw = function draw (){
-            var this$1 = this;
-
-        // Get dimensions
-        this.cfg.width = parseInt(this.selection.node().offsetWidth) - this.cfg.margin.left - this.cfg.margin.right;
-        this.cfg.height = parseInt(this.selection.node().offsetHeight)- this.cfg.margin.top - this.cfg.margin.bottom;
-
-        // Set up scales
-        this.xScale.rangeRound([0, this.cfg.width]);
-        this.yScale.rangeRound([0, this.cfg.height]);
-
-        // SVG element
-        this.svg
-            .attr("viewBox", ("0 0 " + (this.cfg.width + this.cfg.margin.left + this.cfg.margin.right) + " " + (this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom)))
-            .attr("width", this.cfg.width + this.cfg.margin.left + this.cfg.margin.right)
-            .attr("height", this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom);
-
-        // Horizontal grid
-        this.yGrid
-            .call(
-                this.make_y_gridlines()
-                    .tickSize(-this.cfg.width)
-                    .ticks(this.cfg.yScaleTicks, this.cfg.yScaleFormat)
-            );
-            
-        // Bottom axis
-        this.xAxis
-            .attr("transform", ("translate(0," + (this.cfg.height) + ")"))
-            .call(d3.axisBottom(this.xScale));
-
-        // Vertical axis title
-        if(this.cfg.yAxis)
-        { this.yAxisTitle
-            .attr("x", -this.cfg.height/2); }
+        // Set transition
+        this.transition = d3$1.transition('t')
+          .duration(this.cfg.transition.duration)
+          .ease(d3$1[this.cfg.transition.ease]);
 
         // Bars groups
-        this.itemg.attr('transform', function (d) { return ("translate(" + (this$1.xScale(d[this$1.cfg.key])) + ",0)"); });
+        this.itemg = this.g.selectAll('.chart__bar-group')
+          .data(this.data);
+      };
+
+      /**
+       * Add new chart's elements
+       */
+      d3barchart.prototype.enterElements = function enterElements () {
+        var this$1 = this;
+
+
+        var newbars = this.itemg
+          .enter().append('g')
+          .attr('class', 'chart__bar-group chart__bar-group--barchart')
+          .attr('transform', function (d) { return ("translate(" + (this$1.xScale(d[this$1.cfg.key])) + ",0)"); });
+          
+        var rects = newbars.append('rect')
+          .attr('class', 'chart__bar chart__bar--barchart')
+          .classed('chart__bar--current', function (d) { return this$1.cfg.currentKey && d[this$1.cfg.key] == this$1.cfg.currentKey; })
+          .attr('x', 0)
+          .attr('y', this.cfg.height)
+          .attr('height', 0)
+          .on('mouseover', function (d) {
+            this$1.tooltip.html(function () {
+              return ("<div>" + (d[this$1.cfg.key]) + ": " + (d[this$1.cfg.value]) + "</div>")
+            })
+            .classed('active', true);
+          })
+          .on('mouseout', function () {
+            this$1.tooltip.classed('active', false);
+          })
+          .on('mousemove', function () {
+            this$1.tooltip
+              .style('left', window.event['pageX'] - 28 + 'px')
+              .style('top', window.event['pageY'] - 40 + 'px');
+          });
+
+      };
+
+      /**
+       * Update chart's elements based on data change
+       */
+      d3barchart.prototype.updateElements = function updateElements () {
+        var this$1 = this;
+
+        // Bars groups
+        this.itemg
+          .attr('transform', function (d) { return ("translate(" + (this$1.xScale(d[this$1.cfg.key])) + ",0)"); });
 
         // Bars
-        this.rects
-            .attr('width', this.xScale.bandwidth())
-            .attr('y', function (d) { return this$1.yScale(+d[this$1.cfg.value]); })
-            .attr('height', function (d) { return this$1.cfg.height - this$1.yScale(+d[this$1.cfg.value]); } );
-    };
+        this.g
+          .selectAll('.chart__bar')
+          .attr('width', this.xScale.bandwidth())
+          .attr('fill', function (d) { return this$1.colorElement(d); })
+          .transition(this.transition)
+          .attr('y', function (d) { return this$1.yScale(+d[this$1.cfg.value]); })
+          .attr('height', function (d) { return this$1.cfg.height - this$1.yScale(+d[this$1.cfg.value]); });
 
-    // Gridlines in x axis function
-    d3barchart.prototype.make_x_gridlines = function make_x_gridlines () {       
-        return d3.axisBottom(this.xScale);
-    };
+      };
 
-    // Gridlines in y axis function
-    d3barchart.prototype.make_y_gridlines = function make_y_gridlines () {       
-        return d3.axisLeft(this.yScale);
-    };
+      /**
+       * Remove chart's elements without data
+       */
+      d3barchart.prototype.exitElements = function exitElements () {
+        this.itemg.exit()
+          .transition(this.transition)
+          .style("opacity", 0)
+          .remove();
+      };
 
-    d3barchart.prototype.destroyChart = function destroyChart (){
-        window.removeEventListener("resize", this.redraw);
-    };
+      return d3barchart;
+    }(d3chart));
 
     //
 
@@ -432,248 +678,6 @@
         undefined
       );
 
-    var d3$1 = {select: d3Selection.select};
-
-    /**
-    * D3 Chart Base
-    */
-    var d3chart = function d3chart(selection, data, config, cfg) {
-        var this$1 = this;
-
-        this.selection = d3$1.select(selection);
-        this.data = data;
-        this.cfg = cfg;
-
-        // Set up configuration
-        Object.keys(config).forEach(function (key){
-            if(config[key] instanceof Object && config[key] instanceof Array === false){
-                Object.keys(config[key]).forEach(function (sk){
-                    this$1.cfg[key][sk] = config[key][sk];
-                });
-            } else { this$1.cfg[key] = config[key]; }
-        });
-
-        // Resize listener
-        this.onResize = function () {this$1.resizeChart();};
-        window.addEventListener("resize", this.onResize);
-
-        this.initChart();
-    };
-
-    /**
-    * Init chart
-    */
-    d3chart.prototype.initChart = function initChart (){
-        console.error('d3chart.initChart not implemented');
-    };
-
-    /**
-    * Update chart pipe
-    */
-    d3chart.prototype.updateChart = function updateChart (){
-        console.error('d3chart.updateChart not implemented');
-    };
-
-    /**
-    * Resize chart pipe
-    */
-    d3chart.prototype.resizeChart = function resizeChart (){
-        console.error('d3chart.resizeChart not implemented');
-    };
-
-    /**
-    * Resize chart pipe
-    */
-    d3chart.prototype.setScales = function setScales (){
-        console.error('d3chart.setScales not implemented');
-    };
-
-    /**
-    * Set chart dimensional sizes
-    */
-    d3chart.prototype.setChartDimension = function setChartDimension (){
-        console.error('d3chart.setChartDimension not implemented');
-    };
-
-    /**
-    * Bind data to main elements groups
-    */
-    d3chart.prototype.bindData = function bindData (){
-        console.error('d3.chart.bindData not implemented');
-    };
-
-    /**
-    * Add new chart's elements
-    */
-    d3chart.prototype.enterElements = function enterElements (){
-        console.error('d3.chart.enterElements not implemented');
-    };
-
-    /**
-    * Update chart's elements based on data change
-    */
-    d3chart.prototype.updateElements = function updateElements (){
-        console.error('d3.chart.updateElements not implemented');
-    };
-
-    /**
-    * Remove chart's elements without data
-    */
-    d3chart.prototype.exitElements = function exitElements (){
-        console.error('d3.chart.exitElements not implemented');
-    };
-
-
-    /**
-    * Set up chart dimensions
-    */
-    d3chart.prototype.getDimensions = function getDimensions (){
-        this.cfg.width = parseInt(this.selection.node().offsetWidth) - this.cfg.margin.left - this.cfg.margin.right;
-        this.cfg.height = parseInt(this.selection.node().offsetHeight)- this.cfg.margin.top - this.cfg.margin.bottom;
-    };
-
-    /**
-    * Returns chart's data
-    */
-    d3chart.prototype.getData = function getData (){
-        return this.data;
-    };
-
-    /**
-    * Add new data elements
-    */
-    d3chart.prototype.enterData = function enterData (data){
-        this.data = this.data.concat(data);
-        this.setScales();
-        this.updateChart();
-    };
-
-    /**
-    * Update existing data elements
-    */
-    d3chart.prototype.updateData = function updateData (data){
-        this.data = [].concat( data );
-        this.setScales();
-        this.updateChart();
-    };
-
-    /**
-    * Compute data before operate
-    */
-    d3chart.prototype.computeData = function computeData (){
-    };
-
-    /**
-    * Remove data elements
-    */
-    d3chart.prototype.exitData = function exitData (filter){
-            var this$1 = this;
-
-        this.data.forEach(function (d,i) {
-            var c = 0;
-            Object.keys(filter).forEach(function (key) {
-                if(filter[key] == d[key]) { c++; }
-            });
-            if(c == Object.keys(filter).length){
-                this$1.data.splice(i,1);
-            }
-        });
-        this.setScales();
-        this.updateChart();
-    };
-
-    /**
-    * Init chart commons elements (div > svg > g; tooltip)
-    */
-    d3chart.prototype.initChartFrame = function initChartFrame (classname){
-            if ( classname === void 0 ) classname='undefined';
-
-        // Wrapper div
-        this.wrap = this.selection.append('div') 
-            .attr("class", "chart__wrap chart__wrap--"+classname);
-
-        // SVG element
-        this.svg = this.wrap.append('svg')
-            .attr("class", "chart chart--"+classname);
-
-        // General group for margin convention
-        this.g = this.svg.append("g")
-            .attr("class", "chart__margin-wrap chart__margin-wrap--"+classname)
-            .attr("transform", ("translate(" + (this.cfg.margin.left) + "," + (this.cfg.margin.top) + ")"));
-
-        // Tooltip
-        this.selection.selectAll('.chart__tooltip').remove();
-        this.tooltip = this.wrap
-            .append('div')
-            .attr('class', "chart__tooltip chart__tooltip--"+classname);
-    };
-
-    /**
-    * Compute element color
-    */
-    d3chart.prototype.colorElement = function colorElement (d, key) {
-            if ( key === void 0 ) key=undefined;
-
-        key = key ? key : this.cfg.key;
-
-        // if key is set, return own object color key
-        if(this.cfg.color.key) { return d[this.cfg.color.key]; }
-
-        // base color is default one if current key is set, else current one
-        var baseColor = this.cfg.currentKey
-            ? this.cfg.color.default
-            : this.cfg.color.current;
-
-        // if scheme is set, base color is color scheme
-        if(this.cfg.color.scheme){
-            baseColor = this.colorScale(d[key]);
-        }
-
-        // if keys is an object, base color is color key if exists
-        if(this.cfg.color.keys
-            && this.cfg.color.keys instanceof Object
-            && this.cfg.color.keys instanceof Array === false
-            && this.cfg.color.keys[d[key]]){
-            baseColor = this.cfg.color.keys[d[key]];
-        }
-
-        // if current key is set and key is current, base color is current
-        if(this.cfg.currentKey && d[this.cfg.key] === this.cfg.currentKey){
-            baseColor = this.cfg.color.current;
-        }
-
-        return baseColor;
-    };
-
-    /**
-    * Update chart methods
-    */
-    d3chart.prototype.updateChart = function updateChart (){
-        this.computeData();
-        this.setScales();
-        this.bindData();
-        this.enterElements();
-        this.updateElements();
-        this.exitElements();
-    };
-
-    /**
-    * Resize chart methods
-    */
-    d3chart.prototype.resizeChart = function resizeChart (){
-        this.getDimensions();
-        this.setScales();
-        this.setChartDimension();
-        this.updateChart();
-    };
-
-    /**
-    * Destroy chart methods
-    */
-    d3chart.prototype.destroyChart = function destroyChart (){
-        window.removeEventListener("resize", this.onResize);
-    };
-
     var d3$2 = { select: d3Selection.select, selectAll: d3Selection.selectAll, scaleOrdinal: d3Scale.scaleOrdinal, scaleLinear: d3Scale.scaleLinear, scaleTime: d3Scale.scaleTime,
       timeParse: d3TimeFormat.timeParse, timeFormat: d3TimeFormat.timeFormat, max: d3Array.max, extent: d3Array.extent, line: d3Shape.line, transition: d3Transition.transition, axisLeft: d3Axis.axisLeft,
       axisBottom: d3Axis.axisBottom, easeLinear: d3Ease.easeLinear, easePolyIn: d3Ease.easePolyIn, easePolyOut: d3Ease.easePolyOut, easePoly: d3Ease.easePoly, easePolyInOut: d3Ease.easePolyInOut,
@@ -685,7 +689,7 @@
       easeBounce: d3Ease.easeBounce, easeBounceOut: d3Ease.easeBounceOut, easeBounceInOut: d3Ease.easeBounceInOut, curveBasis: d3Shape.curveBasis, curveBundle: d3Shape.curveBundle, curveCardinal: d3Shape.curveCardinal,
       curveCatmullRom: d3Shape.curveCatmullRom, curveLinear: d3Shape.curveLinear, curveMonotoneX: d3Shape.curveMonotoneX, curveMonotoneY: d3Shape.curveMonotoneY, curveNatural: d3Shape.curveNatural, curveStep: d3Shape.curveStep,
       curveStepAfter: d3Shape.curveStepAfter, curveStepBefore: d3Shape.curveStepBefore, schemeCategory10: d3ScaleChromatic.schemeCategory10, schemeAccent: d3ScaleChromatic.schemeAccent, schemeDark2: d3ScaleChromatic.schemeDark2, schemePaired: d3ScaleChromatic.schemePaired,
-      schemePastel1: d3ScaleChromatic.schemePastel1, schemePastel2: d3ScaleChromatic.schemePastel2, schemeSet1: d3ScaleChromatic.schemeSet1, schemeSet2: d3ScaleChromatic.schemeSet2, schemeSet3: d3ScaleChromatic.schemeSet3, schemeTableau10: d3ScaleChromatic.schemeTableau10 };
+      schemePastel1: d3ScaleChromatic.schemePastel1, schemePastel2: d3ScaleChromatic.schemePastel2, schemeSet1: d3ScaleChromatic.schemeSet1, schemeSet2: d3ScaleChromatic.schemeSet2, schemeSet3: d3ScaleChromatic.schemeSet3, schemeTableau10: d3ScaleChromatic.schemeTableau10};
 
     /**
      * D3 Line Chart
@@ -709,6 +713,9 @@
       d3linechart.prototype = Object.create( d3chart && d3chart.prototype );
       d3linechart.prototype.constructor = d3linechart;
 
+        /**
+        * Init chart
+        */
         d3linechart.prototype.initChart = function initChart () {
 
             // Set up dimensions
@@ -750,6 +757,9 @@
             this.updateChart();
         };
 
+        /**
+         * Calcule required derivated data
+         */
         d3linechart.prototype.computeData = function computeData () {
             var this$1 = this;
 
@@ -1092,8 +1102,6 @@
         if ( d3chart ) d3slopechart.__proto__ = d3chart;
         d3slopechart.prototype = Object.create( d3chart && d3chart.prototype );
         d3slopechart.prototype.constructor = d3slopechart;
-
-
 
         /**
         * Init chart

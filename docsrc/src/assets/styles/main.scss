@@ -119,6 +119,12 @@ pre {
     &__controls {
         text-align: center;
         margin-bottom: 24px;
+        input {
+            background: #f5f2f0;
+            border: 1px solid #e6e2df;
+            padding: 10px 17px;
+            margin-right: 4px;
+        }
         button {
             border: 0;
             border-radius: 60px;

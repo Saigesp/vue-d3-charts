@@ -1,25 +1,25 @@
 import d3chart from '../d3.chart'
-import { select, selectAll } from 'd3-selection'
-import { scaleOrdinal, scaleLinear, scaleTime } from 'd3-scale'
-import { timeParse, timeFormat } from 'd3-time-format'
-import { max, extent } from 'd3-array'
-import { line } from 'd3-shape'
-import { transition } from 'd3-transition'
-import { axisLeft, axisBottom } from 'd3-axis'
-import { easeLinear, easePolyIn, easePolyOut, easePoly, easePolyInOut,
+import {select, selectAll} from 'd3-selection'
+import {scaleOrdinal, scaleLinear, scaleTime} from 'd3-scale'
+import {timeParse, timeFormat} from 'd3-time-format'
+import {max, extent} from 'd3-array'
+import {line} from 'd3-shape'
+import {transition} from 'd3-transition'
+import {axisLeft, axisBottom} from 'd3-axis'
+import {easeLinear, easePolyIn, easePolyOut, easePoly, easePolyInOut,
     easeQuadIn, easeQuadOut, easeQuad, easeQuadInOut, easeCubicIn,
     easeCubicOut, easeCubic, easeCubicInOut, easeSinIn, easeSinOut,
     easeSin, easeSinInOut, easeExpIn, easeExpOut, easeExp,
     easeExpInOut, easeCircleIn, easeCircleOut, easeCircle,
     easeCircleInOut, easeElasticIn, easeElastic, easeElasticOut,
     easeElasticInOut, easeBackIn, easeBackOut, easeBack, easeBackInOut,
-    easeBounceIn, easeBounce, easeBounceOut, easeBounceInOut } from 'd3-ease'
-import { curveBasis, curveBundle, curveCardinal, curveCatmullRom,
+    easeBounceIn, easeBounce, easeBounceOut, easeBounceInOut} from 'd3-ease'
+import {curveBasis, curveBundle, curveCardinal, curveCatmullRom,
   curveLinear, curveMonotoneX, curveMonotoneY, curveNatural, curveStep,
   curveStepAfter, curveStepBefore} from 'd3-shape' // Curve variables
-import { schemeCategory10, schemeAccent, schemeDark2, schemePaired,
+import {schemeCategory10, schemeAccent, schemeDark2, schemePaired,
   schemePastel1, schemePastel2, schemeSet1, schemeSet2, schemeSet3,
-  schemeTableau10 } from 'd3-scale-chromatic'
+  schemeTableau10} from 'd3-scale-chromatic'
 
 const d3 = { select, selectAll, scaleOrdinal, scaleLinear, scaleTime,
   timeParse, timeFormat, max, extent, line, transition, axisLeft,
@@ -32,7 +32,7 @@ const d3 = { select, selectAll, scaleOrdinal, scaleLinear, scaleTime,
   easeBounce, easeBounceOut, easeBounceInOut, curveBasis, curveBundle, curveCardinal,
   curveCatmullRom, curveLinear, curveMonotoneX, curveMonotoneY, curveNatural, curveStep,
   curveStepAfter, curveStepBefore, schemeCategory10, schemeAccent, schemeDark2, schemePaired,
-  schemePastel1, schemePastel2, schemeSet1, schemeSet2, schemeSet3, schemeTableau10 }
+  schemePastel1, schemePastel2, schemeSet1, schemeSet2, schemeSet3, schemeTableau10}
 
 /**
  * D3 Line Chart
@@ -53,6 +53,9 @@ class d3linechart extends d3chart {
         });
     }
 
+    /**
+    * Init chart
+    */
     initChart() {
 
         // Set up dimensions
@@ -94,6 +97,9 @@ class d3linechart extends d3chart {
         this.updateChart();
     }
 
+    /**
+     * Calcule required derivated data
+     */
     computeData() {
         // Calcule transpose data
         const tData = [];

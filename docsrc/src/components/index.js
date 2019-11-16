@@ -22,3 +22,5 @@ Vue.component('SlopeChartExampleDataUpdate',        require('./examples/SlopeCha
 
 Vue.component('LineChartExampleBasic',              require('./examples/LineChartExampleBasic').default);
 Vue.component('LineChartExampleCustomization',      require('./examples/LineChartExampleCustomization').default);
+
+Vue.component('BarChartExampleBasic',               require('./examples/BarChartExampleBasic').default);

@@ -45,8 +45,6 @@ class d3slopechart extends d3chart{
         })
     }
 
-
-
     /**
     * Init chart
     */

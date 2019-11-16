@@ -18,6 +18,12 @@
     <ChartColorComponent></ChartColorComponent>
 
     <ChartStylesComponent classname="barchart" :elements="['bar', 'label']"></ChartStylesComponent>
+
+    <section class="chart code">
+      <h3>Examples</h3>
+      <BarChartExampleBasic/>
+    </section>
+
   </div>
 </template>
 
@@ -32,7 +38,7 @@ export default {
       chartname: 'D3BarChart',
       chartdesc: 'A bar chart presents categorical data with rectangular bars with heights proportional to the values that they represent.',
       chartcode: '<D3BarChart :config="chart_config" :datum="chart_data"></D3BarChart>',
-      chartoptions: ['margin', 'key', 'value', 'color', 'transition', 'axis', 'labelRotation', 'tooltip'],
+      chartoptions: ['margin', 'key', 'value', 'color', 'transition', 'axis', 'labelRotation', 'tooltip', 'currentKey'],
       chartcustomoptions: {
         tooltip: {
           required: false,
@@ -45,10 +51,9 @@ export default {
       chartconfig: {
         key: 'name',
         value: 'total',
-        color: '#41B882',
-        yAxis: 'Lorem ipsum dolor sit amet',
-        yScaleTicks: 10,
-        yScaleFormat: '.0s',
+        color: {current: '#41B882'},
+        axis: {yTitle: 'Lorem ipsum dolor sit amet', yTicks: 10, yFormat: '.0s'},
+        transition: {ease: 'easeBounceOut', duration: 1000}
       },
       chartdata: [
         {name: '1992', total: 4748},

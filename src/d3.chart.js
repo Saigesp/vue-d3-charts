@@ -35,20 +35,6 @@ class d3chart {
     }
 
     /**
-    * Update chart pipe
-    */
-    updateChart(){
-        console.error('d3chart.updateChart not implemented');
-    }
-
-    /**
-    * Resize chart pipe
-    */
-    resizeChart(){
-        console.error('d3chart.resizeChart not implemented');
-    }
-
-    /**
     * Resize chart pipe
     */
     setScales(){

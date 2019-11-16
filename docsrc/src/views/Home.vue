@@ -25,8 +25,9 @@
       <div v-highlight>
         <pre class="language-javascript"><code>chart_config = {
   key: 'name',
-  value: 'production',
-  color: 'steelblue',
+  value: 'total',
+  color: {current:'#41B882'},
+  transition: {ease: 'easeBounceOut', duration: 1000}
 }</code></pre>
       </div>
     </section>
@@ -36,50 +37,8 @@
     <section class="code">
       <h2>Common features</h2>
       <p>Each chart has its own features, but these are across all charts:</p>
-      
-      <h4>Data update</h4>
-      <p>Simply change your binding data as you want:</p>
-      <div v-highlight>
-        <pre class="language-javascript"><code>import {D3SlopeChart} from 'vue-d3-charts'
-
-export default {
-  name: 'my-component',
-  data() {
-    return {
-
-      // Chart's initial data
-      chart_data: [
-        { start: 5355, end: 5855, name: "Lorem" },
-        { start: 6160, end: 6510, name: "Ipsum" }
-      ],
-
-      // Chart's configuration
-      chart_config: {
-        key: "name",
-        values: ["start", "end"]
-      }
-
-    }
-  },
-  methods:{
-
-    // Add item to chart
-    yourFunction(){
-      this.chartdata.push({ start: 5085, end: 9321, name: "Dolor" });
-    }
-
-  }
-}</code></pre>
-        </div>
-
-      <h4>Title</h4>
-      <p>Set up a title (top text) on the component</p>
-      <div v-highlight><pre class="language-html"><code>{{titlechart}}</code></pre></div>
-
-      <h4>Source</h4>
-      <p>Set up a source (bottom text) on the component</p>
-      <div v-highlight><pre class="language-html"><code>{{sourcechart}}</code></pre></div>
-
+      <SlopeChartExampleDataUpdate title="Data update" desc="Simply change your binding data as you want:"></SlopeChartExampleDataUpdate>
+      <BarChartExampleBasic title="Reactive elements"></BarChartExampleBasic>
     </section>
 
   </div>
@@ -98,7 +57,8 @@ export default {
       barconfig: {
         key: 'name',
         value: 'total',
-        color: '#41B882'
+        color: {current:'#41B882'},
+        transition: {ease: 'easeBounceOut', duration: 1000}
       },
       bardata: [
         {name: '1992', total: 4748},

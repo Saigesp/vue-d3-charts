@@ -1,6 +1,7 @@
 <template>
     <div class="example">
         <h4>{{title}}</h4>
+        <p v-if="desc">{{desc}}</p>
         <D3SlopeChart :config="chart_config" :datum="chart_data"></D3SlopeChart>
         <div class="example__controls">
           <button @click="addData()">Add</button>
@@ -19,7 +20,6 @@ export default {
     name: 'SlopeChartExampleDataUpdate',
     data() {
         return {
-            title: 'Data update with bouncing transition',
             chart_config: { key: 'name', color: { scheme: 'schemeCategory10' }, transition: {ease: 'easeBounceOut', duration: 1000} },
             chart_data: [
                 { start: 2355, end: 5855, name: "Lorem" },
@@ -73,6 +73,16 @@ export default {
   }
 }`,
         }
+    },
+    props: {
+      title: {
+        type: String,
+        default: 'Data update with bouncing transition'
+      },
+      desc: {
+        type: String,
+        default: ''
+      },
     },
     methods: {
       addData(){
