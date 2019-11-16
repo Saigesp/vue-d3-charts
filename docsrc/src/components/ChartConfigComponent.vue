@@ -56,10 +56,10 @@ export default {
                 margin: {
                     required: false,
                     default: `margin: {
-    top: 10,
-    right: 100,
+    top: 20,
+    right: 20,
     bottom: 20,
-    left: 100
+    left: 20
   }`,
                     type: 'Object',
                     desc: "Chart's margins based on d3 margins convention.",
@@ -109,7 +109,8 @@ export default {
     outputFormat: "%Y-%m-%d"
   }`,
                     type: 'Object',
-                    desc: "Chart's date handler convention. See below.",
+                    desc: "Chart's date handler convention based on d3-time-format. See below.",
+                    link: "https://github.com/d3/d3-time-format",
                     example: '<code>date: {key: "time", outputFormat: "%M:%S"}</code>'
                 },
                 color: {

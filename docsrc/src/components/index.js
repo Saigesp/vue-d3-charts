@@ -19,3 +19,6 @@ Vue.component('SlopeChartExampleBasic',             require('./examples/SlopeCha
 Vue.component('SlopeChartExampleHighlight',         require('./examples/SlopeChartExampleHighlight').default);
 Vue.component('SlopeChartExampleColors',            require('./examples/SlopeChartExampleColors').default);
 Vue.component('SlopeChartExampleDataUpdate',        require('./examples/SlopeChartExampleDataUpdate').default);
+
+Vue.component('LineChartExampleBasic',              require('./examples/LineChartExampleBasic').default);
+Vue.component('LineChartExampleCustomization',      require('./examples/LineChartExampleCustomization').default);

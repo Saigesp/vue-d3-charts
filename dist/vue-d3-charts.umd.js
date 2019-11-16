@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('vue'), require('d3-selection'), require('d3-scale'), require('d3-array'), require('d3-axis'), require('d3-time-format'), require('d3-shape'), require('d3-scale-chromatic'), require('d3-transition'), require('d3-ease')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'vue', 'd3-selection', 'd3-scale', 'd3-array', 'd3-axis', 'd3-time-format', 'd3-shape', 'd3-scale-chromatic', 'd3-transition', 'd3-ease'], factory) :
-    (global = global || self, factory(global.D3BarChart = {}, global.Vue, global.d3Selection, global.d3Scale, global.d3Array, global.d3Axis, global.d3TimeFormat, global.d3Shape, global.d3ScaleChromatic, global.d3Transition, global.d3Ease));
-}(this, (function (exports, Vue, d3Selection, d3Scale, d3Array, d3Axis, d3TimeFormat, d3Shape, d3ScaleChromatic, d3Transition, d3Ease) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('vue'), require('d3-selection'), require('d3-scale'), require('d3-array'), require('d3-axis'), require('d3-time-format'), require('d3-shape'), require('d3-transition'), require('d3-ease'), require('d3-scale-chromatic')) :
+    typeof define === 'function' && define.amd ? define(['exports', 'vue', 'd3-selection', 'd3-scale', 'd3-array', 'd3-axis', 'd3-time-format', 'd3-shape', 'd3-transition', 'd3-ease', 'd3-scale-chromatic'], factory) :
+    (global = global || self, factory(global.D3BarChart = {}, global.Vue, global.d3Selection, global.d3Scale, global.d3Array, global.d3Axis, global.d3TimeFormat, global.d3Shape, global.d3Transition, global.d3Ease, global.d3ScaleChromatic));
+}(this, (function (exports, Vue, d3Selection, d3Scale, d3Array, d3Axis, d3TimeFormat, d3Shape, d3Transition, d3Ease, d3ScaleChromatic) { 'use strict';
 
     Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
 
@@ -432,46 +432,17 @@
         undefined
       );
 
-    var d3$1 = {
-        select: d3Selection.select, selectAll: d3Selection.selectAll,
-        scaleOrdinal: d3Scale.scaleOrdinal, scaleLinear: d3Scale.scaleLinear, scaleTime: d3Scale.scaleTime,
-        timeParse: d3TimeFormat.timeParse, timeFormat: d3TimeFormat.timeFormat,
-        max: d3Array.max, extent: d3Array.extent,
-        line: d3Shape.line,
-        axisLeft: d3Axis.axisLeft, axisBottom: d3Axis.axisBottom,
-        curveBasis: d3Shape.curveBasis, curveBundle: d3Shape.curveBundle, curveCardinal: d3Shape.curveCardinal, curveCatmullRom: d3Shape.curveCatmullRom, curveLinear: d3Shape.curveLinear, curveMonotoneX: d3Shape.curveMonotoneX,
-        curveMonotoneY: d3Shape.curveMonotoneY, curveNatural: d3Shape.curveNatural, curveStep: d3Shape.curveStep, curveStepAfter: d3Shape.curveStepAfter, curveStepBefore: d3Shape.curveStepBefore,
-        schemeCategory10: d3ScaleChromatic.schemeCategory10, schemeAccent: d3ScaleChromatic.schemeAccent, schemeDark2: d3ScaleChromatic.schemeDark2, schemePaired: d3ScaleChromatic.schemePaired, schemePastel1: d3ScaleChromatic.schemePastel1,
-        schemePastel2: d3ScaleChromatic.schemePastel2, schemeSet1: d3ScaleChromatic.schemeSet1, schemeSet2: d3ScaleChromatic.schemeSet2, schemeSet3: d3ScaleChromatic.schemeSet3, schemeTableau10: d3ScaleChromatic.schemeTableau10,
-    };
+    var d3$1 = {select: d3Selection.select};
 
-
-    var d3linechart = function d3linechart(selection, data, config) {
+    /**
+    * D3 Chart Base
+    */
+    var d3chart = function d3chart(selection, data, config, cfg) {
         var this$1 = this;
-        if ( config === void 0 ) config = {};
 
         this.selection = d3$1.select(selection);
         this.data = data;
-
-        // Default configuration
-        this.cfg = {
-            margin: {top: 16, right: 30, bottom: 20, left: 40},
-            keys: ['key'], // Values to compute
-            labels: false, // Labels to display
-            dateField: 'date',
-            dateFormat: '%Y-%m-%d', // https://github.com/d3/d3-time-format/blob/master/README.md#locale_format
-            dateFormatOutput: '%Y-%m-%d', // https://github.com/d3/d3-time-format/blob/master/README.md#locale_format
-            colorScheme: 'schemeCategory10', // More schemes in https://github.com/d3/d3-scale-chromatic
-            colorKeys: {},
-            curve: 'curveLinear', // More examples in https://bl.ocks.org/d3noob/ced1b9b18bd8192d2c898884033b5529
-            pointRadius: 3,
-            pointHoverRadius: 6,
-            yAxis: '', // Vertical axis title
-            xScaleTicks: 3, // Horizontal axis divisions 
-            xScaleFormat: '%Y-%m-%d', // Horizontal axis format
-            yScaleTicks: 5, // Vertical axis divisions 
-            yScaleFormat: '.0f', // Vertical axis format. More on https://github.com/d3/d3-format
-        };
+        this.cfg = cfg;
 
         // Set up configuration
         Object.keys(config).forEach(function (key){
@@ -482,251 +453,529 @@
             } else { this$1.cfg[key] = config[key]; }
         });
 
-        // Set up dimensions
-        this.cfg.width = parseInt(this.selection.node().offsetWidth) - this.cfg.margin.left - this.cfg.margin.right;
-        this.cfg.height = parseInt(this.selection.node().offsetHeight)- this.cfg.margin.top - this.cfg.margin.bottom;
-
-        // Set up color scheme
-        if(this.cfg.colorScheme instanceof Array === true){
-            this.colorScale = d3$1.scaleOrdinal().range(this.cfg.colorScheme);
-        }else{
-            this.colorScale = d3$1.scaleOrdinal(d3$1[this.cfg.colorScheme]);
-        }
-
-        // Format date functions
-        this.parseTime = d3$1.timeParse(this.cfg.dateFormat);
-        this.formatTime = d3$1.timeFormat(this.cfg.dateFormatOutput);
-
-        // Calcule transpose data
-        this.tdata = [];
-        this.cfg.keys.forEach(function (j,i){
-            this$1.tdata[i] = {};
-            this$1.tdata[i].key = j;
-            this$1.tdata[i].values = [];
-        });
-
-        this.data.forEach(function (d){ d.jsdate = this$1.parseTime(d[this$1.cfg.dateField]);});
-        this.data.sort(function (a,b){ return b.jsdate - a.jsdate; });
-
-        this.data.forEach(function (d) {
-            d.min =  9999999999;
-            d.max = -9999999999;
-            this$1.cfg.keys.forEach(function (j, i){
-                this$1.tdata[i].values.push({x: d.jsdate, y: +d[j], k: i});
-                if (d[j] < d.min) { d.min = +d[j]; }
-                if (d[j] > d.max) { d.max = +d[j]; }
-            });
-        });
-
-        // Calcule vertical scale
-        this.yScale = d3$1.scaleLinear()
-            .domain([0, d3$1.max(this.data, function (d) { return d.max; } )])
-            .rangeRound([this.cfg.height, 0]);
-
-        // Calcule horizontal scale
-        this.xScale = d3$1.scaleTime()
-            .domain(d3$1.extent(this.data, function (d) { return d.jsdate; }))
-            .rangeRound([0, this.cfg.width]);
-
-        // Set up line function
-        this.line = d3$1.line()
-            .curve(d3$1[this.cfg.curve])
-            .x(function (d) { return this$1.xScale(d.x); })
-            .y(function (d) { return this$1.yScale(d.y); });
-
         // Resize listener
-        this.redraw = function () { this$1.draw(); };
-        window.addEventListener("resize", this.redraw);
+        this.onResize = function () {this$1.resizeChart();};
+        window.addEventListener("resize", this.onResize);
 
-        this.initGraph();
+        this.initChart();
     };
 
-    d3linechart.prototype.initGraph = function initGraph () {
+    /**
+    * Init chart
+    */
+    d3chart.prototype.initChart = function initChart (){
+        console.error('d3chart.initChart not implemented');
+    };
+
+    /**
+    * Update chart pipe
+    */
+    d3chart.prototype.updateChart = function updateChart (){
+        console.error('d3chart.updateChart not implemented');
+    };
+
+    /**
+    * Resize chart pipe
+    */
+    d3chart.prototype.resizeChart = function resizeChart (){
+        console.error('d3chart.resizeChart not implemented');
+    };
+
+    /**
+    * Resize chart pipe
+    */
+    d3chart.prototype.setScales = function setScales (){
+        console.error('d3chart.setScales not implemented');
+    };
+
+    /**
+    * Set chart dimensional sizes
+    */
+    d3chart.prototype.setChartDimension = function setChartDimension (){
+        console.error('d3chart.setChartDimension not implemented');
+    };
+
+    /**
+    * Bind data to main elements groups
+    */
+    d3chart.prototype.bindData = function bindData (){
+        console.error('d3.chart.bindData not implemented');
+    };
+
+    /**
+    * Add new chart's elements
+    */
+    d3chart.prototype.enterElements = function enterElements (){
+        console.error('d3.chart.enterElements not implemented');
+    };
+
+    /**
+    * Update chart's elements based on data change
+    */
+    d3chart.prototype.updateElements = function updateElements (){
+        console.error('d3.chart.updateElements not implemented');
+    };
+
+    /**
+    * Remove chart's elements without data
+    */
+    d3chart.prototype.exitElements = function exitElements (){
+        console.error('d3.chart.exitElements not implemented');
+    };
+
+
+    /**
+    * Set up chart dimensions
+    */
+    d3chart.prototype.getDimensions = function getDimensions (){
+        this.cfg.width = parseInt(this.selection.node().offsetWidth) - this.cfg.margin.left - this.cfg.margin.right;
+        this.cfg.height = parseInt(this.selection.node().offsetHeight)- this.cfg.margin.top - this.cfg.margin.bottom;
+    };
+
+    /**
+    * Returns chart's data
+    */
+    d3chart.prototype.getData = function getData (){
+        return this.data;
+    };
+
+    /**
+    * Add new data elements
+    */
+    d3chart.prototype.enterData = function enterData (data){
+        this.data = this.data.concat(data);
+        this.setScales();
+        this.updateChart();
+    };
+
+    /**
+    * Update existing data elements
+    */
+    d3chart.prototype.updateData = function updateData (data){
+        this.data = [].concat( data );
+        this.setScales();
+        this.updateChart();
+    };
+
+    /**
+    * Compute data before operate
+    */
+    d3chart.prototype.computeData = function computeData (){
+    };
+
+    /**
+    * Remove data elements
+    */
+    d3chart.prototype.exitData = function exitData (filter){
             var this$1 = this;
 
+        this.data.forEach(function (d,i) {
+            var c = 0;
+            Object.keys(filter).forEach(function (key) {
+                if(filter[key] == d[key]) { c++; }
+            });
+            if(c == Object.keys(filter).length){
+                this$1.data.splice(i,1);
+            }
+        });
+        this.setScales();
+        this.updateChart();
+    };
+
+    /**
+    * Init chart commons elements (div > svg > g; tooltip)
+    */
+    d3chart.prototype.initChartFrame = function initChartFrame (classname){
+            if ( classname === void 0 ) classname='undefined';
 
         // Wrapper div
         this.wrap = this.selection.append('div') 
-            .attr("class", "chart__wrap chart__wrap--linechart");
+            .attr("class", "chart__wrap chart__wrap--"+classname);
 
         // SVG element
         this.svg = this.wrap.append('svg')
-            .attr("class", "chart chart--linechart")
-            .attr("viewBox", ("0 0 " + (this.cfg.width+this.cfg.margin.left+this.cfg.margin.right) + " " + (this.cfg.height+this.cfg.margin.top+this.cfg.margin.bottom)))
-            .attr("width", this.cfg.width + this.cfg.margin.left + this.cfg.margin.right)
-            .attr("height", this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom);
+            .attr("class", "chart chart--"+classname);
 
         // General group for margin convention
         this.g = this.svg.append("g")
-            .attr('class', 'chart__margin-wrap')
+            .attr("class", "chart__margin-wrap chart__margin-wrap--"+classname)
             .attr("transform", ("translate(" + (this.cfg.margin.left) + "," + (this.cfg.margin.top) + ")"));
-
-        // Axis group
-        this.axisg = this.g.append('g')
-            .attr('class', 'chart__axis chart__axis--linechart');
-
-        // Horizontal grid
-        this.yGrid = this.axisg.append("g")
-            .attr("class", "chart__grid chart__grid--y chart__grid--linechart");
-            
-        // Bottom axis
-        this.xAxis = this.axisg.append("g")
-            .attr("class", "chart__axis-x chart__axis-x--linechart");
-
-        // Vertical axis
-        this.yAxis = this.axisg.append("g")
-            .attr("class", "chart__axis-y chart__axis-y--linechart chart__grid");
-
-        // Vertical axis title
-        if(this.cfg.yAxis)
-        { this.yAxisTitle = this.axisg.append('text')
-            .attr('class', 'chart__axis-title chart__axis-title--linechart')
-            .attr("y", -this.cfg.margin.left+10)
-            .attr("x", -this.cfg.height/2)
-            .attr("transform", 'rotate(-90)')
-            .style("text-anchor", "middle")
-            .text(this.cfg.yAxis); }
 
         // Tooltip
         this.selection.selectAll('.chart__tooltip').remove();
         this.tooltip = this.wrap
             .append('div')
-            .attr('class', 'chart__tooltip chart__tooltip--linechart');
-
-        // Lines group
-        this.linesg = this.g.selectAll(".chart__lines-group")
-          .data(this.tdata)
-          .enter().append('g')
-          .attr("class", function (d) {
-            return "chart__lines-group chart__lines-group--linechart chart__lines-group--"+d.key;
-          });
-
-        // Lines
-        this.lines = this.linesg.append('path')
-          .attr("class", "chart__line chart__line--linechart")
-          .attr('fill', 'transparent')
-          .attr('stroke', function (d) { return this$1.lineColor(d); })
-          .attr("d", function (d) { return this$1.line(d.values); });
-
-        // Points
-        this.pointsg = [];
-        this.cfg.keys.forEach(function (k, i){
-
-            // Point group
-            var gp = this$1.g.selectAll('.chart__points-group--'+k)
-                .data(this$1.data).enter()
-                .append('g')
-                .attr('class', 'chart__points-group chart__points-group--linechart chart__points-group--'+k);
-
-            // Hover point
-            gp.append('circle')
-                .attr('class', 'chart__point-hover chart__point-hover--linechart')
-                .attr('fill', 'transparent')
-                .attr('r', this$1.cfg.pointHoverRadius)
-                .on('mouseover', function (d) {
-                    this$1.tooltip.html(function (_) {
-                        var label = this$1.cfg.labels && this$1.cfg.labels[i] ? this$1.cfg.labels[i] : k;
-                        return ("\n                            <div>" + label + ": " + (d[k]) + "</div>\n                        ")
-                    })
-                    .classed('active', true);
-                })
-                .on('mouseout', function (_) {
-                    this$1.tooltip.classed('active', false);
-                })
-                .on('mousemove', function (_) {
-                    this$1.tooltip
-                        .style('left', window.event['pageX'] - 28 + 'px')
-                        .style('top', window.event['pageY'] - 40 + 'px');
-                });
-
-            // Visible point
-            gp.append('circle')
-                .attr('class', 'chart__point-visible chart__point-visible--linechart')
-                .attr('pointer-events', 'none')
-                .attr('fill', function (d) { return this$1.lineColor(k); })
-                .attr('r', this$1.cfg.pointRadius);
-
-            this$1.pointsg.push({selection:gp, key:k });
-        });
-
-        this.draw();
+            .attr('class', "chart__tooltip chart__tooltip--"+classname);
     };
 
-    d3linechart.prototype.draw = function draw (){
+    /**
+    * Compute element color
+    */
+    d3chart.prototype.colorElement = function colorElement (d, key) {
+            if ( key === void 0 ) key=undefined;
+
+        key = key ? key : this.cfg.key;
+
+        // if key is set, return own object color key
+        if(this.cfg.color.key) { return d[this.cfg.color.key]; }
+
+        // base color is default one if current key is set, else current one
+        var baseColor = this.cfg.currentKey
+            ? this.cfg.color.default
+            : this.cfg.color.current;
+
+        // if scheme is set, base color is color scheme
+        if(this.cfg.color.scheme){
+            baseColor = this.colorScale(d[key]);
+        }
+
+        // if keys is an object, base color is color key if exists
+        if(this.cfg.color.keys
+            && this.cfg.color.keys instanceof Object
+            && this.cfg.color.keys instanceof Array === false
+            && this.cfg.color.keys[d[key]]){
+            baseColor = this.cfg.color.keys[d[key]];
+        }
+
+        // if current key is set and key is current, base color is current
+        if(this.cfg.currentKey && d[this.cfg.key] === this.cfg.currentKey){
+            baseColor = this.cfg.color.current;
+        }
+
+        return baseColor;
+    };
+
+    /**
+    * Update chart methods
+    */
+    d3chart.prototype.updateChart = function updateChart (){
+        this.computeData();
+        this.setScales();
+        this.bindData();
+        this.enterElements();
+        this.updateElements();
+        this.exitElements();
+    };
+
+    /**
+    * Resize chart methods
+    */
+    d3chart.prototype.resizeChart = function resizeChart (){
+        this.getDimensions();
+        this.setScales();
+        this.setChartDimension();
+        this.updateChart();
+    };
+
+    /**
+    * Destroy chart methods
+    */
+    d3chart.prototype.destroyChart = function destroyChart (){
+        window.removeEventListener("resize", this.onResize);
+    };
+
+    var d3$2 = { select: d3Selection.select, selectAll: d3Selection.selectAll, scaleOrdinal: d3Scale.scaleOrdinal, scaleLinear: d3Scale.scaleLinear, scaleTime: d3Scale.scaleTime,
+      timeParse: d3TimeFormat.timeParse, timeFormat: d3TimeFormat.timeFormat, max: d3Array.max, extent: d3Array.extent, line: d3Shape.line, transition: d3Transition.transition, axisLeft: d3Axis.axisLeft,
+      axisBottom: d3Axis.axisBottom, easeLinear: d3Ease.easeLinear, easePolyIn: d3Ease.easePolyIn, easePolyOut: d3Ease.easePolyOut, easePoly: d3Ease.easePoly, easePolyInOut: d3Ease.easePolyInOut,
+      easeQuadIn: d3Ease.easeQuadIn, easeQuadOut: d3Ease.easeQuadOut, easeQuad: d3Ease.easeQuad, easeQuadInOut: d3Ease.easeQuadInOut, easeCubicIn: d3Ease.easeCubicIn, easeCubicOut: d3Ease.easeCubicOut,
+      easeCubic: d3Ease.easeCubic, easeCubicInOut: d3Ease.easeCubicInOut, easeSinIn: d3Ease.easeSinIn, easeSinOut: d3Ease.easeSinOut, easeSin: d3Ease.easeSin, easeSinInOut: d3Ease.easeSinInOut,
+      easeExpIn: d3Ease.easeExpIn, easeExpOut: d3Ease.easeExpOut, easeExp: d3Ease.easeExp, easeExpInOut: d3Ease.easeExpInOut, easeCircleIn: d3Ease.easeCircleIn, easeCircleOut: d3Ease.easeCircleOut,
+      easeCircle: d3Ease.easeCircle, easeCircleInOut: d3Ease.easeCircleInOut, easeElasticIn: d3Ease.easeElasticIn, easeElastic: d3Ease.easeElastic, easeElasticOut: d3Ease.easeElasticOut,
+      easeElasticInOut: d3Ease.easeElasticInOut, easeBackIn: d3Ease.easeBackIn, easeBackOut: d3Ease.easeBackOut, easeBack: d3Ease.easeBack, easeBackInOut: d3Ease.easeBackInOut, easeBounceIn: d3Ease.easeBounceIn,
+      easeBounce: d3Ease.easeBounce, easeBounceOut: d3Ease.easeBounceOut, easeBounceInOut: d3Ease.easeBounceInOut, curveBasis: d3Shape.curveBasis, curveBundle: d3Shape.curveBundle, curveCardinal: d3Shape.curveCardinal,
+      curveCatmullRom: d3Shape.curveCatmullRom, curveLinear: d3Shape.curveLinear, curveMonotoneX: d3Shape.curveMonotoneX, curveMonotoneY: d3Shape.curveMonotoneY, curveNatural: d3Shape.curveNatural, curveStep: d3Shape.curveStep,
+      curveStepAfter: d3Shape.curveStepAfter, curveStepBefore: d3Shape.curveStepBefore, schemeCategory10: d3ScaleChromatic.schemeCategory10, schemeAccent: d3ScaleChromatic.schemeAccent, schemeDark2: d3ScaleChromatic.schemeDark2, schemePaired: d3ScaleChromatic.schemePaired,
+      schemePastel1: d3ScaleChromatic.schemePastel1, schemePastel2: d3ScaleChromatic.schemePastel2, schemeSet1: d3ScaleChromatic.schemeSet1, schemeSet2: d3ScaleChromatic.schemeSet2, schemeSet3: d3ScaleChromatic.schemeSet3, schemeTableau10: d3ScaleChromatic.schemeTableau10 };
+
+    /**
+     * D3 Line Chart
+     */
+    var d3linechart = /*@__PURE__*/(function (d3chart) {
+      function d3linechart(selection, data, config) {
+            d3chart.call(this, selection, data, config, {
+                margin: { top: 20, right: 20, bottom: 20, left: 40 },
+                values: [],
+                date: { key: false, inputFormat: "%Y-%m-%d", outputFormat: "%Y-%m-%d" },
+                color: { key: false, keys: false, scheme: false, current: '#1f77b4', default: '#AAA', axis: '#000' },
+                curve: 'curveLinear',
+                points: { visibleSize: 3, hoverSize: 6 },
+                axis: { yTitle: false, xTitle: false, yFormat: ".0f", xFormat: "%Y-%m-%d", yTicks: 5, xTicks: 3 },
+                tooltip: { labels: false },
+                transition: { duration: 350, ease: 'easeLinear' }
+            });
+        }
+
+      if ( d3chart ) d3linechart.__proto__ = d3chart;
+      d3linechart.prototype = Object.create( d3chart && d3chart.prototype );
+      d3linechart.prototype.constructor = d3linechart;
+
+        d3linechart.prototype.initChart = function initChart () {
+
+            // Set up dimensions
+            this.getDimensions();
+            this.initChartFrame('linechart');
+
+            // Format date functions
+            this.parseTime = d3$2.timeParse(this.cfg.date.inputFormat);
+            this.formatTime = d3$2.timeFormat(this.cfg.date.outputFormat);
+
+            // Init scales
+            this.yScale = d3$2.scaleLinear();
+            this.xScale = d3$2.scaleTime();
+
+            // Axis group
+            this.axisg = this.g.append('g')
+                .attr('class', 'chart__axis chart__axis--linechart');
+
+            // Horizontal grid
+            this.yGrid = this.axisg.append("g")
+                .attr("class", "chart__grid chart__grid--y chart__grid--linechart");
+
+            // Bottom axis
+            this.xAxis = this.axisg.append("g")
+                .attr("class", "chart__axis-x chart__axis-x--linechart");
+
+            // Vertical axis
+            this.yAxis = this.axisg.append("g")
+                .attr("class", "chart__axis-y chart__axis-y--linechart chart__grid");
+
+            // Vertical axis title
+            if (this.cfg.axis.yTitle)
+                { this.yAxisTitle = this.axisg.append('text')
+                .attr('class', 'chart__axis-title chart__axis-title--linechart')
+                .attr("transform", 'rotate(-90)')
+                .style("text-anchor", "middle"); }
+
+            this.setChartDimension();
+            this.updateChart();
+        };
+
+        d3linechart.prototype.computeData = function computeData () {
+            var this$1 = this;
+
+            // Calcule transpose data
+            var tData = [];
+            this.cfg.values.forEach(function (j, i) {
+                tData[i] = {};
+                tData[i].key = j;
+                tData[i].values = [];
+            });
+
+            this.data.forEach(function (d) { d.jsdate = this$1.parseTime(d[this$1.cfg.date.key]); });
+            this.data.sort(function (a, b) { return b.jsdate - a.jsdate; });
+
+            this.data.forEach(function (d) {
+                d.min = 9999999999999999999;
+                d.max = -9999999999999999999;
+                this$1.cfg.values.forEach(function (j, i) {
+                    tData[i].values.push({ x: d.jsdate, y: +d[j], k: i });
+                    if (d[j] < d.min) { d.min = +d[j]; }
+                    if (d[j] > d.max) { d.max = +d[j]; }
+                });
+            });
+            this.tData = tData;
+        };
+
+        /**
+         * Set up chart dimensions (non depending on data)
+         */
+        d3linechart.prototype.setChartDimension = function setChartDimension () {
+            // Resize SVG element
+            this.svg
+                .attr("viewBox", ("0 0 " + (this.cfg.width+this.cfg.margin.left+this.cfg.margin.right) + " " + (this.cfg.height+this.cfg.margin.top+this.cfg.margin.bottom)))
+                .attr("width", this.cfg.width + this.cfg.margin.left + this.cfg.margin.right)
+                .attr("height", this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom);
+
+            // Vertical axis title
+            if (this.cfg.axis.yTitle)
+                { this.yAxisTitle
+                .attr("y", -this.cfg.margin.left + 10)
+                .attr("x", -this.cfg.height / 2)
+                .text(this.cfg.axis.yTitle); }
+        };
+
+        /**
+         * Set up scales
+         */
+        d3linechart.prototype.setScales = function setScales () {
+            var this$1 = this;
+
+            // Calcule vertical scale
+            this.yScale
+                .domain([0, d3$2.max(this.data, function (d) { return d.max; })])
+                .rangeRound([this.cfg.height, 0]);
+
+            // Calcule horizontal scale
+            this.xScale
+                .domain(d3$2.extent(this.data, function (d) { return d.jsdate; }))
+                .rangeRound([0, this.cfg.width]);
+
+            if (this.cfg.color.scheme instanceof Array === true) {
+                this.colorScale = d3$2.scaleOrdinal().range(this.cfg.color.scheme);
+            } else if (typeof this.cfg.color.scheme === 'string') {
+                this.colorScale = d3$2.scaleOrdinal(d3$2[this.cfg.color.scheme]);
+            }
+
+            // Set up line function
+            this.line = d3$2.line()
+                .x(function (d) { return this$1.xScale(d.x); })
+                .y(function (d) { return this$1.yScale(d.y); })
+                .curve(d3$2[this.cfg.curve]);
+
+            // Redraw grid
+            this.yGrid
+                .call(
+                    d3$2.axisLeft(this.yScale)
+                    .tickSize(-this.cfg.width)
+                    .ticks(this.cfg.axis.yTicks, this.cfg.axis.yFormat)
+                );
+
+            // Redraw horizontal axis
+            this.xAxis
+                .attr("transform", ("translate(0," + (this.cfg.height) + ")"))
+                .call(
+                    d3$2.axisBottom(this.xScale)
+                    .tickFormat(this.formatTime)
+                    .ticks(this.cfg.axis.xTicks, this.cfg.axis.xFormat)
+                );
+        };
+
+        /**
+         * Bind data to main elements groups
+         */
+        d3linechart.prototype.bindData = function bindData () {
+
+            // Set transition
+            this.transition = d3$2.transition('t')
+                .duration(this.cfg.transition.duration)
+                .ease(d3$2[this.cfg.transition.ease]);
+
+            // Lines group
+            this.linesgroup = this.g.selectAll(".chart__lines-group")
+                .data(this.tData);
+
+            // Don't continue if points are disabled
+            if(this.cfg.points===false)
+              { return; }
+            
+            // Set points store
+            if (!this.pointsg || this.pointsg instanceof Array === false) {
+                this.pointsg = [];
+            }
+        };
+
+        /**
+         * Add new chart's elements
+         */
+        d3linechart.prototype.enterElements = function enterElements () {
             var this$1 = this;
 
 
-        // Set up dimensions
-        this.cfg.width = parseInt(this.selection.node().offsetWidth) - this.cfg.margin.left - this.cfg.margin.right;
-        this.cfg.height = parseInt(this.selection.node().offsetHeight)- this.cfg.margin.top - this.cfg.margin.bottom;
+            // Elements to add
+            var newgroups = this.linesgroup
+                .enter().append('g')
+                .attr("class", "chart__lines-group chart__lines-group--linechart");
 
-        // Resize scales
-        this.xScale.rangeRound([0, this.cfg.width]);
-        this.yScale.rangeRound([this.cfg.height,  0]);
+            // Lines
+            newgroups.append('path')
+                .attr("class", "chart__line chart__line--linechart")
+                .attr('fill', 'transparent')
+                .attr("d", function (d) { return this$1.line(d.values.map(function (v) {return { y: 0, x: v.x, k: v.k}})); });
 
-        // Resize SVG element
-        this.svg
-            .attr("viewBox", ("0 0 " + (this.cfg.width+this.cfg.margin.left+this.cfg.margin.right) + " " + (this.cfg.height+this.cfg.margin.top+this.cfg.margin.bottom)))
-            .attr("width", this.cfg.width + this.cfg.margin.left + this.cfg.margin.right)
-            .attr("height", this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom);
+            // Don't continue if points are disabled
+            if(this.cfg.points===false)
+              { return; }
 
-        // Redraw grid
-        this.yGrid.call(
-            this.make_y_gridlines()
-                .tickSize(-this.cfg.width)
-                .ticks(this.cfg.yScaleTicks, this.cfg.yScaleFormat)
-        );
+            this.cfg.values.forEach(function (k, i) {
+                // Point group
+                var gp = this$1.g.selectAll('.chart__points-group--' + k)
+                    .data(this$1.data).enter()
+                    .append('g')
+                    .attr('class', 'chart__points-group chart__points-group--linechart chart__points-group--' + k)
+                    .attr('transform', function (d) { return ("translate(" + (this$1.xScale(d.jsdate)) + "," + (this$1.cfg.height) + ")"); });
 
-        // Redraw horizontal axis
-        this.xAxis
-            .attr("transform", ("translate(0," + (this.cfg.height) + ")"))
-            .call(
-                d3$1.axisBottom(this.xScale)
-                    .tickFormat(this.formatTime)
-                    .ticks(this.cfg.xScaleTicks, this.cfg.xScaleFormat)
+                // Hover point
+                gp.append('circle')
+                    .attr('class', 'chart__point-hover chart__point-hover--linechart')
+                    .attr('fill', 'transparent')
+                    .attr('r', this$1.cfg.points.hoverSize)
+                    .on('mouseover', function (d) {
+                        this$1.tooltip.html(function (_) {
+                                var label = this$1.cfg.tooltip.labels && this$1.cfg.tooltip.labels[i] ?
+                                    this$1.cfg.tooltip.labels[i] :
+                                    k;
+                                return ("\n                            <div>" + label + ": " + (d[k]) + "</div>\n                        ")
+                            })
+                            .classed('active', true);
+                    })
+                    .on('mouseout', function (_) {
+                        this$1.tooltip.classed('active', false);
+                    })
+                    .on('mousemove', function (_) {
+                        this$1.tooltip
+                            .style('left', window.event['pageX'] - 28 + 'px')
+                            .style('top', window.event['pageY'] - 40 + 'px');
+                    });
 
-            );
+                // Visible point
+                gp.append('circle')
+                    .attr('class', 'chart__point-visible chart__point-visible--linechart')
+                    .attr('pointer-events', 'none');
 
-        // Set up line function
-        this.line = d3$1.line()
-            .curve(d3$1[this.cfg.curve])
-            .x(function (d) { return this$1.xScale(d.x); })
-            .y(function (d) { return this$1.yScale(d.y); });
+                this$1.pointsg.push({ selection: gp, key: k });
+            });
+        };
 
-        // Redraw lines
-        this.lines.attr("d", function (d) { return this$1.line(d.values); });
+        /**
+         * Update chart's elements based on data change
+         */
+        d3linechart.prototype.updateElements = function updateElements () {
+            var this$1 = this;
 
-        // Redraw points
-        this.pointsg.forEach(function (p, i){
-            p.selection
-                .attr('transform', function (d) { return ("translate(" + (this$1.xScale(d.jsdate)) + "," + (this$1.yScale(d[p.key])) + ")"); });
-        });
 
-    };
+            // Color lines
+            this.linesgroup
+                .attr('stroke', function (d) { return this$1.colorElement(d, 'key'); });
 
-    // Gridlines in x axis function
-    d3linechart.prototype.make_x_gridlines = function make_x_gridlines () {       
-        return d3$1.axisBottom(this.xScale);
-    };
+            // Redraw lines
+            this.g.selectAll('.chart__line')
+                .attr('stroke', function (d) { return this$1.colorElement(d, 'key') })
+                .transition(this.transition)
+                .attr("d", function (d) { return this$1.line(d.values); });
 
-    // Gridlines in y axis function
-    d3linechart.prototype.make_y_gridlines = function make_y_gridlines () {       
-        return d3$1.axisLeft(this.yScale);
-    };
+            // Don't continue if points are disabled
+            if(this.cfg.points===false)
+              { return; }
 
-    // Compute line color
-    d3linechart.prototype.lineColor = function lineColor (d) {
-        if(!d.hasOwnProperty('key')) { d = {key: d}; }
-        if(this.cfg.colorKeys && this.cfg.colorKeys.hasOwnProperty(d.key)){
-            return this.cfg.colorKeys[d.data[this.cfg.key]]
-        }else{
-            return this.colorScale(d.key)
-        }
-    };
+            // Redraw points
+            this.pointsg.forEach(function (p, i) {
+                p.selection
+                    .transition(this$1.transition)
+                    .attr('transform', function (d) { return ("translate(" + (this$1.xScale(d.jsdate)) + "," + (this$1.yScale(d[p.key])) + ")"); });
 
-    d3linechart.prototype.destroyChart = function destroyChart (){
-        window.removeEventListener("resize", this.redraw);
-    };
+                // Visible point
+                p.selection.selectAll('.chart__point-visible')
+                    .attr('fill', function (d) { return this$1.colorElement(p, 'key'); })
+                    .attr('r', this$1.cfg.points.visibleSize);
+                
+                // Hover point
+                p.selection.selectAll('.chart__point-hover')
+                    .attr('r', this$1.cfg.points.hoverSize);
+            });
+        };
+
+        /**
+         * Remove chart's elements without data
+         */
+        d3linechart.prototype.exitElements = function exitElements () {
+            this.linesgroup.exit()
+                .transition(this.transition)
+                .style("opacity", 0)
+                .remove();
+        };
+
+      return d3linechart;
+    }(d3chart));
 
     //
 
@@ -811,7 +1060,7 @@
         undefined
       );
 
-    var d3$2 = {select: d3Selection.select, selectAll: d3Selection.selectAll, scaleLinear: d3Scale.scaleLinear, scaleOrdinal: d3Scale.scaleOrdinal, max: d3Array.max, min: d3Array.min, transition: d3Transition.transition, easeLinear: d3Ease.easeLinear,
+    var d3$3 = {select: d3Selection.select, selectAll: d3Selection.selectAll, scaleLinear: d3Scale.scaleLinear, scaleOrdinal: d3Scale.scaleOrdinal, max: d3Array.max, min: d3Array.min, transition: d3Transition.transition, easeLinear: d3Ease.easeLinear,
         easePolyIn: d3Ease.easePolyIn, easePolyOut: d3Ease.easePolyOut, easePoly: d3Ease.easePoly, easePolyInOut: d3Ease.easePolyInOut, easeQuadIn: d3Ease.easeQuadIn, easeQuadOut: d3Ease.easeQuadOut,
         easeQuad: d3Ease.easeQuad, easeQuadInOut: d3Ease.easeQuadInOut, easeCubicIn: d3Ease.easeCubicIn, easeCubicOut: d3Ease.easeCubicOut, easeCubic: d3Ease.easeCubic, easeCubicInOut: d3Ease.easeCubicInOut,
         easeSinIn: d3Ease.easeSinIn, easeSinOut: d3Ease.easeSinOut, easeSin: d3Ease.easeSin, easeSinInOut: d3Ease.easeSinInOut, easeExpIn: d3Ease.easeExpIn, easeExpOut: d3Ease.easeExpOut, easeExp: d3Ease.easeExp,
@@ -825,415 +1074,265 @@
     /**
     * D3 Slope Chart
     */
-    var d3slopechart = function d3slopechart(selection, data, config) {
-        var this$1 = this;
-        if ( config === void 0 ) config = {};
+    var d3slopechart = /*@__PURE__*/(function (d3chart) {
+        function d3slopechart(selection, data, config) {
+            d3chart.call(this, selection, data, config, {
+                margin: {top: 10, right: 100, bottom: 20, left: 100},
+                key: '',
+                currentKey: false,
+                values: ['start', 'end'],
+                color : {key: false, keys: false, scheme: false, current: '#1f77b4', default: '#AAA', axis: '#000'},
+                axis: {titles: false},
+                points: {visibleRadius: 3},
+                opacity: 0.5,
+                transition: {duration: 350, ease: 'easeLinear'}
+            });
+        }
 
-        this.selection = d3$2.select(selection);
-        this.data = data;
+        if ( d3chart ) d3slopechart.__proto__ = d3chart;
+        d3slopechart.prototype = Object.create( d3chart && d3chart.prototype );
+        d3slopechart.prototype.constructor = d3slopechart;
 
-        // Graph configuration
-        this.cfg = {
-            margin: {top: 10, right: 100, bottom: 20, left: 100},
-            key: '',
-            currentKey: false,
-            values: ['start', 'end'],
-            color : {key: false, keys: false, scheme: false, current: '#1f77b4', default: '#AAA', axis: '#000'},
-            axis: {titles: false},
-            points: {visibleRadius: 3},
-            opacity: 0.5,
-            transition: {duration: 350, ease: 'easeLinear'}
+
+
+        /**
+        * Init chart
+        */
+        d3slopechart.prototype.initChart = function initChart () {
+
+            // Set up dimensions
+            this.getDimensions();
+            this.initChartFrame('slopechart');
+
+            // Set up scales
+            this.yScale = d3$3.scaleLinear();
+
+
+            // Axis group
+            var axisg = this.g.append('g')
+                .attr('class', 'chart__axis chart__axis--slopechart');
+
+            // Vertical left axis
+            this.startAxis = axisg.append('line')
+                .attr("class", "chart__axis-y chart__axis-y--slopechart chart__axis-y--start")
+                .attr('x1', 0)
+                .attr('x2', 0)
+                .attr('y1', 0)
+                .attr('stroke', this.cfg.color.axis);
+
+            // Vertical right axis
+            this.endAxis = axisg.append('line')
+                .attr("class", "chart__axis-y chart__axis-y--slopechart chart__axis-y--end")
+                .attr('y1', 0)
+                .attr('stroke', this.cfg.color.axis);
+
+            // Axis labels
+            if(this.cfg.axis.titles){
+                this.startl = axisg.append('text')
+                    .attr('class', 'chart__axis-text chart__axis-text--slopechart chart__axis-text--start')
+                    .attr('text-anchor', 'middle')
+                    .attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12)
+                    .text(this.cfg.axis.titles[0]);
+
+                this.endl = axisg.append('text')
+                    .attr('class', 'chart__axis-text chart__axis-text--slopechart chart__axis-text--end')
+                    .attr('text-anchor', 'middle')
+                    .attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12)
+                    .text(this.cfg.axis.titles[1]);
+            }
+
+            this.setChartDimension();
+            this.updateChart();
         };
 
-        // Set up configuration
-        Object.keys(config).forEach(function (key){
-            if(config[key] instanceof Object && config[key] instanceof Array === false){
-                Object.keys(config[key]).forEach(function (sk){
-                    this$1.cfg[key][sk] = config[key][sk];
-                });
-            } else { this$1.cfg[key] = config[key]; }
-        });
+        /**
+        * Set up chart dimensions (non depending on data)
+        */
+        d3slopechart.prototype.setChartDimension = function setChartDimension (){
+            // SVG element
+            this.svg
+                .attr("viewBox", ("0 0 " + (this.cfg.width+this.cfg.margin.left+this.cfg.margin.right) + " " + (this.cfg.height+this.cfg.margin.top+this.cfg.margin.bottom)))
+                .attr("width", this.cfg.width + this.cfg.margin.left + this.cfg.margin.right)
+                .attr("height", this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom);
 
-        // Set up dimensions
-        this.setDimensions();
+            // Vertical left axis position
+            this.startAxis
+                .attr('y2', this.cfg.height);
 
-        // Set up scales
-        this.yScale = d3$2.scaleLinear();
+            // Vertical right axis position
+            this.endAxis
+                .attr('x1', this.cfg.width)
+                .attr('x2', this.cfg.width)
+                .attr('y2', this.cfg.height);
 
-        // Resize listener
-        this.onResize = function () {this$1.resizeChart();};
-        window.addEventListener("resize", this.onResize);
-
-        this.initChart();
-    };
-
-    /**
-    * Init chart
-    */
-    d3slopechart.prototype.initChart = function initChart () {
-
-        // Wrapper div
-        this.wrap = this.selection.append('div') 
-            .attr("class", "chart__wrap chart__wrap--slopechart");
-
-        // SVG element
-        this.svg = this.wrap.append('svg')
-            .attr("class", "chart chart--slopegraph");
-
-        // General group for margin convention
-        this.g = this.svg.append("g")
-            .attr('class', 'chart__margin-wrap')
-            .attr("transform", ("translate(" + (this.cfg.margin.left) + "," + (this.cfg.margin.top) + ")"));
-
-        // Axis group
-        var axisg = this.g.append('g')
-            .attr('class', 'chart__axis chart__axis--slopechart');
-
-        // Vertical left axis
-        this.startAxis = axisg.append('line')
-            .attr("class", "chart__axis-y chart__axis-y--slopechart chart__axis-y--start")
-            .attr('x1', 0)
-            .attr('x2', 0)
-            .attr('y1', 0)
-            .attr('stroke', this.cfg.color.axis);
-
-        // Vertical right axis
-        this.endAxis = axisg.append('line')
-            .attr("class", "chart__axis-y chart__axis-y--slopechart chart__axis-y--end")
-            .attr('y1', 0)
-            .attr('stroke', this.cfg.color.axis);
-
-        // Axis labels
-        if(this.cfg.axis.titles){
-            this.startl = axisg.append('text')
-                .attr('class', 'chart__axis-text chart__axis-text--slopechart chart__axis-text--start')
-                .attr('text-anchor', 'middle')
-                .attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12)
-                .text(this.cfg.axis.titles[0]);
-
-            this.endl = axisg.append('text')
-                .attr('class', 'chart__axis-text chart__axis-text--slopechart chart__axis-text--end')
-                .attr('text-anchor', 'middle')
-                .attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12)
-                .text(this.cfg.axis.titles[1]);
-        }
-
-        this.setChartDimension();
-        this.updateChart();
-    };
-
-    /**
-    * Set up chart dimensions (non depending on data)
-    */
-    d3slopechart.prototype.setChartDimension = function setChartDimension (){
-        // SVG element
-        this.svg
-            .attr("viewBox", ("0 0 " + (this.cfg.width+this.cfg.margin.left+this.cfg.margin.right) + " " + (this.cfg.height+this.cfg.margin.top+this.cfg.margin.bottom)))
-            .attr("width", this.cfg.width + this.cfg.margin.left + this.cfg.margin.right)
-            .attr("height", this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom);
-
-        // Vertical left axis position
-        this.startAxis
-            .attr('y2', this.cfg.height);
-
-        // Vertical right axis position
-        this.endAxis
-            .attr('x1', this.cfg.width)
-            .attr('x2', this.cfg.width)
-            .attr('y2', this.cfg.height);
-
-        // Axis labels
-        if(this.cfg.axis.titles){
-            this.startl.attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12);
-            this.endl.attr('x', this.cfg.width).attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12);
-        }
-    };
-
-    /**
-    * Returns chart's data
-    */
-    d3slopechart.prototype.getData = function getData (){
-        return this.data;
-    };
-
-    /**
-    * Add new data elements
-    */
-    d3slopechart.prototype.enterData = function enterData (data){
-        this.data = this.data.concat(data);
-        this.setColorScales();
-        this.updateChart();
-    };
-
-    /**
-    * Update existing data elements
-    */
-    d3slopechart.prototype.updateData = function updateData (data){
-        this.data = [].concat( data );
-        this.setColorScales();
-        this.updateChart();
-    };
-
-    /**
-    * Remove data elements
-    */
-    d3slopechart.prototype.exitData = function exitData (filter){
-            var this$1 = this;
-
-        this.data.forEach(function (d,i) {
-            var c = 0;
-            Object.keys(filter).forEach(function (key) {
-                if(filter[key] == d[key]) { c++; }
-            });
-            if(c == Object.keys(filter).length){
-                this$1.data.splice(i,1);
+            // Axis labels
+            if(this.cfg.axis.titles){
+                this.startl.attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12);
+                this.endl.attr('x', this.cfg.width).attr('y', this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom -12);
             }
-        });
-        this.setColorScales();
-        this.updateChart();
-    };
+        };
 
-    /**
-    * Set up chart dimensions
-    */
-    d3slopechart.prototype.setDimensions = function setDimensions (){
-        this.cfg.width = parseInt(this.selection.node().offsetWidth) - this.cfg.margin.left - this.cfg.margin.right;
-        this.cfg.height = parseInt(this.selection.node().offsetHeight)- this.cfg.margin.top - this.cfg.margin.bottom;
-    };
-
-    /**
-    * Set up scales
-    */
-    d3slopechart.prototype.setScales = function setScales (){
-        this.setDimensionScales();
-        this.setColorScales();
-    };
-
-    /**
-    * Set up dimensional scales
-    */
-    d3slopechart.prototype.setDimensionScales = function setDimensionScales (){
+        /**
+        * Set up scales
+        */
+        d3slopechart.prototype.setScales = function setScales (){
             var this$1 = this;
 
-        this.yScale
-            .rangeRound([this.cfg.height, 0])
-            .domain([
-                d3$2.min(this.data, function (d) { return d[this$1.cfg.values[0]] < d[this$1.cfg.values[1]] ? d[this$1.cfg.values[0]]*0.9 : d[this$1.cfg.values[1]]*0.9; } ),
-                d3$2.max(this.data, function (d) { return d[this$1.cfg.values[0]] > d[this$1.cfg.values[1]] ? d[this$1.cfg.values[0]]*1.1 : d[this$1.cfg.values[1]]*1.1; } )
-            ]);
-    };
+            // Set up dimensional scales
+            this.yScale
+                .rangeRound([this.cfg.height, 0])
+                .domain([
+                    d3$3.min(this.data, function (d) { return d[this$1.cfg.values[0]] < d[this$1.cfg.values[1]] ? d[this$1.cfg.values[0]]*0.9 : d[this$1.cfg.values[1]]*0.9; } ),
+                    d3$3.max(this.data, function (d) { return d[this$1.cfg.values[0]] > d[this$1.cfg.values[1]] ? d[this$1.cfg.values[0]]*1.1 : d[this$1.cfg.values[1]]*1.1; } )
+                ]);
 
-    /**
-    * Set up color scales
-    */
-    d3slopechart.prototype.setColorScales = function setColorScales (){
-            var this$1 = this;
-
-        // Set up color scheme
-        if(this.cfg.color.scheme){
-            if(this.cfg.color.scheme instanceof Array === true){
-                this.colorScale = d3$2.scaleOrdinal()
-                    .domain(this.data.map(function (d){ return d[this$1.cfg.key]; }))
-                    .range(this.cfg.color.scheme);
-            }else{
-                this.colorScale = d3$2.scaleOrdinal(d3$2[this.cfg.color.scheme])
-                    .domain(this.data.map(function (d){ return d[this$1.cfg.key]; }));
+            // Set up color scheme
+            if(this.cfg.color.scheme){
+                if(this.cfg.color.scheme instanceof Array === true){
+                    this.colorScale = d3$3.scaleOrdinal()
+                        .domain(this.data.map(function (d){ return d[this$1.cfg.key]; }))
+                        .range(this.cfg.color.scheme);
+                }else{
+                    this.colorScale = d3$3.scaleOrdinal(d3$3[this.cfg.color.scheme])
+                        .domain(this.data.map(function (d){ return d[this$1.cfg.key]; }));
+                }
             }
-        }
-    };
+        };
 
-    /**
-    * Bind data to main elements groups
-    */
-    d3slopechart.prototype.bindData = function bindData (){
+        /**
+        * Bind data to main elements groups
+        */
+        d3slopechart.prototype.bindData = function bindData (){
             var this$1 = this;
 
-        // Lines group selection data
-        this.linesgroup = this.g.selectAll(".chart__lines-group")
-            .data(this.data, function (d) { return d[this$1.cfg.key]; });
+            // Lines group selection data
+            this.linesgroup = this.g.selectAll(".chart__lines-group")
+                .data(this.data, function (d) { return d[this$1.cfg.key]; });
 
-        // Set transition
-        this.transition = d3$2.transition('t')
-            .duration(this.cfg.transition.duration)
-            .ease(d3$2[this.cfg.transition.ease]);
-    };
+            // Set transition
+            this.transition = d3$3.transition('t')
+                .duration(this.cfg.transition.duration)
+                .ease(d3$3[this.cfg.transition.ease]);
+        };
 
-    /**
-    * Add new chart's elements
-    */
-    d3slopechart.prototype.enterElements = function enterElements (){
+        /**
+        * Add new chart's elements
+        */
+        d3slopechart.prototype.enterElements = function enterElements (){
             var this$1 = this;
 
 
-        // Elements to add
-        var newlines = this.linesgroup.enter().append('g')
-            .attr("class", function (d) { return "chart__lines-group chart__lines-group--slopechart"; });
+            // Elements to add
+            var newlines = this.linesgroup
+                .enter().append('g')
+                .attr("class", "chart__lines-group chart__lines-group--slopechart");
 
-        // Lines to add
-        newlines.append('line') 
-            .attr("class", "chart__line chart__line--slopechart")
-            .classed('chart__line--current', function (d) { return this$1.cfg.currentKey && d[this$1.cfg.key] == this$1.cfg.currentKey; })
-            .attr('stroke', function (d) { return this$1.colorElement(d); })
-            .style("opacity", this.cfg.opacity)
-            .attr("x1", 0)
-            .attr("x2", this.cfg.width)
-            .transition(this.transition)
-            .attr("y1", function (d) { return this$1.yScale(d[this$1.cfg.values[0]]); })
-            .attr("y2", function (d) { return this$1.yScale(d[this$1.cfg.values[1]]); });
+            // Lines to add
+            newlines.append('line') 
+                .attr("class", "chart__line chart__line--slopechart")
+                .classed('chart__line--current', function (d) { return this$1.cfg.currentKey && d[this$1.cfg.key] == this$1.cfg.currentKey; })
+                .attr('stroke', function (d) { return this$1.colorElement(d); })
+                .style("opacity", this.cfg.opacity)
+                .attr("x1", 0)
+                .attr("x2", this.cfg.width)
+                .transition(this.transition)
+                .attr("y1", function (d) { return this$1.yScale(d[this$1.cfg.values[0]]); })
+                .attr("y2", function (d) { return this$1.yScale(d[this$1.cfg.values[1]]); });
 
-        // Vertical left axis points group to add
-        var gstart = newlines.append('g')
-            .attr('class', 'chart__points-group chart__points-group--slopechart chart__points-group--start');
+            // Vertical left axis points group to add
+            var gstart = newlines.append('g')
+                .attr('class', 'chart__points-group chart__points-group--slopechart chart__points-group--start');
             
-        gstart.transition(this.transition)
-            .attr('transform', function (d) { return 'translate(0,'+this$1.yScale(d[this$1.cfg.values[0]])+')'; });
+            gstart.transition(this.transition)
+                .attr('transform', function (d) { return 'translate(0,'+this$1.yScale(d[this$1.cfg.values[0]])+')'; });
 
-        // Vertical left axis points to add
-        gstart.append('circle')
-            .attr('class', 'chart__point chart__point--slopechart chart__point--start')
-            .attr('fill', function (d) { return this$1.colorElement(d); })
-            .attr('r', this.cfg.points.visibleRadius);
+            // Vertical left axis points to add
+            gstart.append('circle')
+                .attr('class', 'chart__point chart__point--slopechart chart__point--start')
+                .attr('fill', function (d) { return this$1.colorElement(d); })
+                .attr('r', this.cfg.points.visibleRadius);
 
-        // Vertical left axis label to add
-        gstart.append('text')
-            .attr('class', 'chart__label chart__label--slopechart chart__label--start')
-            .attr('text-anchor', 'end')
-            .attr('y', 3)
-            .attr('x', -5)
-            .text(function (d) { return d[this$1.cfg.key] +' '+ d[this$1.cfg.values[0]]; });
+            // Vertical left axis label to add
+            gstart.append('text')
+                .attr('class', 'chart__label chart__label--slopechart chart__label--start')
+                .attr('text-anchor', 'end')
+                .attr('y', 3)
+                .attr('x', -5)
+                .text(function (d) { return d[this$1.cfg.key] +' '+ d[this$1.cfg.values[0]]; });
 
-        // Vertical right axis points group to add
-        var gend = newlines.append('g')
-            .attr('class', 'chart__points-group chart__points-group--slopechart chart__points-group--end')
-            .attr('transform', 'translate('+this.cfg.width+',0)');
+            // Vertical right axis points group to add
+            var gend = newlines.append('g')
+                .attr('class', 'chart__points-group chart__points-group--slopechart chart__points-group--end')
+                .attr('transform', 'translate('+this.cfg.width+',0)');
 
-        gend.transition(this.transition)
-            .attr('transform', function (d) { return 'translate('+this$1.cfg.width+','+this$1.yScale(d[this$1.cfg.values[1]])+')'; });
+            gend.transition(this.transition)
+                .attr('transform', function (d) { return 'translate('+this$1.cfg.width+','+this$1.yScale(d[this$1.cfg.values[1]])+')'; });
 
-        // Vertical right axis points to add
-        gend.append('circle')
-            .attr('class', 'chart__point chart__point--slopechart chart__point--end')
-            .attr('fill', function (d) { return this$1.colorElement(d); })
-            .attr('r', this.cfg.points.visibleRadius);
+            // Vertical right axis points to add
+            gend.append('circle')
+                .attr('class', 'chart__point chart__point--slopechart chart__point--end')
+                .attr('fill', function (d) { return this$1.colorElement(d); })
+                .attr('r', this.cfg.points.visibleRadius);
 
-        // Vertical right axis label to add
-        gend.append('text')
-            .attr('class', 'chart__label chart__label--slopechart chart__label--end')
-            .attr('text-anchor', 'start')
-            .attr('y', 3)
-            .attr('x', 5)
-            .text(function (d) { return d[this$1.cfg.values[1]] + '  ' + d[this$1.cfg.key]; });
-    };
+            // Vertical right axis label to add
+            gend.append('text')
+                .attr('class', 'chart__label chart__label--slopechart chart__label--end')
+                .attr('text-anchor', 'start')
+                .attr('y', 3)
+                .attr('x', 5)
+                .text(function (d) { return d[this$1.cfg.values[1]] + '  ' + d[this$1.cfg.key]; });
+        };
 
-    /**
-    * Update chart's elements based on data change
-    */
-    d3slopechart.prototype.updateElements = function updateElements (){
+        /**
+        * Update chart's elements based on data change
+        */
+        d3slopechart.prototype.updateElements = function updateElements (){
             var this$1 = this;
 
-        // Lines to modify
-        this.linesgroup.selectAll('.chart__line')
-            .data(this.data, function (d){ return d[this$1.cfg.key]; })
-            .transition(this.transition)
-            .attr("x1", 0)
-            .attr("x2", this.cfg.width)
-            .attr("y1", function (d) { return this$1.yScale(d[this$1.cfg.values[0]]); })
-            .attr("y2", function (d) { return this$1.yScale(d[this$1.cfg.values[1]]); });
+            // Lines to modify
+            this.linesgroup.selectAll('.chart__line')
+                .data(this.data, function (d){ return d[this$1.cfg.key]; })
+                .transition(this.transition)
+                .attr("x1", 0)
+                .attr("x2", this.cfg.width)
+                .attr("y1", function (d) { return this$1.yScale(d[this$1.cfg.values[0]]); })
+                .attr("y2", function (d) { return this$1.yScale(d[this$1.cfg.values[1]]); });
 
-        // Left axis points to modify
-        this.linesgroup.selectAll('.chart__points-group--start')
-            .data(this.data, function (d){ return d[this$1.cfg.key]; })
-            .transition(this.transition)
-            .attr('transform', function (d) { return 'translate(0,'+this$1.yScale(d[this$1.cfg.values[0]])+')'; });
+            // Left axis points to modify
+            this.linesgroup.selectAll('.chart__points-group--start')
+                .data(this.data, function (d){ return d[this$1.cfg.key]; })
+                .transition(this.transition)
+                .attr('transform', function (d) { return 'translate(0,'+this$1.yScale(d[this$1.cfg.values[0]])+')'; });
 
-        // Left axis labels to modify
-        this.linesgroup.selectAll('.chart__label--start')
-            .data(this.data, function (d){ return d[this$1.cfg.key]; })
-            .text(function (d) {return d[this$1.cfg.key] +' '+ d[this$1.cfg.values[0]]});
+            // Left axis labels to modify
+            this.linesgroup.selectAll('.chart__label--start')
+                .data(this.data, function (d){ return d[this$1.cfg.key]; })
+                .text(function (d) {return d[this$1.cfg.key] +' '+ d[this$1.cfg.values[0]]});
 
-        // Right axis points to modify
-        this.linesgroup.selectAll('.chart__points-group--end')
-            .data(this.data, function (d){ return d[this$1.cfg.key]; })
-            .transition(this.transition)
-            .attr('transform', function (d) { return 'translate('+this$1.cfg.width+','+this$1.yScale(d[this$1.cfg.values[1]])+')'; });
+            // Right axis points to modify
+            this.linesgroup.selectAll('.chart__points-group--end')
+                .data(this.data, function (d){ return d[this$1.cfg.key]; })
+                .transition(this.transition)
+                .attr('transform', function (d) { return 'translate('+this$1.cfg.width+','+this$1.yScale(d[this$1.cfg.values[1]])+')'; });
 
-        // Right axis labels to modify
-        this.linesgroup.selectAll('.chart__label--end')
-            .data(this.data, function (d){ return d[this$1.cfg.key]; })
-            .text(function (d) { return d[this$1.cfg.values[1]] + '  ' + d[this$1.cfg.key]; });
-    };
+            // Right axis labels to modify
+            this.linesgroup.selectAll('.chart__label--end')
+                .data(this.data, function (d){ return d[this$1.cfg.key]; })
+                .text(function (d) { return d[this$1.cfg.values[1]] + '  ' + d[this$1.cfg.key]; });
+        };
 
-    /**
-    * Remove chart's elements without data
-    */
-    d3slopechart.prototype.exitElements = function exitElements (){
-        this.linesgroup.exit()
-            .transition(this.transition)
-            .style("opacity", 0)
-            .remove();
-    };
+        /**
+        * Remove chart's elements without data
+        */
+        d3slopechart.prototype.exitElements = function exitElements (){
+            this.linesgroup.exit()
+                .transition(this.transition)
+                .style("opacity", 0)
+                .remove();
+        };
 
-    /**
-    * Compute element color
-    */
-    d3slopechart.prototype.colorElement = function colorElement (d) {
-
-        // if key is set, return own object color key
-        if(this.cfg.color.key) { return  d[this.cfg.color.key]; }
-
-        // base color is default one if current key is set, else current one
-        var baseColor = this.cfg.currentKey
-            ? this.cfg.color.default
-            : this.cfg.color.current;
-
-        // if scheme is set, base color is color scheme
-        if(this.cfg.color.scheme){
-            baseColor = this.colorScale(d[this.cfg.key]);
-        }
-
-        // if keys is an object, base color is color key if exists
-        if(this.cfg.color.keys
-            && this.cfg.color.keys instanceof Object
-            && this.cfg.color.keys instanceof Array === false
-            && this.cfg.color.keys[d[this.cfg.key]]){
-            baseColor = this.cfg.color.keys[d[this.cfg.key]];
-        }
-
-        // if current key is set and key is current, base color is current
-        if(this.cfg.currentKey && d[this.cfg.key] === this.cfg.currentKey){
-            baseColor = this.cfg.color.current;
-        }
-
-        return baseColor;
-    };
-
-    /**
-    * Update chart methods
-    */
-    d3slopechart.prototype.updateChart = function updateChart (){
-        this.setScales();
-        this.bindData();
-        this.enterElements();
-        this.updateElements();
-        this.exitElements();
-    };
-
-    /**
-    * Resize chart methods
-    */
-    d3slopechart.prototype.resizeChart = function resizeChart (){
-        this.setDimensions();
-        this.setScales();
-        this.setChartDimension();
-        this.updateChart();
-    };
-
-    /**
-    * Destroy chart methods
-    */
-    d3slopechart.prototype.destroyChart = function destroyChart (){
-        window.removeEventListener("resize", this.onResize);
-    };
+        return d3slopechart;
+    }(d3chart));
 
     //
 

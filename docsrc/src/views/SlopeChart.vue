@@ -47,6 +47,14 @@ export default {
   }`,
           desc: "Axis custom properties.",
           example: '<code>axis: {titles: ["Yesterday", "Today"]}</code>'
+        },
+        margin: {
+          default: `margin: {
+    top: 10,
+    right: 100,
+    bottom: 20,
+    left: 100
+  }`
         }
       },
       chartconfig: {

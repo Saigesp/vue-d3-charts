@@ -6,7 +6,8 @@
         <pre class="language-css"><code>.chart{
   &--{{classname}} {
     font-size: 10px;
-  }<div v-for="el in elements">  &__{{el}}--{{classname}} {
+  }
+<div v-for="el in elements">  &__{{el}}--{{classname}} {
     /* your styles */
   }
 </div>}</code></pre>

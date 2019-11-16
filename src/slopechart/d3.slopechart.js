@@ -1,3 +1,4 @@
+import d3chart from '../d3.chart'
 import {select, selectAll} from 'd3-selection'
 import {scaleLinear, scaleOrdinal} from 'd3-scale'
 import {max, min} from 'd3-array'
@@ -28,14 +29,10 @@ const d3 = {select, selectAll, scaleLinear, scaleOrdinal, max, min, transition, 
 /**
 * D3 Slope Chart
 */
-class d3slopechart {
+class d3slopechart extends d3chart{
 
-    constructor(selection, data, config = {}) {
-        this.selection = d3.select(selection);
-        this.data = data;
-
-        // Graph configuration
-        this.cfg = {
+    constructor(selection, data, config) {
+        super(selection, data, config, {
             margin: {top: 10, right: 100, bottom: 20, left: 100},
             key: '',
             currentKey: false,
@@ -45,47 +42,23 @@ class d3slopechart {
             points: {visibleRadius: 3},
             opacity: 0.5,
             transition: {duration: 350, ease: 'easeLinear'}
-        };
-
-        // Set up configuration
-        Object.keys(config).forEach(key=> {
-            if(config[key] instanceof Object && config[key] instanceof Array === false){
-                Object.keys(config[key]).forEach(sk=> {
-                    this.cfg[key][sk] = config[key][sk];
-                });
-            } else this.cfg[key] = config[key];
-        });
-
-        // Set up dimensions
-        this.setDimensions();
-
-        // Set up scales
-        this.yScale = d3.scaleLinear()
-
-        // Resize listener
-        this.onResize = () => {this.resizeChart()}
-        window.addEventListener("resize", this.onResize);
-
-        this.initChart();
+        })
     }
+
+
 
     /**
     * Init chart
     */
     initChart() {
 
-        // Wrapper div
-        this.wrap = this.selection.append('div') 
-            .attr("class", "chart__wrap chart__wrap--slopechart");
+        // Set up dimensions
+        this.getDimensions();
+        this.initChartFrame('slopechart');
 
-        // SVG element
-        this.svg = this.wrap.append('svg')
-            .attr("class", "chart chart--slopegraph");
+        // Set up scales
+        this.yScale = d3.scaleLinear();
 
-        // General group for margin convention
-        this.g = this.svg.append("g")
-            .attr('class', 'chart__margin-wrap')
-            .attr("transform", `translate(${this.cfg.margin.left},${this.cfg.margin.top})`);
 
         // Axis group
         const axisg = this.g.append('g')
@@ -152,79 +125,17 @@ class d3slopechart {
     }
 
     /**
-    * Returns chart's data
-    */
-    getData(){
-        return this.data;
-    }
-
-    /**
-    * Add new data elements
-    */
-    enterData(data){
-        this.data = this.data.concat(data);
-        this.setColorScales();
-        this.updateChart();
-    }
-
-    /**
-    * Update existing data elements
-    */
-    updateData(data){
-        this.data = [...data];
-        this.setColorScales();
-        this.updateChart();
-    }
-
-    /**
-    * Remove data elements
-    */
-    exitData(filter){
-        this.data.forEach((d,i) => {
-            let c = 0
-            Object.keys(filter).forEach(key => {
-                if(filter[key] == d[key]) c++
-            })
-            if(c == Object.keys(filter).length){
-                this.data.splice(i,1)
-            }
-        });
-        this.setColorScales();
-        this.updateChart();
-    }
-
-    /**
-    * Set up chart dimensions
-    */
-    setDimensions(){
-        this.cfg.width = parseInt(this.selection.node().offsetWidth) - this.cfg.margin.left - this.cfg.margin.right;
-        this.cfg.height = parseInt(this.selection.node().offsetHeight)- this.cfg.margin.top - this.cfg.margin.bottom;
-    }
-
-    /**
     * Set up scales
     */
     setScales(){
-        this.setDimensionScales();
-        this.setColorScales();
-    }
-
-    /**
-    * Set up dimensional scales
-    */
-    setDimensionScales(){
+        // Set up dimensional scales
         this.yScale
             .rangeRound([this.cfg.height, 0])
             .domain([
                 d3.min(this.data, d => d[this.cfg.values[0]] < d[this.cfg.values[1]] ? d[this.cfg.values[0]]*0.9 : d[this.cfg.values[1]]*0.9 ),
                 d3.max(this.data, d => d[this.cfg.values[0]] > d[this.cfg.values[1]] ? d[this.cfg.values[0]]*1.1 : d[this.cfg.values[1]]*1.1 )
             ]);
-    }
 
-    /**
-    * Set up color scales
-    */
-    setColorScales(){
         // Set up color scheme
         if(this.cfg.color.scheme){
             if(this.cfg.color.scheme instanceof Array === true){
@@ -258,8 +169,9 @@ class d3slopechart {
     enterElements(){
 
         // Elements to add
-        const newlines = this.linesgroup.enter().append('g')
-            .attr("class", d => "chart__lines-group chart__lines-group--slopechart");
+        const newlines = this.linesgroup
+            .enter().append('g')
+            .attr("class", "chart__lines-group chart__lines-group--slopechart");
 
         // Lines to add
         newlines.append('line') 
@@ -361,68 +273,6 @@ class d3slopechart {
             .transition(this.transition)
             .style("opacity", 0)
             .remove();
-    }
-
-    /**
-    * Compute element color
-    */
-    colorElement(d) {
-
-        // if key is set, return own object color key
-        if(this.cfg.color.key) return  d[this.cfg.color.key];
-
-        // base color is default one if current key is set, else current one
-        let baseColor = this.cfg.currentKey
-            ? this.cfg.color.default
-            : this.cfg.color.current;
-
-        // if scheme is set, base color is color scheme
-        if(this.cfg.color.scheme){
-            baseColor = this.colorScale(d[this.cfg.key]);
-        }
-
-        // if keys is an object, base color is color key if exists
-        if(this.cfg.color.keys
-            && this.cfg.color.keys instanceof Object
-            && this.cfg.color.keys instanceof Array === false
-            && this.cfg.color.keys[d[this.cfg.key]]){
-            baseColor = this.cfg.color.keys[d[this.cfg.key]];
-        }
-
-        // if current key is set and key is current, base color is current
-        if(this.cfg.currentKey && d[this.cfg.key] === this.cfg.currentKey){
-            baseColor = this.cfg.color.current;
-        }
-
-        return baseColor;
-    }
-
-    /**
-    * Update chart methods
-    */
-    updateChart(){
-        this.setScales();
-        this.bindData();
-        this.enterElements();
-        this.updateElements();
-        this.exitElements();
-    }
-
-    /**
-    * Resize chart methods
-    */
-    resizeChart(){
-        this.setDimensions();
-        this.setScales();
-        this.setChartDimension();
-        this.updateChart();
-    }
-
-    /**
-    * Destroy chart methods
-    */
-    destroyChart(){
-        window.removeEventListener("resize", this.onResize);
     }
 
 }
