@@ -10,7 +10,16 @@ class d3chart {
         this.selection = d3.select(selection);
         this.data = data;
         this.cfg = cfg;
+        this._setConfig(config);
 
+        // Resize listener
+        this.onResize = () => {this.resizeChart()}
+        window.addEventListener("resize", this.onResize);
+
+        this.initChart();
+    }
+
+    _setConfig(config){
         // Set up configuration
         Object.keys(config).forEach(key=> {
             if(config[key] instanceof Object && config[key] instanceof Array === false){
@@ -19,12 +28,6 @@ class d3chart {
                 });
             } else this.cfg[key] = config[key];
         });
-
-        // Resize listener
-        this.onResize = () => {this.resizeChart()}
-        window.addEventListener("resize", this.onResize);
-
-        this.initChart();
     }
 
     /**
@@ -209,9 +212,17 @@ class d3chart {
     */
     resizeChart(){
         this.getDimensions();
-        this.setScales();
+        //this.setScales();
         this.setChartDimension();
         this.updateChart();
+    }
+
+    /**
+    * Update chart configuration
+    */
+    updateConfig(config){
+        this._setConfig(config);
+        this.resizeChart();
     }
 
     /**

@@ -20,6 +20,17 @@ var d3chart = function d3chart(selection, data, config, cfg) {
     this.selection = d3.select(selection);
     this.data = data;
     this.cfg = cfg;
+    this._setConfig(config);
+
+    // Resize listener
+    this.onResize = function () {this$1.resizeChart();};
+    window.addEventListener("resize", this.onResize);
+
+    this.initChart();
+};
+
+d3chart.prototype._setConfig = function _setConfig (config){
+        var this$1 = this;
 
     // Set up configuration
     Object.keys(config).forEach(function (key){
@@ -29,12 +40,6 @@ var d3chart = function d3chart(selection, data, config, cfg) {
             });
         } else { this$1.cfg[key] = config[key]; }
     });
-
-    // Resize listener
-    this.onResize = function () {this$1.resizeChart();};
-    window.addEventListener("resize", this.onResize);
-
-    this.initChart();
 };
 
 /**
@@ -225,9 +230,17 @@ d3chart.prototype.updateChart = function updateChart (){
 */
 d3chart.prototype.resizeChart = function resizeChart (){
     this.getDimensions();
-    this.setScales();
+    //this.setScales();
     this.setChartDimension();
     this.updateChart();
+};
+
+/**
+* Update chart configuration
+*/
+d3chart.prototype.updateConfig = function updateConfig (config){
+    this._setConfig(config);
+    this.resizeChart();
 };
 
 /**
@@ -507,6 +520,14 @@ var script = {
             this.config
         );
     },
+    watch: {
+        config: {
+            handler: function handler(val){
+                this.chart.updateConfig(val);
+            },
+            deep: true
+        }
+    },
     beforeDestroy: function(){
         this.chart.destroyChart();
     }
@@ -657,7 +678,7 @@ var __vue_staticRenderFns__ = [];
   /* style */
   var __vue_inject_styles__ = function (inject) {
     if (!inject) { return }
-    inject("data-v-19acfb40_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}", map: undefined, media: undefined });
+    inject("data-v-a939f476_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}", map: undefined, media: undefined });
 
   };
   /* scoped */

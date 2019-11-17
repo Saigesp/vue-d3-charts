@@ -53,6 +53,12 @@ export default {
         )
     },
     watch: {
+        config: {
+            handler(val){
+                this.chart.updateConfig(val);
+            },
+            deep: true
+        },
         datum(vals){
             this.chart.updateData([...vals]);
         }

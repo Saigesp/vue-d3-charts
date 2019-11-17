@@ -52,6 +52,17 @@ export default {
             this.config
         )
     },
+    watch: {
+        config: {
+            handler(val){
+                this.chart.updateConfig(val);
+            },
+            deep: true
+        },
+        datum(vals){
+            this.chart.updateData([...vals]);
+        }
+    },
     beforeDestroy: function(){
         this.chart.destroyChart();
     }
