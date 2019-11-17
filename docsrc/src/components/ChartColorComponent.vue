@@ -8,8 +8,8 @@
         <p>Object field to use as a color. This option overrides all other options.</p>
         <div v-highlight>
             <pre class="language-js"><code>chart_data = [
-  {name: 'Anna', teamValue: 3216, teamColor: '#55D6BE'},
-  {name: 'Mikel', teamValue: 2693, teamColor: '#00FF35'}
+  {name: 'Anna', teamColor: '#55D6BE'},
+  {name: 'Mikel', teamColor: '#00FF35'}
 ]
 
 chart_config = {

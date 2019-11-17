@@ -1,0 +1,67 @@
+<template>
+  <div class="page">
+
+    <ChartTitleComponent :name="chartname" :desc="chartdesc"></ChartTitleComponent>
+    
+    <section class="chart">
+      <D3PieChart :config="chartconfig" :datum="chartdata" title="Lorem ipsum" source="Dolor sit amet"></D3PieChart>
+    </section>
+
+    <ChartImportComponent :code="chartname" link="https://github.com/Saigesp/vue-d3-charts/blob/master/src/barchart/d3.barchart.js"></ChartImportComponent>
+
+    <ChartTemplateComponent :template="chartcode"></ChartTemplateComponent>
+
+    <ChartDataComponent :desc="chartdatadesc" :code="chartdatacode" :config="chartdataconfig"></ChartDataComponent>
+
+    <ChartConfigComponent :options="chartoptions" :custom="chartcustomoptions"></ChartConfigComponent>
+
+    <ChartColorComponent></ChartColorComponent>
+
+    <ChartStylesComponent classname="piechart" :elements="['slice', 'label']"></ChartStylesComponent>
+
+    <PieChartExamples></PieChartExamples>
+
+  </div>
+</template>
+
+
+<script>
+import {D3PieChart} from 'vue-d3-charts'
+
+export default {
+  name: 'PieChart',
+  data(){
+    return {
+      chartname: 'D3PieChart',
+      chartdesc: 'A pie chart presents...',
+      chartcode: '<D3PieChart :config="chart_config" :datum="chart_data"></D3PieChart>',
+      chartoptions: [],
+      chartcustomoptions: {},
+      chartconfig: {
+        key: 'name',
+        value: 'total',
+        radius: {inner: 80},
+        color: {scheme: ['#41B882','#222f3e', '#3e9a70']},
+        transition: {ease: 'easeBounceOut', duration: 1000}
+      },
+      chartdata: [
+        {name: '1992', total: 1748},
+        {name: '1993', total: 5526},
+        {name: '1994', total: 8574},
+      ],
+      chartdatadesc: 'An <strong>objects array</strong> is expected, with each object as a pie slice',
+      chartdatacode: `chart_data = [{
+  name: "Lorem",
+  total: 30
+},{
+  name: "Ipsum",
+  total: 21
+},{
+  name: "Dolor",
+  total: 20
+}]`,
+      chartdataconfig: '<code>key: "name", value: "total"</code>'
+    }
+  }
+}
+</script>
