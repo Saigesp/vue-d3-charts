@@ -4,7 +4,7 @@
     <div class="chart-grid__list">
         <div class="chart-grid__item" v-for="chart in charts">
             <router-link :to="{name: chart.routername}">
-                <img :src="'/img/icons/D3'+chart.chart+'.svg'" :alt="chart.chart">
+                <img :src="'./img/icons/D3'+chart.chart+'.svg'" :alt="chart.chart">
                 <h5>{{chart.chart}}</h5>
             </router-link>
         </div>
