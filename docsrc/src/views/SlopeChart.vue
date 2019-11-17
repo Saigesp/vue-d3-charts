@@ -19,13 +19,7 @@
 
     <ChartStylesComponent classname="slopechart"></ChartStylesComponent>
 
-    <section class="chart code">
-      <h3>Examples</h3>
-      <SlopeChartExampleBasic/>
-      <SlopeChartExampleHighlight/>
-      <SlopeChartExampleColors/>
-      <SlopeChartExampleDataUpdate/>
-    </section>
+    <SlopeChartExamples></SlopeChartExamples>
 
   </div>
 </template>

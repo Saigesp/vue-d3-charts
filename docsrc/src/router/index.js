@@ -10,6 +10,7 @@ const routes = [
     name: 'home',
     component: HomeView
   },
+  {path: '/examples',          name: 'examples',           component: () => import('../views/Examples.vue')},
   {path: '/barchart',          name: 'barchart',           component: () => import('../views/BarChart.vue')},
   {path: '/linechart',         name: 'linechart',          component: () => import('../views/LineChart.vue')},
   {path: '/slopechart',        name: 'slopechart',         component: () => import('../views/SlopeChart.vue')}

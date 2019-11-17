@@ -19,11 +19,7 @@
 
     <ChartStylesComponent classname="linechart"></ChartStylesComponent>
 
-    <section class="chart code">
-      <h3>Examples</h3>
-      <LineChartExampleBasic/>
-      <LineChartExampleCustomization/>
-    </section>
+    <LineChartExamples></LineChartExamples>
 
   </div>
 </template>
