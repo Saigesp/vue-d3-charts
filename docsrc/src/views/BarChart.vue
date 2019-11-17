@@ -22,6 +22,7 @@
     <section class="chart code">
       <h3>Examples</h3>
       <BarChartExampleBasic/>
+      <BarChartExampleDataUpdate/>
     </section>
 
   </div>

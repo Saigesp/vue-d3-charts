@@ -62,10 +62,6 @@ class d3barchart extends d3chart {
     this.initChartFrame('barchart');
 
     // Set up scales
-    this.xScale = d3.scaleBand()
-    this.yScale = d3.scaleLinear()
-
-    // Set up scales
     this.xScale = d3.scaleBand();
     this.yScale = d3.scaleLinear();
 
@@ -165,7 +161,7 @@ class d3barchart extends d3chart {
 
     // Bars groups
     this.itemg = this.g.selectAll('.chart__bar-group')
-      .data(this.data);
+      .data(this.data, d => d[this.cfg.key]);
   }
 
   /**
@@ -207,14 +203,15 @@ class d3barchart extends d3chart {
   updateElements() {
     // Bars groups
     this.itemg
+      .transition(this.transition)
       .attr('transform', d => `translate(${this.xScale(d[this.cfg.key])},0)`)
 
     // Bars
     this.g
       .selectAll('.chart__bar')
-      .attr('width', this.xScale.bandwidth())
-      .attr('fill', d => this.colorElement(d))
       .transition(this.transition)
+      .attr('fill', d => this.colorElement(d))
+      .attr('width', this.xScale.bandwidth())
       .attr('y', d => this.yScale(+d[this.cfg.value]))
       .attr('height', d => this.cfg.height - this.yScale(+d[this.cfg.value]))
 

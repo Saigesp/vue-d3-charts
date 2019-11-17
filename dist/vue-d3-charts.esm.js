@@ -218,8 +218,8 @@ d3chart.prototype.colorElement = function colorElement (d, key) {
 */
 d3chart.prototype.updateChart = function updateChart (){
     this.computeData();
-    this.setScales();
     this.bindData();
+    this.setScales();
     this.enterElements();
     this.updateElements();
     this.exitElements();
@@ -297,10 +297,6 @@ var d3barchart = /*@__PURE__*/(function (d3chart) {
     // Set up dimensions
     this.getDimensions();
     this.initChartFrame('barchart');
-
-    // Set up scales
-    this.xScale = d3$1.scaleBand();
-    this.yScale = d3$1.scaleLinear();
 
     // Set up scales
     this.xScale = d3$1.scaleBand();
@@ -396,6 +392,8 @@ var d3barchart = /*@__PURE__*/(function (d3chart) {
    * Bind data to main elements groups
    */
   d3barchart.prototype.bindData = function bindData () {
+    var this$1 = this;
+
 
     // Set transition
     this.transition = d3$1.transition('t')
@@ -404,7 +402,7 @@ var d3barchart = /*@__PURE__*/(function (d3chart) {
 
     // Bars groups
     this.itemg = this.g.selectAll('.chart__bar-group')
-      .data(this.data);
+      .data(this.data, function (d) { return d[this$1.cfg.key]; });
   };
 
   /**
@@ -450,14 +448,15 @@ var d3barchart = /*@__PURE__*/(function (d3chart) {
 
     // Bars groups
     this.itemg
+      .transition(this.transition)
       .attr('transform', function (d) { return ("translate(" + (this$1.xScale(d[this$1.cfg.key])) + ",0)"); });
 
     // Bars
     this.g
       .selectAll('.chart__bar')
-      .attr('width', this.xScale.bandwidth())
-      .attr('fill', function (d) { return this$1.colorElement(d); })
       .transition(this.transition)
+      .attr('fill', function (d) { return this$1.colorElement(d); })
+      .attr('width', this.xScale.bandwidth())
       .attr('y', function (d) { return this$1.yScale(+d[this$1.cfg.value]); })
       .attr('height', function (d) { return this$1.cfg.height - this$1.yScale(+d[this$1.cfg.value]); });
 
@@ -526,6 +525,9 @@ var script = {
                 this.chart.updateConfig(val);
             },
             deep: true
+        },
+        datum: function datum(vals){
+            this.chart.updateData([].concat( vals ));
         }
     },
     beforeDestroy: function(){
@@ -678,7 +680,7 @@ var __vue_staticRenderFns__ = [];
   /* style */
   var __vue_inject_styles__ = function (inject) {
     if (!inject) { return }
-    inject("data-v-a939f476_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}", map: undefined, media: undefined });
+    inject("data-v-0a5aade8_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}", map: undefined, media: undefined });
 
   };
   /* scoped */
@@ -1055,6 +1057,17 @@ var script$1 = {
             this.config
         );
     },
+    watch: {
+        config: {
+            handler: function handler(val){
+                this.chart.updateConfig(val);
+            },
+            deep: true
+        },
+        datum: function datum(vals){
+            this.chart.updateData([].concat( vals ));
+        }
+    },
     beforeDestroy: function(){
         this.chart.destroyChart();
     }
@@ -1070,7 +1083,7 @@ var __vue_staticRenderFns__$1 = [];
   /* style */
   var __vue_inject_styles__$1 = function (inject) {
     if (!inject) { return }
-    inject("data-v-40b184e1_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}", map: undefined, media: undefined });
+    inject("data-v-1ae8160d_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}", map: undefined, media: undefined });
 
   };
   /* scoped */
@@ -1411,6 +1424,12 @@ var script$2 = {
         );
     },
     watch: {
+        config: {
+            handler: function handler(val){
+                this.chart.updateConfig(val);
+            },
+            deep: true
+        },
         datum: function datum(vals){
             this.chart.updateData([].concat( vals ));
         }
@@ -1430,7 +1449,7 @@ var __vue_staticRenderFns__$2 = [];
   /* style */
   var __vue_inject_styles__$2 = function (inject) {
     if (!inject) { return }
-    inject("data-v-7b4328a4_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}.chart--slopegraph .chart__line--current{stroke-width:2px}", map: undefined, media: undefined });
+    inject("data-v-f0678048_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}.chart--slopegraph .chart__line--current{stroke-width:2px}", map: undefined, media: undefined });
 
   };
   /* scoped */

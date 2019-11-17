@@ -200,8 +200,8 @@ class d3chart {
     */
     updateChart(){
         this.computeData();
-        this.setScales();
         this.bindData();
+        this.setScales();
         this.enterElements();
         this.updateElements();
         this.exitElements();

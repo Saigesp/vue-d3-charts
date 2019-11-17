@@ -24,3 +24,4 @@ Vue.component('LineChartExampleBasic',              require('./examples/LineChar
 Vue.component('LineChartExampleCustomization',      require('./examples/LineChartExampleCustomization').default);
 
 Vue.component('BarChartExampleBasic',               require('./examples/BarChartExampleBasic').default);
+Vue.component('BarChartExampleDataUpdate',          require('./examples/BarChartExampleDataUpdate').default);

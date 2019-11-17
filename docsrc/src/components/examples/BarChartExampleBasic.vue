@@ -4,14 +4,14 @@
     <p v-if="desc">{{desc}}</p>
     <D3BarChart :config="config" :datum="data" :title="customtitle" :source="customsource"></D3BarChart>
     <div class="example__controls">
-      <input type="text" v-model="customtitle">
-      <input type="text" v-model="customsource">
       <select v-model="config.value">
         <option :value="d" v-for="d in ['hours', 'production']">{{d}}</option>
       </select>
       <select v-model="config.currentKey">
         <option :value="d.year" v-for="d in data">{{d.year}}</option>
       </select>
+      <input type="text" v-model="customtitle">
+      <input type="text" v-model="customsource">
     </div>
     <div v-highlight><pre class="language-html"><code>{{codehtml}}</code></pre></div>
     <div v-highlight><pre class="language-js"><code>{{codejs}}</code></pre></div>
@@ -60,12 +60,6 @@ export default {
       :source="chart_source"
     ></D3BarChart>
 
-    <!-- title control -->
-    <input type="text" v-model="chart_title">
-
-    <!-- source control -->
-    <input type="text" v-model="chart_source">
-
     <!-- value control -->
     <select v-model="config.value">
       <option :value="d" v-for="d in ['hours', 'production']">{{d}}</option>
@@ -75,6 +69,12 @@ export default {
     <select v-model="config.currentKey">
       <option :value="d.year" v-for="d in data">{{d.year}}</option>
     </select>
+
+    <!-- title control -->
+    <input type="text" v-model="chart_title">
+
+    <!-- source control -->
+    <input type="text" v-model="chart_source">
 
   </div>
 </template>`,
