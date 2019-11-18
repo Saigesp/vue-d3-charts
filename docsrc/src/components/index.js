@@ -30,3 +30,4 @@ Vue.component('BarChartExampleBasic',               require('./examples/BarChart
 Vue.component('BarChartExampleDataUpdate',          require('./examples/BarChartExampleDataUpdate').default);
 
 Vue.component('PieChartExamples',                   require('./examples/PieChartExamples').default);
+Vue.component('PieChartExampleDataUpdate',          require('./examples/PieChartExampleDataUpdate').default);

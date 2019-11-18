@@ -4,7 +4,14 @@
     <ChartTitleComponent :name="chartname" :desc="chartdesc"></ChartTitleComponent>
     
     <section class="chart">
-      <D3PieChart :config="chartconfig" :datum="chartdata" title="Lorem ipsum" source="Dolor sit amet"></D3PieChart>
+      <div class="flex">
+        <div class="flex__middle">
+          <D3PieChart :config="chartconfig" :datum="chartdata" title="Lorem ipsum" source="Dolor sit amet"></D3PieChart>
+        </div>
+        <div class="flex__middle">
+          <D3PieChart :config="chartconfig2" :datum="chartdata" title="Lorem ipsum" source="Dolor sit amet"></D3PieChart>
+        </div>
+      </div>
     </section>
 
     <ChartImportComponent :code="chartname" link="https://github.com/Saigesp/vue-d3-charts/blob/master/src/barchart/d3.barchart.js"></ChartImportComponent>
@@ -33,7 +40,7 @@ export default {
   data(){
     return {
       chartname: 'D3PieChart',
-      chartdesc: 'A pie chart presents...',
+      chartdesc: 'A pie chart divides a circle into slices to illustrate numerical proportions.',
       chartcode: '<D3PieChart :config="chart_config" :datum="chart_data"></D3PieChart>',
       chartoptions: ['margin', 'key', 'value', 'currentKey', 'color', 'transition', 'radius'],
       chartcustomoptions: {
@@ -44,9 +51,15 @@ export default {
       chartconfig: {
         key: 'name',
         value: 'total',
+        color: {key: 'color'},
+        transition: {duration: 200}
+      },
+      chartconfig2: {
+        key: 'name',
+        value: 'total',
         radius: {inner: 80},
         color: {key: 'color'},
-        transition: {ease: 'easeBounceOut', duration: 1000}
+        transition: {duration: 200}
       },
       chartdata: [
         {name: 'Lorem', total: 30, color: '#425265'},
@@ -70,3 +83,26 @@ export default {
   }
 }
 </script>
+
+
+
+<style lang="scss">
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+  &__middle {
+    flex: 1 1 100%;
+    svg {
+      max-width: 100%;
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .flex {
+    &__middle {
+      flex: 1 1 50%;
+    }
+  }
+}
+</style>

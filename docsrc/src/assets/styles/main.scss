@@ -41,6 +41,7 @@ pre {
 }
 
 .page {
+    overflow: hidden;
     &--header {
         background: #41B882;
         color: #222f3e;
@@ -162,3 +163,5 @@ pre {
         }
     }
 }
+
+

@@ -1,8 +1,7 @@
 <template>
     <section class="chart code">
       <h3>Pie chart examples</h3>
-      <!-- <LineChartExampleBasic/>
-      <LineChartExampleCustomization/> -->
+      <PieChartExampleDataUpdate/>
     </section>
 </template>
 

@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('vue'), require('d3-selection'), require('d3-scale'), require('d3-array'), require('d3-transition'), require('d3-axis'), require('d3-ease'), require('d3-scale-chromatic'), require('d3-time-format'), require('d3-shape')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'vue', 'd3-selection', 'd3-scale', 'd3-array', 'd3-transition', 'd3-axis', 'd3-ease', 'd3-scale-chromatic', 'd3-time-format', 'd3-shape'], factory) :
-    (global = global || self, factory(global.D3BarChart = {}, global.Vue, global.d3Selection, global.d3Scale, global.d3Array, global.d3Transition, global.d3Axis, global.d3Ease, global.d3ScaleChromatic, global.d3TimeFormat, global.d3Shape));
-}(this, (function (exports, Vue, d3Selection, d3Scale, d3Array, d3Transition, d3Axis, d3Ease, d3ScaleChromatic, d3TimeFormat, d3Shape) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('vue'), require('d3-selection'), require('d3-scale'), require('d3-array'), require('d3-transition'), require('d3-axis'), require('d3-ease'), require('d3-scale-chromatic'), require('d3-time-format'), require('d3-shape'), require('d3-interpolate')) :
+    typeof define === 'function' && define.amd ? define(['exports', 'vue', 'd3-selection', 'd3-scale', 'd3-array', 'd3-transition', 'd3-axis', 'd3-ease', 'd3-scale-chromatic', 'd3-time-format', 'd3-shape', 'd3-interpolate'], factory) :
+    (global = global || self, factory(global.D3BarChart = {}, global.Vue, global.d3Selection, global.d3Scale, global.d3Array, global.d3Transition, global.d3Axis, global.d3Ease, global.d3ScaleChromatic, global.d3TimeFormat, global.d3Shape, global.d3Interpolate));
+}(this, (function (exports, Vue, d3Selection, d3Scale, d3Array, d3Transition, d3Axis, d3Ease, d3ScaleChromatic, d3TimeFormat, d3Shape, d3Interpolate) { 'use strict';
 
     Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
 
@@ -1470,7 +1470,7 @@
         undefined
       );
 
-    var d3$4 = {select: d3Selection.select, selectAll: d3Selection.selectAll, scaleLinear: d3Scale.scaleLinear, scaleOrdinal: d3Scale.scaleOrdinal, max: d3Array.max, min: d3Array.min, transition: d3Transition.transition, pie: d3Shape.pie, arc: d3Shape.arc,
+    var d3$4 = {select: d3Selection.select, selectAll: d3Selection.selectAll, scaleLinear: d3Scale.scaleLinear, scaleOrdinal: d3Scale.scaleOrdinal, max: d3Array.max, min: d3Array.min, transition: d3Transition.transition, pie: d3Shape.pie, arc: d3Shape.arc, interpolate: d3Interpolate.interpolate,
         easeLinear: d3Ease.easeLinear, easePolyIn: d3Ease.easePolyIn, easePolyOut: d3Ease.easePolyOut, easePoly: d3Ease.easePoly, easePolyInOut: d3Ease.easePolyInOut, easeQuadIn: d3Ease.easeQuadIn, easeQuadOut: d3Ease.easeQuadOut,
         easeQuad: d3Ease.easeQuad, easeQuadInOut: d3Ease.easeQuadInOut, easeCubicIn: d3Ease.easeCubicIn, easeCubicOut: d3Ease.easeCubicOut, easeCubic: d3Ease.easeCubic, easeCubicInOut: d3Ease.easeCubicInOut,
         easeSinIn: d3Ease.easeSinIn, easeSinOut: d3Ease.easeSinOut, easeSin: d3Ease.easeSin, easeSinInOut: d3Ease.easeSinInOut, easeExpIn: d3Ease.easeExpIn, easeExpOut: d3Ease.easeExpOut, easeExp: d3Ease.easeExp,
@@ -1545,6 +1545,21 @@
         };
 
         /**
+        * Bind data to main elements groups
+        */
+        d3piechart.prototype.bindData = function bindData (){
+            var this$1 = this;
+
+            this.itemg = this.gcenter.selectAll('.chart__slice-group')
+                .data(this.pie(this.data), function (d) { return d.data[this$1.cfg.key]; });
+
+            // Set transition
+            this.transition = d3$4.transition('t')
+                .duration(this.cfg.transition.duration)
+                .ease(d3$4[this.cfg.transition.ease]);
+        };
+
+        /**
         * Set up scales
         */
         d3piechart.prototype.setScales = function setScales (){
@@ -1579,19 +1594,6 @@
         };
 
         /**
-        * Bind data to main elements groups
-        */
-        d3piechart.prototype.bindData = function bindData (){
-            this.itemg = this.gcenter.selectAll('.chart__slice-group')
-                .data(this.pie(this.data), function (d) { return d.value; });
-
-            // Set transition
-            this.transition = d3$4.transition('t')
-                .duration(this.cfg.transition.duration)
-                .ease(d3$4[this.cfg.transition.ease]);
-        };
-
-        /**
         * Add new chart's elements
         */
         d3piechart.prototype.enterElements = function enterElements (){
@@ -1605,28 +1607,45 @@
             // PATHS
             newg.append("path")
                 .attr("class", "chart__slice chart__slice--piechart")
-                .attr("d", this.arc)
-                .style("fill", function (d){ return this$1.colorElement(d.data); });
+                .transition(this.transition)
+                .delay(function (d,i) { return i * this$1.cfg.transition.duration; })
+                .attrTween('d', function (d) {
+                    var i = d3$4.interpolate(d.startAngle+0.1, d.endAngle);
+                    return function (t) {
+                        d.endAngle = i(t); 
+                        return this$1.arc(d)
+                    }
+                })
+                .style("fill", function (d){ return this$1.colorElement(d.data); })
+                .style('opacity', 1);
 
             // LABELS
             newg.append('text')
                 .attr("class", "chart__label chart__label--piechart")
+                .style('opacity', 0)
                 .attr("transform", function (d) {
                     var pos = this$1.outerArc.centroid(d);
                     pos[0] = this$1.cfg.radius.outter * (this$1.midAngle(d) < Math.PI ? 1.1 : -1.1);
                     return "translate("+pos+")";
                 })
                 .attr('text-anchor', function (d) { return this$1.midAngle(d) < Math.PI ? 'start' : 'end'; })
-                .text(function (d) { return d.data[this$1.cfg.key]; });
+                .text(function (d) { return d.data[this$1.cfg.key]; })
+                .transition(this.transition)
+                .delay(function (d,i) { return i * this$1.cfg.transition.duration; })
+                .style('opacity', 1);
 
             // LINES
             newg.append('polyline')
                 .attr("class", "chart__line chart__line--piechart")
+                .style('opacity', 0)
                 .attr('points', function (d) {
                     var pos = this$1.outerArc.centroid(d);
                     pos[0] = this$1.cfg.radius.outter * 0.95 * (this$1.midAngle(d) < Math.PI ? 1.1 : -1.1);
                     return [this$1.arc.centroid(d), this$1.outerArc.centroid(d), pos]
-                });
+                })
+                .transition(this.transition)
+                .delay(function (d,i) { return i * this$1.cfg.transition.duration; })
+                .style('opacity', 1);
         };
 
         /**
@@ -1641,21 +1660,36 @@
 
             // PATHS
             this.itemg.selectAll(".chart__slice")
-                .attr("d", this.arc)
-                .style("fill", function (d){ return this$1.colorElement(d.data); });
+                .style('opacity', 0)
+                .data(this.pie(this.data), function (d){ return d.data[this$1.cfg.key]; })
+                .transition(this.transition)
+                .delay(function (d,i) { return i * this$1.cfg.transition.duration; })
+                .attrTween('d', function (d) {
+                    var i = d3$4.interpolate(d.startAngle+0.1, d.endAngle);
+                    return function (t) {
+                        d.endAngle = i(t); 
+                        return this$1.arc(d)
+                    }
+                })
+                .style("fill", function (d){ return this$1.colorElement(d.data); })
+                .style('opacity', 1);
 
             // LABELS
             this.itemg.selectAll(".chart__label")
+                .data(this.pie(this.data), function (d){ return d.data[this$1.cfg.key]; })
+                .text(function (d) { return d.data[this$1.cfg.key]; })
+                .transition(this.transition)
                 .attr("transform", function (d) {
                     var pos = this$1.outerArc.centroid(d);
                     pos[0] = this$1.cfg.radius.outter * (this$1.midAngle(d) < Math.PI ? 1.1 : -1.1);
                     return "translate("+pos+")";
                 })
-                .attr('text-anchor', function (d) { return this$1.midAngle(d) < Math.PI ? 'start' : 'end'; })
-                .text(function (d) { return d.data[this$1.cfg.key]; });
+                .attr('text-anchor', function (d) { return this$1.midAngle(d) < Math.PI ? 'start' : 'end'; });
 
             // LINES
             this.itemg.selectAll(".chart__line")
+                .data(this.pie(this.data), function (d){ return d.data[this$1.cfg.key]; })
+                .transition(this.transition)
                 .attr('points', function (d) {
                     var pos = this$1.outerArc.centroid(d);
                     pos[0] = this$1.cfg.radius.outter * 0.95 * (this$1.midAngle(d) < Math.PI ? 1.1 : -1.1);
@@ -1675,6 +1709,19 @@
 
         d3piechart.prototype.midAngle = function midAngle (d){
             return d.startAngle + (d.endAngle - d.startAngle)/2;
+        };
+
+        /**
+        * Store the displayed angles in _current.
+        * Then, interpolate from _current to the new angles.
+        * During the transition, _current is updated in-place by d3.interpolate.
+        */
+        d3piechart.prototype.arcTween = function arcTween (a) {
+          var this$1 = this;
+
+          var i = d3$4.interpolate(this._current, a);
+          this._current = i(0);
+          return function (t) { return this$1.arc(i(t)); } ;
         };
 
         return d3piechart;

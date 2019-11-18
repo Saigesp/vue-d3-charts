@@ -8,6 +8,7 @@ import { easeLinear, easePolyIn, easePolyOut, easePoly, easePolyInOut, easeQuadI
 import { schemeCategory10, schemeAccent, schemeDark2, schemePaired, schemePastel1, schemePastel2, schemeSet1, schemeSet2, schemeSet3, schemeTableau10 } from 'd3-scale-chromatic';
 import { timeParse, timeFormat } from 'd3-time-format';
 import { line, curveBasis, curveBundle, curveCardinal, curveCatmullRom, curveLinear, curveMonotoneX, curveMonotoneY, curveNatural, curveStep, curveStepAfter, curveStepBefore, pie, arc } from 'd3-shape';
+import { interpolate } from 'd3-interpolate';
 
 var d3 = {select: select};
 
@@ -1473,7 +1474,7 @@ var __vue_staticRenderFns__$2 = [];
     undefined
   );
 
-var d3$4 = {select: select, selectAll: selectAll, scaleLinear: scaleLinear, scaleOrdinal: scaleOrdinal, max: max, min: min, transition: transition, pie: pie, arc: arc,
+var d3$4 = {select: select, selectAll: selectAll, scaleLinear: scaleLinear, scaleOrdinal: scaleOrdinal, max: max, min: min, transition: transition, pie: pie, arc: arc, interpolate: interpolate,
     easeLinear: easeLinear, easePolyIn: easePolyIn, easePolyOut: easePolyOut, easePoly: easePoly, easePolyInOut: easePolyInOut, easeQuadIn: easeQuadIn, easeQuadOut: easeQuadOut,
     easeQuad: easeQuad, easeQuadInOut: easeQuadInOut, easeCubicIn: easeCubicIn, easeCubicOut: easeCubicOut, easeCubic: easeCubic, easeCubicInOut: easeCubicInOut,
     easeSinIn: easeSinIn, easeSinOut: easeSinOut, easeSin: easeSin, easeSinInOut: easeSinInOut, easeExpIn: easeExpIn, easeExpOut: easeExpOut, easeExp: easeExp,
@@ -1548,6 +1549,21 @@ var d3piechart = /*@__PURE__*/(function (d3chart) {
     };
 
     /**
+    * Bind data to main elements groups
+    */
+    d3piechart.prototype.bindData = function bindData (){
+        var this$1 = this;
+
+        this.itemg = this.gcenter.selectAll('.chart__slice-group')
+            .data(this.pie(this.data), function (d) { return d.data[this$1.cfg.key]; });
+
+        // Set transition
+        this.transition = d3$4.transition('t')
+            .duration(this.cfg.transition.duration)
+            .ease(d3$4[this.cfg.transition.ease]);
+    };
+
+    /**
     * Set up scales
     */
     d3piechart.prototype.setScales = function setScales (){
@@ -1582,19 +1598,6 @@ var d3piechart = /*@__PURE__*/(function (d3chart) {
     };
 
     /**
-    * Bind data to main elements groups
-    */
-    d3piechart.prototype.bindData = function bindData (){
-        this.itemg = this.gcenter.selectAll('.chart__slice-group')
-            .data(this.pie(this.data), function (d) { return d.value; });
-
-        // Set transition
-        this.transition = d3$4.transition('t')
-            .duration(this.cfg.transition.duration)
-            .ease(d3$4[this.cfg.transition.ease]);
-    };
-
-    /**
     * Add new chart's elements
     */
     d3piechart.prototype.enterElements = function enterElements (){
@@ -1608,28 +1611,45 @@ var d3piechart = /*@__PURE__*/(function (d3chart) {
         // PATHS
         newg.append("path")
             .attr("class", "chart__slice chart__slice--piechart")
-            .attr("d", this.arc)
-            .style("fill", function (d){ return this$1.colorElement(d.data); });
+            .transition(this.transition)
+            .delay(function (d,i) { return i * this$1.cfg.transition.duration; })
+            .attrTween('d', function (d) {
+                var i = d3$4.interpolate(d.startAngle+0.1, d.endAngle);
+                return function (t) {
+                    d.endAngle = i(t); 
+                    return this$1.arc(d)
+                }
+            })
+            .style("fill", function (d){ return this$1.colorElement(d.data); })
+            .style('opacity', 1);
 
         // LABELS
         newg.append('text')
             .attr("class", "chart__label chart__label--piechart")
+            .style('opacity', 0)
             .attr("transform", function (d) {
                 var pos = this$1.outerArc.centroid(d);
                 pos[0] = this$1.cfg.radius.outter * (this$1.midAngle(d) < Math.PI ? 1.1 : -1.1);
                 return "translate("+pos+")";
             })
             .attr('text-anchor', function (d) { return this$1.midAngle(d) < Math.PI ? 'start' : 'end'; })
-            .text(function (d) { return d.data[this$1.cfg.key]; });
+            .text(function (d) { return d.data[this$1.cfg.key]; })
+            .transition(this.transition)
+            .delay(function (d,i) { return i * this$1.cfg.transition.duration; })
+            .style('opacity', 1);
 
         // LINES
         newg.append('polyline')
             .attr("class", "chart__line chart__line--piechart")
+            .style('opacity', 0)
             .attr('points', function (d) {
                 var pos = this$1.outerArc.centroid(d);
                 pos[0] = this$1.cfg.radius.outter * 0.95 * (this$1.midAngle(d) < Math.PI ? 1.1 : -1.1);
                 return [this$1.arc.centroid(d), this$1.outerArc.centroid(d), pos]
-            });
+            })
+            .transition(this.transition)
+            .delay(function (d,i) { return i * this$1.cfg.transition.duration; })
+            .style('opacity', 1);
     };
 
     /**
@@ -1644,21 +1664,36 @@ var d3piechart = /*@__PURE__*/(function (d3chart) {
 
         // PATHS
         this.itemg.selectAll(".chart__slice")
-            .attr("d", this.arc)
-            .style("fill", function (d){ return this$1.colorElement(d.data); });
+            .style('opacity', 0)
+            .data(this.pie(this.data), function (d){ return d.data[this$1.cfg.key]; })
+            .transition(this.transition)
+            .delay(function (d,i) { return i * this$1.cfg.transition.duration; })
+            .attrTween('d', function (d) {
+                var i = d3$4.interpolate(d.startAngle+0.1, d.endAngle);
+                return function (t) {
+                    d.endAngle = i(t); 
+                    return this$1.arc(d)
+                }
+            })
+            .style("fill", function (d){ return this$1.colorElement(d.data); })
+            .style('opacity', 1);
 
         // LABELS
         this.itemg.selectAll(".chart__label")
+            .data(this.pie(this.data), function (d){ return d.data[this$1.cfg.key]; })
+            .text(function (d) { return d.data[this$1.cfg.key]; })
+            .transition(this.transition)
             .attr("transform", function (d) {
                 var pos = this$1.outerArc.centroid(d);
                 pos[0] = this$1.cfg.radius.outter * (this$1.midAngle(d) < Math.PI ? 1.1 : -1.1);
                 return "translate("+pos+")";
             })
-            .attr('text-anchor', function (d) { return this$1.midAngle(d) < Math.PI ? 'start' : 'end'; })
-            .text(function (d) { return d.data[this$1.cfg.key]; });
+            .attr('text-anchor', function (d) { return this$1.midAngle(d) < Math.PI ? 'start' : 'end'; });
 
         // LINES
         this.itemg.selectAll(".chart__line")
+            .data(this.pie(this.data), function (d){ return d.data[this$1.cfg.key]; })
+            .transition(this.transition)
             .attr('points', function (d) {
                 var pos = this$1.outerArc.centroid(d);
                 pos[0] = this$1.cfg.radius.outter * 0.95 * (this$1.midAngle(d) < Math.PI ? 1.1 : -1.1);
@@ -1678,6 +1713,19 @@ var d3piechart = /*@__PURE__*/(function (d3chart) {
 
     d3piechart.prototype.midAngle = function midAngle (d){
         return d.startAngle + (d.endAngle - d.startAngle)/2;
+    };
+
+    /**
+    * Store the displayed angles in _current.
+    * Then, interpolate from _current to the new angles.
+    * During the transition, _current is updated in-place by d3.interpolate.
+    */
+    d3piechart.prototype.arcTween = function arcTween (a) {
+      var this$1 = this;
+
+      var i = d3$4.interpolate(this._current, a);
+      this._current = i(0);
+      return function (t) { return this$1.arc(i(t)); } ;
     };
 
     return d3piechart;

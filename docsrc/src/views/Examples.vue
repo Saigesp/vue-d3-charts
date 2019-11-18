@@ -27,6 +27,7 @@ export default {
       currentComponent: false,
       charts: [
         {name: 'Bar chart',   component: 'BarChartExamples'},
+        {name: 'Pie chart',   component: 'PieChartExamples'},
         {name: 'Line chart',  component: 'LineChartExamples'},
         {name: 'Slope chart', component: 'SlopeChartExamples'},
       ]

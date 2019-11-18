@@ -1,0 +1,1 @@
+.flex{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap}.flex__middle{-webkit-box-flex:1;-ms-flex:1 1 100%;flex:1 1 100%}.flex__middle svg{max-width:100%}@media screen and (min-width:768px){.flex__middle{-webkit-box-flex:1;-ms-flex:1 1 50%;flex:1 1 50%}}

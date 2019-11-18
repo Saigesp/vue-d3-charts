@@ -4,6 +4,7 @@ import {scaleLinear, scaleOrdinal} from 'd3-scale'
 import {max, min} from 'd3-array'
 import {pie, arc} from 'd3-shape'
 import {transition} from 'd3-transition'
+import {interpolate} from 'd3-interpolate'
 import {easeLinear, easePolyIn, easePolyOut, easePoly,
     easePolyInOut, easeQuadIn, easeQuadOut, easeQuad, easeQuadInOut,
     easeCubicIn, easeCubicOut, easeCubic, easeCubicInOut, easeSinIn,
@@ -16,7 +17,7 @@ import {schemeCategory10, schemeAccent, schemeDark2, schemePaired,
     schemePastel1, schemePastel2, schemeSet1, schemeSet2, schemeSet3,
     schemeTableau10} from 'd3-scale-chromatic'
 
-const d3 = {select, selectAll, scaleLinear, scaleOrdinal, max, min, transition, pie, arc,
+const d3 = {select, selectAll, scaleLinear, scaleOrdinal, max, min, transition, pie, arc, interpolate,
     easeLinear, easePolyIn, easePolyOut, easePoly, easePolyInOut, easeQuadIn, easeQuadOut,
     easeQuad, easeQuadInOut, easeCubicIn, easeCubicOut, easeCubic, easeCubicInOut,
     easeSinIn, easeSinOut, easeSin, easeSinInOut, easeExpIn, easeExpOut, easeExp,
@@ -86,6 +87,19 @@ class d3piechart extends d3chart{
     }
 
     /**
+    * Bind data to main elements groups
+    */
+    bindData(){
+        this.itemg = this.gcenter.selectAll('.chart__slice-group')
+            .data(this.pie(this.data), d => d.data[this.cfg.key])
+
+        // Set transition
+        this.transition = d3.transition('t')
+            .duration(this.cfg.transition.duration)
+            .ease(d3[this.cfg.transition.ease]);
+    }
+
+    /**
     * Set up scales
     */
     setScales(){
@@ -118,19 +132,6 @@ class d3piechart extends d3chart{
     }
 
     /**
-    * Bind data to main elements groups
-    */
-    bindData(){
-        this.itemg = this.gcenter.selectAll('.chart__slice-group')
-            .data(this.pie(this.data), d => d.value)
-
-        // Set transition
-        this.transition = d3.transition('t')
-            .duration(this.cfg.transition.duration)
-            .ease(d3[this.cfg.transition.ease]);
-    }
-
-    /**
     * Add new chart's elements
     */
     enterElements(){
@@ -142,12 +143,22 @@ class d3piechart extends d3chart{
         // PATHS
         newg.append("path")
             .attr("class", "chart__slice chart__slice--piechart")
-            .attr("d", this.arc)
-            .style("fill", d=> this.colorElement(d.data));
+            .transition(this.transition)
+            .delay((d,i) => i * this.cfg.transition.duration)
+            .attrTween('d', d => {
+                const i = d3.interpolate(d.startAngle+0.1, d.endAngle);
+                return t => {
+                    d.endAngle = i(t); 
+                    return this.arc(d)
+                }
+            })
+            .style("fill", d=> this.colorElement(d.data))
+            .style('opacity', 1)
 
         // LABELS
         newg.append('text')
             .attr("class", "chart__label chart__label--piechart")
+            .style('opacity', 0)
             .attr("transform", d => {
                 let pos = this.outerArc.centroid(d);
                 pos[0] = this.cfg.radius.outter * (this.midAngle(d) < Math.PI ? 1.1 : -1.1);
@@ -155,15 +166,22 @@ class d3piechart extends d3chart{
             })
             .attr('text-anchor', d => this.midAngle(d) < Math.PI ? 'start' : 'end')
             .text(d => d.data[this.cfg.key])
+            .transition(this.transition)
+            .delay((d,i) => i * this.cfg.transition.duration)
+            .style('opacity', 1)
 
         // LINES
         newg.append('polyline')
             .attr("class", "chart__line chart__line--piechart")
+            .style('opacity', 0)
             .attr('points', d => {
                 let pos = this.outerArc.centroid(d);
                 pos[0] = this.cfg.radius.outter * 0.95 * (this.midAngle(d) < Math.PI ? 1.1 : -1.1);
                 return [this.arc.centroid(d), this.outerArc.centroid(d), pos]
             })
+            .transition(this.transition)
+            .delay((d,i) => i * this.cfg.transition.duration)
+            .style('opacity', 1)
     }
 
     /**
@@ -176,21 +194,36 @@ class d3piechart extends d3chart{
 
         // PATHS
         this.itemg.selectAll(".chart__slice")
-            .attr("d", this.arc)
-            .style("fill", d=> this.colorElement(d.data));
+            .style('opacity', 0)
+            .data(this.pie(this.data), d=> d.data[this.cfg.key])
+            .transition(this.transition)
+            .delay((d,i) => i * this.cfg.transition.duration)
+            .attrTween('d', d => {
+                const i = d3.interpolate(d.startAngle+0.1, d.endAngle);
+                return t => {
+                    d.endAngle = i(t); 
+                    return this.arc(d)
+                }
+            })
+            .style("fill", d=> this.colorElement(d.data))
+            .style('opacity', 1)
 
         // LABELS
         this.itemg.selectAll(".chart__label")
+            .data(this.pie(this.data), d=> d.data[this.cfg.key])
+            .text(d => d.data[this.cfg.key])
+            .transition(this.transition)
             .attr("transform", d => {
                 let pos = this.outerArc.centroid(d);
                 pos[0] = this.cfg.radius.outter * (this.midAngle(d) < Math.PI ? 1.1 : -1.1);
                 return "translate("+pos+")";
             })
             .attr('text-anchor', d => this.midAngle(d) < Math.PI ? 'start' : 'end')
-            .text(d => d.data[this.cfg.key])
 
         // LINES
         this.itemg.selectAll(".chart__line")
+            .data(this.pie(this.data), d=> d.data[this.cfg.key])
+            .transition(this.transition)
             .attr('points', d => {
                 let pos = this.outerArc.centroid(d);
                 pos[0] = this.cfg.radius.outter * 0.95 * (this.midAngle(d) < Math.PI ? 1.1 : -1.1);
@@ -210,6 +243,17 @@ class d3piechart extends d3chart{
 
     midAngle(d){
         return d.startAngle + (d.endAngle - d.startAngle)/2;
+    }
+
+    /**
+    * Store the displayed angles in _current.
+    * Then, interpolate from _current to the new angles.
+    * During the transition, _current is updated in-place by d3.interpolate.
+    */
+    arcTween(a) {
+      var i = d3.interpolate(this._current, a);
+      this._current = i(0);
+      return (t) => this.arc(i(t)) ;
     }
 
 }
