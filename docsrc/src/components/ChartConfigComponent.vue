@@ -136,7 +136,7 @@ export default {
                     type: 'Object',
                     desc: "Chart's transition options. <code>ease</code> must be a d3-ease function name.",
                     link: 'https://github.com/d3/d3-ease',
-                    example: '<code>ease: "easeBounceOut"</code>'
+                    example: '<code>transition: {ease: "easeBounceOut"}</code>'
                 },
                 curve: {
                     required: false,
@@ -187,6 +187,16 @@ export default {
                     type: 'Object',
                     desc: "Tooltip options convention. <code>labels</code>: label to overrige each value in the tooltip. If set to false, labels will be each value name. See below.",
                     example: '<code>tooltip: {labels: ["iPhone", "Android"]}</code>',
+                },
+                radius: {
+                    required: false,
+                    default: `radius: {
+    inner: false,
+    outter: false,
+  }`,
+                    type: 'Object',
+                    desc: "Radius options convention.<br><code>inner</code>: inner circle radius. If set to false, chart will be a pie.<br><code>outter</code>: outter circle radius. If set to false, radius will be automatically set up.",
+                    example: '<code>radius: {inner: 40, outter: false}</code>',
                 },
                 labelRotation: {
                     required: false,

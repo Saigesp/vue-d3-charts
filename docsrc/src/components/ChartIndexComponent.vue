@@ -2,7 +2,7 @@
   <section class="chart-grid">
     <h2>Charts</h2>
     <div class="chart-grid__list">
-        <div class="chart-grid__item" v-for="chart in charts">
+        <div class="chart-grid__item" v-for="chart in charts" v-if="$route.path !== '/'+chart.routername">
             <router-link :to="{name: chart.routername}">
                 <img :src="'./img/icons/D3'+chart.chart+'.svg'" :alt="chart.chart">
                 <h5>{{chart.chart}}</h5>

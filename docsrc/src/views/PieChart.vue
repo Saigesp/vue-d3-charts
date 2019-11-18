@@ -35,19 +35,24 @@ export default {
       chartname: 'D3PieChart',
       chartdesc: 'A pie chart presents...',
       chartcode: '<D3PieChart :config="chart_config" :datum="chart_data"></D3PieChart>',
-      chartoptions: [],
-      chartcustomoptions: {},
+      chartoptions: ['margin', 'key', 'value', 'currentKey', 'color', 'transition', 'radius'],
+      chartcustomoptions: {
+        radius: {
+          required: true
+        }
+      },
       chartconfig: {
         key: 'name',
         value: 'total',
         radius: {inner: 80},
-        color: {scheme: ['#41B882','#222f3e', '#3e9a70']},
+        color: {key: 'color'},
         transition: {ease: 'easeBounceOut', duration: 1000}
       },
       chartdata: [
-        {name: '1992', total: 1748},
-        {name: '1993', total: 5526},
-        {name: '1994', total: 8574},
+        {name: 'Lorem', total: 30, color: '#425265'},
+        {name: 'Ipsum', total: 21, color: '#3e9a70'},
+        {name: 'Dolor', total: 20, color: '#41ab7b'},
+        {name: 'Sit',   total: 112, color: '#222f3e'},
       ],
       chartdatadesc: 'An <strong>objects array</strong> is expected, with each object as a pie slice',
       chartdatacode: `chart_data = [{

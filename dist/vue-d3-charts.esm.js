@@ -1609,7 +1609,7 @@ var d3piechart = /*@__PURE__*/(function (d3chart) {
         newg.append("path")
             .attr("class", "chart__slice chart__slice--piechart")
             .attr("d", this.arc)
-            .style("fill", function (d){ return this$1.colorElement(d, 'value'); });
+            .style("fill", function (d){ return this$1.colorElement(d.data); });
 
         // LABELS
         newg.append('text')
@@ -1645,7 +1645,7 @@ var d3piechart = /*@__PURE__*/(function (d3chart) {
         // PATHS
         this.itemg.selectAll(".chart__slice")
             .attr("d", this.arc)
-            .style("fill", function (d){ return this$1.colorElement(d, 'value'); });
+            .style("fill", function (d){ return this$1.colorElement(d.data); });
 
         // LABELS
         this.itemg.selectAll(".chart__label")

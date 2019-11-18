@@ -143,7 +143,7 @@ class d3piechart extends d3chart{
         newg.append("path")
             .attr("class", "chart__slice chart__slice--piechart")
             .attr("d", this.arc)
-            .style("fill", d=> this.colorElement(d, 'value'));
+            .style("fill", d=> this.colorElement(d.data));
 
         // LABELS
         newg.append('text')
@@ -177,7 +177,7 @@ class d3piechart extends d3chart{
         // PATHS
         this.itemg.selectAll(".chart__slice")
             .attr("d", this.arc)
-            .style("fill", d=> this.colorElement(d, 'value'));
+            .style("fill", d=> this.colorElement(d.data));
 
         // LABELS
         this.itemg.selectAll(".chart__label")
