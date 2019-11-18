@@ -35,6 +35,7 @@ export default {
 .chart-grid {
     &__list {
         display: flex;
+        flex-wrap: wrap;
         flex-grow: none;
     }
     &__item {
