@@ -4,6 +4,8 @@ This repository contains the charts components library (on `/src`) and the demo/
 
 ### Create a new chart
 
+#### Create chart
+
 1. Create a new folder `/src/mynewchart` with files `d3.mynewchart.vue` and `d3.mynewchart.js`
 
     **d3.mynewchart.js** is the chart's vanilla javascript file (isolated from any JS framework).
@@ -125,14 +127,51 @@ This repository contains the charts components library (on `/src`) and the demo/
     ```
     > See [d3.barchart.vue](/src/barchart/d3.barchart.vue) for an example.
 
-### Build
+3. Add component to `/src/index.js`:
+
+    ```javascript
+    import Vue from "vue";
+    //...
+    import D3Mynewchart from "./mynewchart/d3.mynewchart.vue";
+
+    const Components = {
+        //...
+        D3Mynewchart
+    }
+
+    Object.keys(Components).forEach(name => {
+        Vue.component(name, Components[name]);
+    });
+
+    export default Components;
+    ```
+
+3. Build package:
+    ```
+    npm run build
+    ```
+
+#### Create demo and documentation pages
+
+4. In order to develop the new additions demo and documentation, replace `/docsrc` vue-d3-charts node module:
+    ```
+    npm run build
+    rm -rf docsrc/node_modules/vue-d3-charts/dist/
+    cp -r dist/ docsrc/node_modules/vue-d3-charts/
+    ```
+
+5. Create a new vue component to act as chart's view in `/docsrc/src/views`
+
+6. Add it to `/docs/router/index.js`
+
+## Build and replace docs files
 
 Build and copy files to test on `doc`:
 ```bash
 npm run build && rm -rf docsrc/node_modules/vue-d3-charts/dist/ && cp -r dist/ docsrc/node_modules/vue-d3-charts/
 ```
 
-### Documentation page
+## Documentation page
 
 Documentation source files are located in `/docsrc` folder
 
