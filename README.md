@@ -46,3 +46,11 @@ config = {
   color: "steelblue",
 }
 ```
+
+### Contributing
+
+See [contribution guide](CONTRIB.md) for more details.
+
+### License
+
+This repository is available under **GNU General Public License v3.0**. See [details](LICENSE.md)
