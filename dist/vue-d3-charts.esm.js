@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { select, selectAll } from 'd3-selection';
-import { scaleBand, scaleLinear, scaleOrdinal, scaleTime } from 'd3-scale';
+import { scaleBand, scaleLinear, scaleOrdinal, scaleTime, scaleSqrt } from 'd3-scale';
 import { max, extent, min } from 'd3-array';
 import { transition } from 'd3-transition';
 import { axisBottom, axisLeft } from 'd3-axis';
@@ -9,6 +9,7 @@ import { schemeCategory10, schemeAccent, schemeDark2, schemePaired, schemePastel
 import { timeParse, timeFormat } from 'd3-time-format';
 import { line, curveBasis, curveBundle, curveCardinal, curveCatmullRom, curveLinear, curveMonotoneX, curveMonotoneY, curveNatural, curveStep, curveStepAfter, curveStepBefore, pie, arc } from 'd3-shape';
 import { interpolate } from 'd3-interpolate';
+import { hierarchy, partition } from 'd3-hierarchy';
 
 var d3 = {select: select};
 
@@ -1659,9 +1660,6 @@ var d3piechart = /*@__PURE__*/(function (d3chart) {
         var this$1 = this;
 
 
-        //this.itemg
-        //    .selectAll('.chart__slice-group')
-
         // PATHS
         this.itemg.selectAll(".chart__slice")
             .style('opacity', 0)
@@ -1825,11 +1823,259 @@ var __vue_staticRenderFns__$3 = [];
     undefined
   );
 
+/*
+const d3 = {select, selectAll, scaleLinear, scaleOrdinal, max, min, transition, easeLinear,
+    easePolyIn, easePolyOut, easePoly, easePolyInOut, easeQuadIn, easeQuadOut,
+    easeQuad, easeQuadInOut, easeCubicIn, easeCubicOut, easeCubic, easeCubicInOut,
+    easeSinIn, easeSinOut, easeSin, easeSinInOut, easeExpIn, easeExpOut, easeExp,
+    easeExpInOut, easeCircleIn, easeCircleOut, easeCircle, easeCircleInOut,
+    easeElasticIn, easeElastic, easeElasticOut, easeElasticInOut, easeBackIn,
+    easeBackOut, easeBack, easeBackInOut, easeBounceIn, easeBounce, easeBounceOut,
+    easeBounceInOut, schemeCategory10, schemeAccent, schemeDark2, schemePaired,
+    schemePastel1, schemePastel2, schemeSet1, schemeSet2, schemeSet3,
+    schemeTableau10}*/
+
+var d3$5 = {select: select, selectAll: selectAll, scaleLinear: scaleLinear, scaleOrdinal: scaleOrdinal, scaleSqrt: scaleSqrt, hierarchy: hierarchy,
+    partition: partition, arc: arc,
+    schemeCategory10: schemeCategory10, schemeAccent: schemeAccent, schemeDark2: schemeDark2, schemePaired: schemePaired,
+    schemePastel1: schemePastel1, schemePastel2: schemePastel2, schemeSet1: schemeSet1, schemeSet2: schemeSet2, schemeSet3: schemeSet3,
+    schemeTableau10: schemeTableau10
+};
+
+/**
+* D3 Sunburst
+*/
+var d3sunburst = /*@__PURE__*/(function (d3chart) {
+    function d3sunburst(selection, data, config) {
+        d3chart.call(this, selection, data, config, {
+            margin: {top: 10, right: 100, bottom: 20, left: 100},
+            key: '',
+            value: '',
+            color : {key: false, keys: false, scheme: false, current: '#1f77b4', default: '#AAA', axis: '#000'},
+            //transition: {duration: 350, ease: 'easeLinear'}
+        });
+    }
+
+    if ( d3chart ) d3sunburst.__proto__ = d3chart;
+    d3sunburst.prototype = Object.create( d3chart && d3chart.prototype );
+    d3sunburst.prototype.constructor = d3sunburst;
+
+    /**
+    * Init chart
+    */
+    d3sunburst.prototype.initChart = function initChart () {
+
+        // Set up dimensions
+        this.getDimensions();
+        this.initChartFrame('sunburst');
+
+        this.xScale = d3$5.scaleLinear();
+        this.yScale = d3$5.scaleSqrt();
+
+        // Center group
+        this.gcenter = this.g.append('g');
+
+        this.setChartDimension();
+        this.updateChart();
+    };
+
+    /**
+    * Set up chart dimensions (non depending on data)
+    */
+    d3sunburst.prototype.setChartDimension = function setChartDimension (){
+        // SVG element
+        this.svg
+            .attr("viewBox", ("0 0 " + (this.cfg.width+this.cfg.margin.left+this.cfg.margin.right) + " " + (this.cfg.height+this.cfg.margin.top+this.cfg.margin.bottom)))
+            .attr("width", this.cfg.width + this.cfg.margin.left + this.cfg.margin.right)
+            .attr("height", this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom);
+
+        // Center group
+        this.gcenter
+            .attr('transform', ("translate(" + (this.cfg.width/2) + ", " + (this.cfg.height/2) + ")"));
+    };
+
+    /**
+    * Set up scales
+    */
+    d3sunburst.prototype.setScales = function setScales (){
+        var this$1 = this;
+
+
+        this.radius = Math.min(this.cfg.width, this.cfg.height)/2;
+
+        this.xScale
+            .range([0, 2*Math.PI])
+            .clamp(true);
+
+        this.yScale
+            .range([this.radius*.1, this.radius]);
+
+        this.arc = d3$5.arc()
+            .startAngle(function (d) { return this$1.xScale(d.x0); })
+            .endAngle(function (d) { return this$1.xScale(d.x1); })
+            .innerRadius(function (d) { return Math.max(0, this$1.yScale(d.y0)); })
+            .outerRadius(function (d) { return Math.max(0, this$1.yScale(d.y1)); });
+
+        // Set up color scheme
+        if(this.cfg.color.scheme){
+            if(this.cfg.color.scheme instanceof Array === true){
+                this.colorScale = d3$5.scaleOrdinal()
+                    .range(this.cfg.color.scheme);
+            }else{
+                this.colorScale = d3$5.scaleOrdinal(d3$5[this.cfg.color.scheme]);
+            }
+        }
+    };
+
+    /**
+    * Bind data to main elements groups
+    */
+    d3sunburst.prototype.bindData = function bindData (){
+        var partition = d3$5.partition();
+        var root = d3$5.hierarchy(this.data);
+        root.sum(function (d){ return d.value; });
+
+        this.itemg = this.gcenter.selectAll('.chart__slice-group')
+            .data(partition(root).descendants());
+
+    };
+
+    /**
+    * Add new chart's elements
+    */
+    d3sunburst.prototype.enterElements = function enterElements (){
+        var this$1 = this;
+
+
+        var newg = this.itemg
+            .enter().append('g')
+            .attr("class", "chart__slice-group chart__slice-group--sunburst");
+
+        // PATHS
+        newg.append("path")
+            .attr("class", "chart__slice chart__slice--sunburst")
+            .style("fill", function (d) { return this$1.colorElement(d.data); })
+            .attr("d", this.arc);
+
+    };
+
+    /**
+    * Update chart's elements based on data change
+    */
+    d3sunburst.prototype.updateElements = function updateElements (){
+        //console.log('updateElements');
+    };
+
+    /**
+    * Remove chart's elements without data
+    */
+    d3sunburst.prototype.exitElements = function exitElements (){
+        //console.log('exitElements');
+    };
+
+    return d3sunburst;
+}(d3chart));
+
+//
+
+var script$4 = {
+    name: 'D3Sunburst',
+    data: function(){
+        return {
+            chart: {},
+        }
+    },
+    props: {
+        config: {
+            type: Object,
+            required: true,
+            default: function (){
+                return {};
+            }
+        },
+        datum: {
+            type: Object,
+            required: true,
+            default: function (){
+                return {};
+            }
+        },
+        title: {
+            type: String,
+            default: ''
+        },
+        source: {
+            type: String,
+            default: ''
+        },
+        height: {
+            type: Number,
+            default: 300,
+        }
+    },
+    mounted: function(){
+        this.chart = new d3sunburst(
+            this.$refs.chart,
+            JSON.parse(JSON.stringify(this.datum)),
+            this.config
+        );
+    },
+    watch: {
+        config: {
+            handler: function handler(val){
+                this.chart.updateConfig(val);
+            },
+            deep: true
+        },
+        datum: function datum(vals){
+            this.chart.updateData(JSON.parse(JSON.stringify(vals)));
+        }
+    },
+    beforeDestroy: function(){
+        this.chart.destroyChart();
+    }
+};
+
+/* script */
+var __vue_script__$4 = script$4;
+
+/* template */
+var __vue_render__$4 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"chart__wrapper"},[(_vm.title)?_c('div',{staticClass:"chart__title"},[_vm._v(_vm._s(_vm.title))]):_vm._e(),_vm._v(" "),_c('div',{ref:"chart",style:({height: ((this.height) + "px")})}),_vm._v(" "),(_vm.source)?_c('div',{staticClass:"chart__source"},[_vm._v(_vm._s(_vm.source))]):_vm._e()])};
+var __vue_staticRenderFns__$4 = [];
+
+  /* style */
+  var __vue_inject_styles__$4 = function (inject) {
+    if (!inject) { return }
+    inject("data-v-cb0cd24a_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}", map: undefined, media: undefined });
+
+  };
+  /* scoped */
+  var __vue_scope_id__$4 = undefined;
+  /* module identifier */
+  var __vue_module_identifier__$4 = undefined;
+  /* functional template */
+  var __vue_is_functional_template__$4 = false;
+  /* style inject SSR */
+  
+
+  
+  var D3Sunburst = normalizeComponent_1(
+    { render: __vue_render__$4, staticRenderFns: __vue_staticRenderFns__$4 },
+    __vue_inject_styles__$4,
+    __vue_script__$4,
+    __vue_scope_id__$4,
+    __vue_is_functional_template__$4,
+    __vue_module_identifier__$4,
+    browser,
+    undefined
+  );
+
 var Components = {
     D3BarChart: D3BarChart,
     D3LineChart: D3LineChart,
     D3SlopeChart: D3SlopeChart,
     D3PieChart: D3PieChart,
+    D3Sunburst: D3Sunburst,
 };
 
 Object.keys(Components).forEach(function (name) {

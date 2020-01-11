@@ -15,6 +15,7 @@ const routes = [
   {path: '/linechart',         name: 'linechart',          component: () => import('../views/LineChart.vue')},
   {path: '/slopechart',        name: 'slopechart',         component: () => import('../views/SlopeChart.vue')},
   {path: '/piechart',          name: 'piechart',           component: () => import('../views/PieChart.vue')},
+  {path: '/sunburst',          name: 'sunburst',           component: () => import('../views/Sunburst.vue')},
 ]
 
 const router = new VueRouter({
