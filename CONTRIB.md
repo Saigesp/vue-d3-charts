@@ -57,7 +57,73 @@ This repository contains the charts components library (on `/src`) and the demo/
 
     export default d3mynewchart
     ```
-    > See [d3.chart.js](/src/d3.chart.js) and [d3.barchart.js](/src/barchart/d3.barchart.js) for more details
+    > See [d3.chart.js](/src/d3.chart.js) for more detail, or [d3.barchart.js](/src/barchart/d3.barchart.js) for an example.
+
+2. **d3.mynewchart.vue** must be a common vue single file component that interacts with the chart
+    ```javascript
+    export default {
+        name: 'D3Mynewchart',
+        data: function(){
+            return {
+                chart: {},
+            }
+        },
+        props: {
+            config: {
+                type: Object,
+                required: true,
+                default: ()=>{
+                    return {};
+                }
+            },
+            datum: {
+                type: Array,
+                required: true,
+                default: ()=>{
+                    return [];
+                }
+            },
+            title: {
+                type: String,
+                default: ''
+            },
+            source: {
+                type: String,
+                default: ''
+            },
+            height: {
+                type: Number,
+                default: 300,
+            }
+        },
+        mounted: function(){
+            // Create chart
+            this.chart = new d3sunburst(
+                this.$refs.chart,
+                [...this.datum],
+                this.config
+            )
+        },
+        watch: {
+            config: {
+                handler(val){
+                    // Handle configuration change
+                    this.chart.updateConfig(val);
+                },
+                deep: true
+            },
+            datum(vals){
+                // Handle data change
+                this.chart.updateData([...vals]);
+            }
+        },
+        beforeDestroy: function(){
+            // Fire chart removal
+            this.chart.destroyChart();
+        }
+    }
+    ```
+    > See [d3.barchart.vue](/src/barchart/d3.barchart.vue) for an example.
 
 ### Build
 
