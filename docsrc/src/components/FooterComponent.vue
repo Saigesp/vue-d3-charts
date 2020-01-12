@@ -17,6 +17,7 @@
                 <div class="links__group">
                     <ul>
                         <li><a href="https://github.com/Saigesp/vue-d3-charts">Source code</a></li>
+                        <li><a href="https://github.com/Saigesp/vue-d3-charts/blob/master/CONTRIB.md">Contribution guide</a></li>
                         <li><a href="https://github.com/Saigesp/vue-d3-charts/issues">Issues</a></li>
                     </ul>
                 </div>
