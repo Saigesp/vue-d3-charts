@@ -164,6 +164,14 @@ This repository contains the charts components library (on `/src`) and the demo/
 
 6. Add it to `/docs/router/index.js`
 
+7. Develop documentation page and examples (TBD)
+
+8. Once documentation page is finished, build it:
+    ```
+    cd docsrc/
+    npm run build
+    ```
+
 ## Build and replace docs files
 
 Build and copy files to test on `doc`:
