@@ -2,7 +2,7 @@
 
 Simply yet configurable charts build with D3
 
-See [documentation page](https://saigesp.github.io/vue-d3-charts/).
+See [documentation and demo](https://saigesp.github.io/vue-d3-charts/) page.
 
 ### Install
 
@@ -49,8 +49,8 @@ config = {
 
 ### Contributing
 
-See [contribution guide](CONTRIB.md) for more details.
+See [contribution guide](CONTRIB.md).
 
 ### License
 
-This repository is available under **GNU General Public License v3.0**. See [details](LICENSE.md)
+This repository is available under **GNU General Public License v3.0**. See [details](LICENSE.md).
