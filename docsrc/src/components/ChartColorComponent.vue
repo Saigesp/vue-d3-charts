@@ -60,11 +60,11 @@ chart_config = {
   }
 }</code></pre>
         </div>
-        <p>If the <strong>passed value is an array</strong>, (example: <code>['55D6BE', '#ACFCD9', '#7D5BA6']</code>) a custom color scale will be used.</p>
+        <p>If the <strong>passed value is an array</strong>, a custom color scale will be used.</p>
         <div v-highlight>
             <pre class="language-js"><code>chart_config = {
   color: {
-    scheme: ['55D6BE', '#ACFCD9', '#7D5BA6', '#DDDDDD', '#FC6471']
+    scheme: ['#55D6BE', '#ACFCD9', '#7D5BA6', '#DDDDDD', '#FC6471']
   }
 }</code></pre>
         </div>
@@ -85,7 +85,7 @@ chart_config = {
   }
 }</code></pre>
         </div>
-        <p class="note"><code>color.scheme</code>, <code>color.keys</code> and <code>currentKey</code> can be used together.</p>
+        <p class="note">Note that <code>color.scheme</code>, <code>color.keys</code> and <code>currentKey</code> can be used together.</p>
         <!-- end color keys -->
 
         

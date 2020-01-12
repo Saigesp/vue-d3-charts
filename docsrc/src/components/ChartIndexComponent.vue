@@ -21,8 +21,9 @@ export default {
         charts: [
             {chart: 'BarChart', routername: 'barchart'},
             {chart: 'LineChart', routername: 'linechart'},
-            {chart: 'SlopeChart', routername: 'slopechart'},
             {chart: 'PieChart', routername: 'piechart'},
+            {chart: 'SlopeChart', routername: 'slopechart'},
+            {chart: 'Sunburst', routername: 'sunburst'},
         ]
     }
   }

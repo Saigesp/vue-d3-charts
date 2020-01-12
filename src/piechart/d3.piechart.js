@@ -189,9 +189,6 @@ class d3piechart extends d3chart{
     */
     updateElements(){
 
-        //this.itemg
-        //    .selectAll('.chart__slice-group')
-
         // PATHS
         this.itemg.selectAll(".chart__slice")
             .style('opacity', 0)

@@ -682,7 +682,7 @@ var __vue_staticRenderFns__ = [];
   /* style */
   var __vue_inject_styles__ = function (inject) {
     if (!inject) { return }
-    inject("data-v-0a5aade8_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}", map: undefined, media: undefined });
+    inject("data-v-0a5aade8_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}.chart .clickable{cursor:pointer}", map: undefined, media: undefined });
 
   };
   /* scoped */
@@ -1085,7 +1085,7 @@ var __vue_staticRenderFns__$1 = [];
   /* style */
   var __vue_inject_styles__$1 = function (inject) {
     if (!inject) { return }
-    inject("data-v-1ae8160d_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}", map: undefined, media: undefined });
+    inject("data-v-1ae8160d_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}.chart .clickable{cursor:pointer}", map: undefined, media: undefined });
 
   };
   /* scoped */
@@ -1451,7 +1451,7 @@ var __vue_staticRenderFns__$2 = [];
   /* style */
   var __vue_inject_styles__$2 = function (inject) {
     if (!inject) { return }
-    inject("data-v-f0678048_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}.chart--slopegraph .chart__line--current{stroke-width:2px}", map: undefined, media: undefined });
+    inject("data-v-f0678048_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}.chart .clickable{cursor:pointer}.chart--slopegraph .chart__line--current{stroke-width:2px}", map: undefined, media: undefined });
 
   };
   /* scoped */
@@ -1799,7 +1799,7 @@ var __vue_staticRenderFns__$3 = [];
   /* style */
   var __vue_inject_styles__$3 = function (inject) {
     if (!inject) { return }
-    inject("data-v-0a99559a_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}.chart--piechart .chart__line{fill:none;stroke:#000}", map: undefined, media: undefined });
+    inject("data-v-0a99559a_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}.chart .clickable{cursor:pointer}.chart--piechart .chart__line{fill:none;stroke:#000}", map: undefined, media: undefined });
 
   };
   /* scoped */
@@ -1823,20 +1823,16 @@ var __vue_staticRenderFns__$3 = [];
     undefined
   );
 
-/*
-const d3 = {select, selectAll, scaleLinear, scaleOrdinal, max, min, transition, easeLinear,
-    easePolyIn, easePolyOut, easePoly, easePolyInOut, easeQuadIn, easeQuadOut,
-    easeQuad, easeQuadInOut, easeCubicIn, easeCubicOut, easeCubic, easeCubicInOut,
-    easeSinIn, easeSinOut, easeSin, easeSinInOut, easeExpIn, easeExpOut, easeExp,
-    easeExpInOut, easeCircleIn, easeCircleOut, easeCircle, easeCircleInOut,
-    easeElasticIn, easeElastic, easeElasticOut, easeElasticInOut, easeBackIn,
-    easeBackOut, easeBack, easeBackInOut, easeBounceIn, easeBounce, easeBounceOut,
-    easeBounceInOut, schemeCategory10, schemeAccent, schemeDark2, schemePaired,
-    schemePastel1, schemePastel2, schemeSet1, schemeSet2, schemeSet3,
-    schemeTableau10}*/
-
 var d3$5 = {select: select, selectAll: selectAll, scaleLinear: scaleLinear, scaleOrdinal: scaleOrdinal, scaleSqrt: scaleSqrt, hierarchy: hierarchy,
-    partition: partition, arc: arc,
+    partition: partition, arc: arc, transition: transition, interpolate: interpolate,
+    easeLinear: easeLinear, easePolyIn: easePolyIn, easePolyOut: easePolyOut, easePoly: easePoly,
+    easePolyInOut: easePolyInOut, easeQuadIn: easeQuadIn, easeQuadOut: easeQuadOut, easeQuad: easeQuad, easeQuadInOut: easeQuadInOut,
+    easeCubicIn: easeCubicIn, easeCubicOut: easeCubicOut, easeCubic: easeCubic, easeCubicInOut: easeCubicInOut, easeSinIn: easeSinIn,
+    easeSinOut: easeSinOut, easeSin: easeSin, easeSinInOut: easeSinInOut, easeExpIn: easeExpIn, easeExpOut: easeExpOut, easeExp: easeExp,
+    easeExpInOut: easeExpInOut, easeCircleIn: easeCircleIn, easeCircleOut: easeCircleOut, easeCircle: easeCircle, easeCircleInOut: easeCircleInOut,
+    easeElasticIn: easeElasticIn, easeElastic: easeElastic, easeElasticOut: easeElasticOut, easeElasticInOut: easeElasticInOut, easeBackIn: easeBackIn,
+    easeBackOut: easeBackOut, easeBack: easeBack, easeBackInOut: easeBackInOut, easeBounceIn: easeBounceIn, easeBounce: easeBounce,
+    easeBounceOut: easeBounceOut, easeBounceInOut: easeBounceInOut,
     schemeCategory10: schemeCategory10, schemeAccent: schemeAccent, schemeDark2: schemeDark2, schemePaired: schemePaired,
     schemePastel1: schemePastel1, schemePastel2: schemePastel2, schemeSet1: schemeSet1, schemeSet2: schemeSet2, schemeSet3: schemeSet3,
     schemeTableau10: schemeTableau10
@@ -1846,134 +1842,182 @@ var d3$5 = {select: select, selectAll: selectAll, scaleLinear: scaleLinear, scal
 * D3 Sunburst
 */
 var d3sunburst = /*@__PURE__*/(function (d3chart) {
-    function d3sunburst(selection, data, config) {
-        d3chart.call(this, selection, data, config, {
-            margin: {top: 10, right: 100, bottom: 20, left: 100},
-            key: '',
-            value: '',
-            color : {key: false, keys: false, scheme: false, current: '#1f77b4', default: '#AAA', axis: '#000'},
-            //transition: {duration: 350, ease: 'easeLinear'}
-        });
+  function d3sunburst(selection, data, config) {
+    d3chart.call(this, selection, data, config, {
+      margin: {top: 20, right: 20, bottom: 20, left: 20},
+      key: '',
+      value: '',
+      color : {key: false, keys: false, scheme: false, current: '#1f77b4', default: '#AAA', axis: '#000'},
+      transition: {duration: 350, ease: 'easeLinear'},
+    });
+  }
+
+  if ( d3chart ) d3sunburst.__proto__ = d3chart;
+  d3sunburst.prototype = Object.create( d3chart && d3chart.prototype );
+  d3sunburst.prototype.constructor = d3sunburst;
+
+  /**
+  * Init chart
+  */
+  d3sunburst.prototype.initChart = function initChart () {
+
+    // Set up dimensions
+    this.getDimensions();
+    this.initChartFrame('sunburst');
+
+    this.xScale = d3$5.scaleLinear();
+    this.yScale = d3$5.scaleSqrt();
+
+    // Center group
+    this.gcenter = this.g.append('g');
+
+    this.setChartDimension();
+    this.updateChart();
+  };
+
+  /**
+  * Set up chart dimensions (non depending on data)
+  */
+  d3sunburst.prototype.setChartDimension = function setChartDimension (){
+    // SVG element
+    this.svg
+      .attr("viewBox", ("0 0 " + (this.cfg.width+this.cfg.margin.left+this.cfg.margin.right) + " " + (this.cfg.height+this.cfg.margin.top+this.cfg.margin.bottom)))
+      .attr("width", this.cfg.width + this.cfg.margin.left + this.cfg.margin.right)
+      .attr("height", this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom);
+
+    // Center group
+    this.gcenter
+      .attr('transform', ("translate(" + (this.cfg.width/2) + ", " + (this.cfg.height/2) + ")"));
+  };
+
+  /**
+  * Set up scales
+  */
+  d3sunburst.prototype.setScales = function setScales (){
+    var this$1 = this;
+
+
+    this.radius = Math.min(this.cfg.width, this.cfg.height)/2;
+
+    this.xScale
+      .range([0, 2*Math.PI])
+      .clamp(true);
+
+    this.yScale
+      .range([this.radius*.1, this.radius]);
+
+    this.arc = d3$5.arc()
+      .startAngle(function (d) { return this$1.xScale(d.x0); })
+      .endAngle(function (d) { return this$1.xScale(d.x1); })
+      .innerRadius(function (d) { return Math.max(0, this$1.yScale(d.y0)); })
+      .outerRadius(function (d) { return Math.max(0, this$1.yScale(d.y1)); });
+
+    // Set up color scheme
+    if(this.cfg.color.scheme){
+      if(this.cfg.color.scheme instanceof Array === true){
+        this.colorScale = d3$5.scaleOrdinal()
+          .range(this.cfg.color.scheme);
+      }else{
+        this.colorScale = d3$5.scaleOrdinal(d3$5[this.cfg.color.scheme]);
+      }
     }
+  };
 
-    if ( d3chart ) d3sunburst.__proto__ = d3chart;
-    d3sunburst.prototype = Object.create( d3chart && d3chart.prototype );
-    d3sunburst.prototype.constructor = d3sunburst;
+  /**
+  * Bind data to main elements groups
+  */
+  d3sunburst.prototype.bindData = function bindData (){
+      var this$1 = this;
 
-    /**
-    * Init chart
-    */
-    d3sunburst.prototype.initChart = function initChart () {
+      var partition = d3$5.partition();
+      var root = d3$5.hierarchy(this.data);
+      root.sum(function (d){ return d[this$1.cfg.value]; });
 
-        // Set up dimensions
-        this.getDimensions();
-        this.initChartFrame('sunburst');
+      this.itemg = this.gcenter.selectAll('.chart__slice-group')
+        .data(partition(root).descendants());
 
-        this.xScale = d3$5.scaleLinear();
-        this.yScale = d3$5.scaleSqrt();
+  };
 
-        // Center group
-        this.gcenter = this.g.append('g');
-
-        this.setChartDimension();
-        this.updateChart();
-    };
-
-    /**
-    * Set up chart dimensions (non depending on data)
-    */
-    d3sunburst.prototype.setChartDimension = function setChartDimension (){
-        // SVG element
-        this.svg
-            .attr("viewBox", ("0 0 " + (this.cfg.width+this.cfg.margin.left+this.cfg.margin.right) + " " + (this.cfg.height+this.cfg.margin.top+this.cfg.margin.bottom)))
-            .attr("width", this.cfg.width + this.cfg.margin.left + this.cfg.margin.right)
-            .attr("height", this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom);
-
-        // Center group
-        this.gcenter
-            .attr('transform', ("translate(" + (this.cfg.width/2) + ", " + (this.cfg.height/2) + ")"));
-    };
-
-    /**
-    * Set up scales
-    */
-    d3sunburst.prototype.setScales = function setScales (){
-        var this$1 = this;
+  /**
+  * Add new chart's elements
+  */
+  d3sunburst.prototype.enterElements = function enterElements (){
+      var this$1 = this;
 
 
-        this.radius = Math.min(this.cfg.width, this.cfg.height)/2;
+      var newg = this.itemg
+        .enter().append('g')
+        .attr("class", "chart__slice-group chart__slice-group--sunburst clickable")
+        .on('click', function (d) {
+          window.event.stopPropagation();
+          this$1.focusOn(d);
+        });
 
-        this.xScale
-            .range([0, 2*Math.PI])
-            .clamp(true);
+      // PATHS
+      newg.append("path")
+        .attr("class", "chart__slice chart__slice--sunburst")
+        .style("fill", function (d) { return this$1.colorElement(d.data); })
+        .attr("d", this.arc)
+        .on('mouseover', function (d) {
+          this$1.tooltip.html(function () {
+            return ("<div>" + (d.data[this$1.cfg.key]) + ": " + (d.value) + "</div>")
+          })
+          .classed('active', true);
+        })
+        .on('mouseout', function () {
+          this$1.tooltip.classed('active', false);
+        })
+        .on('mousemove', function () {
+          this$1.tooltip
+            .style('left', window.event['pageX'] - 28 + 'px')
+            .style('top', window.event['pageY'] - 40 + 'px');
+        });
+  };
 
-        this.yScale
-            .range([this.radius*.1, this.radius]);
+  /**
+  * Update chart's elements based on data change
+  */
+  d3sunburst.prototype.updateElements = function updateElements (){
+      //console.log('updateElements');
+  };
 
-        this.arc = d3$5.arc()
-            .startAngle(function (d) { return this$1.xScale(d.x0); })
-            .endAngle(function (d) { return this$1.xScale(d.x1); })
-            .innerRadius(function (d) { return Math.max(0, this$1.yScale(d.y0)); })
-            .outerRadius(function (d) { return Math.max(0, this$1.yScale(d.y1)); });
+  /**
+  * Remove chart's elements without data
+  */
+  d3sunburst.prototype.exitElements = function exitElements (){
+      //console.log('exitElements');
+  };
 
-        // Set up color scheme
-        if(this.cfg.color.scheme){
-            if(this.cfg.color.scheme instanceof Array === true){
-                this.colorScale = d3$5.scaleOrdinal()
-                    .range(this.cfg.color.scheme);
-            }else{
-                this.colorScale = d3$5.scaleOrdinal(d3$5[this.cfg.color.scheme]);
-            }
-        }
-    };
+  /**
+  * Check if text fits in available space
+  */
+  d3sunburst.prototype.textFits = function textFits (d){
+      var deltaAngle = this.xScale(d.x1) - this.xScale(d.x0);
+      var r = Math.max(0, (this.yScale(d.y0) + this.yScale(d.y1)) / 2);
 
-    /**
-    * Bind data to main elements groups
-    */
-    d3sunburst.prototype.bindData = function bindData (){
-        var partition = d3$5.partition();
-        var root = d3$5.hierarchy(this.data);
-        root.sum(function (d){ return d.value; });
+      return d.data[this.cfg.key].length * this.cfg.charSpace < r * deltaAngle;
+  };
 
-        this.itemg = this.gcenter.selectAll('.chart__slice-group')
-            .data(partition(root).descendants());
-
-    };
-
-    /**
-    * Add new chart's elements
-    */
-    d3sunburst.prototype.enterElements = function enterElements (){
-        var this$1 = this;
+  d3sunburst.prototype.focusOn = function focusOn (d){
+      var this$1 = this;
 
 
-        var newg = this.itemg
-            .enter().append('g')
-            .attr("class", "chart__slice-group chart__slice-group--sunburst");
+      var transition = this.svg.transition()
+        .duration(this.cfg.transition.duration)
+        .ease(d3$5[this.cfg.transition.ease])
+        .tween('scale', function () {
+          var xd = d3$5.interpolate(this$1.xScale.domain(), [d.x0, d.x1]);
+          var yd = d3$5.interpolate(this$1.yScale.domain(), [d.y0, 1]);
+          return function (t) { this$1.xScale.domain(xd(t)); this$1.yScale.domain(yd(t)); };
+        });
 
-        // PATHS
-        newg.append("path")
-            .attr("class", "chart__slice chart__slice--sunburst")
-            .style("fill", function (d) { return this$1.colorElement(d.data); })
-            .attr("d", this.arc);
+      transition.selectAll('.chart__slice')
+        .attrTween('d', function (d) { return function () { return this$1.arc(d); }; });
 
-    };
+      //this.moveStackToFront(d);
+  };
 
-    /**
-    * Update chart's elements based on data change
-    */
-    d3sunburst.prototype.updateElements = function updateElements (){
-        //console.log('updateElements');
-    };
-
-    /**
-    * Remove chart's elements without data
-    */
-    d3sunburst.prototype.exitElements = function exitElements (){
-        //console.log('exitElements');
-    };
-
-    return d3sunburst;
+  return d3sunburst;
 }(d3chart));
 
 //
@@ -2046,7 +2090,7 @@ var __vue_staticRenderFns__$4 = [];
   /* style */
   var __vue_inject_styles__$4 = function (inject) {
     if (!inject) { return }
-    inject("data-v-cb0cd24a_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}", map: undefined, media: undefined });
+    inject("data-v-cb0cd24a_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}.chart .clickable{cursor:pointer}", map: undefined, media: undefined });
 
   };
   /* scoped */
