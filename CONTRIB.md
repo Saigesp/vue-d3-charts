@@ -4,6 +4,12 @@ This repository contains the charts components library (on `/src`) and the demo/
 
 ### Create a new chart
 
+##### Definition of done
+- Charts have to follow the common schemes.
+- Data and configuration have to be updatable.
+- Charts have to be responsive and resizable.
+- Charts have to be documented and with examples.
+
 #### Create chart
 
 1. Create a new folder `/src/mynewchart` with files `d3.mynewchart.vue` and `d3.mynewchart.js`
