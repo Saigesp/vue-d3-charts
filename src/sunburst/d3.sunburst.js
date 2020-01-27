@@ -162,7 +162,6 @@ class d3sunburst extends d3chart{
       })
       .transition(this.transition)
       .attrTween('d', d => {
-        console.log('attrTween', d);
         const iy0 = d3.interpolate(0, d.y0);
         const iy1 = d3.interpolate(d.y0, d.y1);
         const ix0 = d3.interpolate(0, d.x0);

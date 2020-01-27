@@ -1973,7 +1973,6 @@
           })
           .transition(this.transition)
           .attrTween('d', function (d) {
-            console.log('attrTween', d);
             var iy0 = d3$5.interpolate(0, d.y0);
             var iy1 = d3$5.interpolate(d.y0, d.y1);
             var ix0 = d3$5.interpolate(0, d.x0);
