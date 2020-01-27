@@ -37,21 +37,27 @@ export default {
       chartconfig: {
         key: 'name',
         value: 'value',
-        color: {scheme: ['#C1E4D5', '#41B882', '#80CCAA', '#FC6471', '#384A5F']},
+        color: {
+          keys:{
+            one: '#C1E4D5',
+            two: '#41B882',
+            four: '#80CCAA',
+            lorem: '#FC6471',
+            ipsum: '#384A5F',
+          }
+        },
+        transition: {duration: 500},
       },
-      chartdata: {
-        "name": "one",
-        "children": [{
-          "name": "two",
-          "children": [
-            {"name": "Lorem", "value": 938},
-            {"name": "Ipsum", "value": 3812}
-          ]
+      chartdata: [{
+        name: "one",
+        children: [{
+          name: "two",
+          value: 9038
         },{
-          "name": "four",
-          "value": 2354
+          name: "four",
+          value: 554
         }]
-      },
+      }],
       chartdatadesc: 'An <strong>hierachycal object</strong> is expected',
       chartdatacode: `chart_data = {
   "name": "one",
@@ -70,7 +76,54 @@ export default {
     }
   },
   mounted(){
+    setTimeout(() => {
+      this.chartdata = [{
+        name: "one",
+        children: [{
+          name: "two",
+          children: [
+            {name: "lorem", value: 938},
+            {name: "ipsum", value: 3812}
+          ]
+        },{
+          name: "four",
+          value: 2354
+        }]
+      }]
+    }, 2000);
 
+    setTimeout(() => {
+      this.chartdata = [{
+        name: "one",
+        children: [{
+          name: "two",
+          children: [
+            {name: "dolor", value: 1500},
+            {name: "lorem", value: 938},
+            {name: "ipsum", value: 3812},
+          ]
+        },{
+          name: "four",
+          value: 2354
+        }]
+      }]
+    }, 4000);
+
+    setTimeout(() => {
+      this.chartdata = [{
+        name: "one",
+        children: [{
+          name: "two",
+          children: [
+            {name: "dolor", value: 1500},
+            {name: "lorem", value: 938},
+          ]
+        },{
+          name: "four",
+          value: 2354
+        }]
+      }]
+    }, 6000);
   }
 }
 </script>

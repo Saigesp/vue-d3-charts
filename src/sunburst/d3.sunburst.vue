@@ -21,24 +21,20 @@ export default {
         config: {
             type: Object,
             required: true,
-            default: ()=>{
-                return {};
-            }
+            default: () => ({}),
         },
         datum: {
-            type: Object,
+            type: Array,
             required: true,
-            default: ()=>{
-                return {};
-            }
+            default: () => ([]),
         },
         title: {
             type: String,
-            default: ''
+            default: '',
         },
         source: {
             type: String,
-            default: ''
+            default: '',
         },
         height: {
             type: Number,

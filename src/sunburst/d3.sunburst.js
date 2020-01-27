@@ -55,9 +55,6 @@ class d3sunburst extends d3chart{
     this.getDimensions();
     this.initChartFrame('sunburst');
 
-    this.xScale = d3.scaleLinear();
-    this.yScale = d3.scaleSqrt();
-
     // Center group
     this.gcenter = this.g.append('g');
 
@@ -81,17 +78,38 @@ class d3sunburst extends d3chart{
   }
 
   /**
+  * Bind data to main elements groups
+  */
+  bindData(){
+    const partition = (data) => {
+      const root = d3.hierarchy(data)
+          .sum(d => d[this.cfg.value])
+      return d3.partition()(root);
+    }
+
+    this.hData = partition(this.data[0]).descendants();
+
+    this.itemg = this.gcenter.selectAll('.chart__slice-group')
+      .data(this.hData, d => d.data[this.cfg.key])
+
+    // Set transition
+    this.transition = d3.transition('t')
+        .duration(this.cfg.transition.duration)
+        .ease(d3[this.cfg.transition.ease]);
+  }
+
+  /**
   * Set up scales
   */
   setScales(){
 
     this.radius = Math.min(this.cfg.width, this.cfg.height)/2;
 
-    this.xScale
+    this.xScale = d3.scaleLinear()
       .range([0, 2*Math.PI])
       .clamp(true);
 
-    this.yScale
+    this.yScale = d3.scaleSqrt()
       .range([this.radius*.1, this.radius]);
 
     this.arc = d3.arc()
@@ -112,64 +130,85 @@ class d3sunburst extends d3chart{
   }
 
   /**
-  * Bind data to main elements groups
-  */
-  bindData(){
-      let partition = d3.partition();
-      let root = d3.hierarchy(this.data);
-      root.sum(d=> d[this.cfg.value]);
-
-      this.itemg = this.gcenter.selectAll('.chart__slice-group')
-        .data(partition(root).descendants())
-
-  }
-
-  /**
   * Add new chart's elements
   */
   enterElements(){
 
-      const newg = this.itemg
-        .enter().append('g')
-        .attr("class", "chart__slice-group chart__slice-group--sunburst clickable")
-        .on('click', d => {
-          window.event.stopPropagation();
-          this.focusOn(d);
-        })
+    const newg = this.itemg
+      .enter().append('g')
+      .attr("class", "chart__slice-group chart__slice-group--sunburst clickable")
+      .on('click', d => {
+        window.event.stopPropagation();
+        this.focusOn(d);
+      })
 
-      // PATHS
-      newg.append("path")
-        .attr("class", "chart__slice chart__slice--sunburst")
-        .style("fill", d => this.colorElement(d.data))
-        .attr("d", this.arc)
-        .on('mouseover', d => {
-          this.tooltip.html(() => {
-            return `<div>${d.data[this.cfg.key]}: ${d.value}</div>`
-          })
-          .classed('active', true);
-        })
-        .on('mouseout', () => {
-          this.tooltip.classed('active', false)
-        })
-        .on('mousemove', () => {
-          this.tooltip
-            .style('left', window.event['pageX'] - 28 + 'px')
-            .style('top', window.event['pageY'] - 40 + 'px')
-        })
+    // PATHS
+    newg.append("path")
+      .attr("class", "chart__slice chart__slice--sunburst")
+      .style("fill", d => this.colorElement(d.data))
+      .on('mouseover', d => {
+       this.tooltip.html(() => {
+         return `<div>${d.data[this.cfg.key]}: ${d.value}</div>`
+       })
+       .classed('active', true);
+      })
+      .on('mouseout', () => {
+       this.tooltip.classed('active', false)
+      })
+      .on('mousemove', () => {
+       this.tooltip
+         .style('left', window.event['pageX'] - 28 + 'px')
+         .style('top', window.event['pageY'] - 40 + 'px')
+      })
+      .transition(this.transition)
+      .attrTween('d', d => {
+        console.log('attrTween', d);
+        const iy0 = d3.interpolate(0, d.y0);
+        const iy1 = d3.interpolate(d.y0, d.y1);
+        const ix0 = d3.interpolate(0, d.x0);
+        const ix1 = d3.interpolate(0, d.x1);
+        return t => {
+          d.y0 = iy0(t);
+          d.y1 = iy1(t);
+          d.x0 = ix0(t);
+          d.x1 = ix1(t);
+          return this.arc(d)
+        }
+      })
+
   }
 
   /**
   * Update chart's elements based on data change
   */
   updateElements(){
-      //console.log('updateElements');
+    this.itemg.selectAll('.chart__slice')
+      .transition(this.transition)
+      .attrTween('d', d => {
+        const d2 = this.hData.filter(j => j.data.name === d.data.name)[0];
+        const iy0 = d3.interpolate(d.y0, d2.y0);
+        const iy1 = d3.interpolate(d.y1, d2.y1);
+        const ix0 = d3.interpolate(d.x0, d2.x0);
+        const ix1 = d3.interpolate(d.x1, d2.x1);
+        return t => {
+          d2.y0 = iy0(t);
+          d2.y1 = iy1(t);
+          d2.x0 = ix0(t);
+          d2.x1 = ix1(t);
+          return this.arc(d2)
+        }
+      })
+      .style("fill", d => this.colorElement(d.data))
   }
 
   /**
   * Remove chart's elements without data
   */
   exitElements(){
-      //console.log('exitElements');
+    this.itemg.exit()
+      .transition(this.transition)
+      .style("opacity", 0)
+      .remove();
   }
 
   /**
@@ -178,37 +217,32 @@ class d3sunburst extends d3chart{
   textFits(d){
       const deltaAngle = this.xScale(d.x1) - this.xScale(d.x0);
       const r = Math.max(0, (this.yScale(d.y0) + this.yScale(d.y1)) / 2);
-
       return d.data[this.cfg.key].length * this.cfg.charSpace < r * deltaAngle;
   }
 
+  /**
+  * Transition slice on focus
+  */
   focusOn(d){
-
+      const d2 = this.hData.filter(j => j.data.name === d.data.name)[0];
       const transition = this.svg.transition()
         .duration(this.cfg.transition.duration)
         .ease(d3[this.cfg.transition.ease])
         .tween('scale', () => {
-          const xd = d3.interpolate(this.xScale.domain(), [d.x0, d.x1]);
-          const yd = d3.interpolate(this.yScale.domain(), [d.y0, 1]);
-          return t => { this.xScale.domain(xd(t)); this.yScale.domain(yd(t)); };
+          const xd = d3.interpolate(this.xScale.domain(), [d2.x0, d2.x1]);
+          const yd = d3.interpolate(this.yScale.domain(), [d2.y0, 1]);
+          return t => {
+            this.xScale.domain(xd(t));
+            this.yScale.domain(yd(t));
+          };
         });
 
       transition.selectAll('.chart__slice')
-        .attrTween('d', d => () => this.arc(d));
-
-      //this.moveStackToFront(d);
+        .attrTween('d', d => () => {
+          const d3 = this.hData.filter(j => j.data.name === d.data.name)[0];
+          return this.arc(d3)
+        });
   }
-/*
-  moveStackToFront(d) {
-    const self = this; 
-    this.svg.selectAll('.chart__slice').filter(d => d === d)
-      .each(function(d) {
-        console.log('each', d.data.name, d.parent);
-        this.parentNode.appendChild(this);
-        //if (d.parent) { self.moveStackToFront(d.parent); }
-      })
-  }
-*/
 }
 
 export default d3sunburst

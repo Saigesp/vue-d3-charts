@@ -1865,9 +1865,6 @@ var d3sunburst = /*@__PURE__*/(function (d3chart) {
     this.getDimensions();
     this.initChartFrame('sunburst');
 
-    this.xScale = d3$5.scaleLinear();
-    this.yScale = d3$5.scaleSqrt();
-
     // Center group
     this.gcenter = this.g.append('g');
 
@@ -1891,6 +1888,29 @@ var d3sunburst = /*@__PURE__*/(function (d3chart) {
   };
 
   /**
+  * Bind data to main elements groups
+  */
+  d3sunburst.prototype.bindData = function bindData (){
+    var this$1 = this;
+
+    var partition = function (data) {
+      var root = d3$5.hierarchy(data)
+          .sum(function (d) { return d[this$1.cfg.value]; });
+      return d3$5.partition()(root);
+    };
+
+    this.hData = partition(this.data[0]).descendants();
+
+    this.itemg = this.gcenter.selectAll('.chart__slice-group')
+      .data(this.hData, function (d) { return d.data[this$1.cfg.key]; });
+
+    // Set transition
+    this.transition = d3$5.transition('t')
+        .duration(this.cfg.transition.duration)
+        .ease(d3$5[this.cfg.transition.ease]);
+  };
+
+  /**
   * Set up scales
   */
   d3sunburst.prototype.setScales = function setScales (){
@@ -1899,11 +1919,11 @@ var d3sunburst = /*@__PURE__*/(function (d3chart) {
 
     this.radius = Math.min(this.cfg.width, this.cfg.height)/2;
 
-    this.xScale
+    this.xScale = d3$5.scaleLinear()
       .range([0, 2*Math.PI])
       .clamp(true);
 
-    this.yScale
+    this.yScale = d3$5.scaleSqrt()
       .range([this.radius*.1, this.radius]);
 
     this.arc = d3$5.arc()
@@ -1924,68 +1944,89 @@ var d3sunburst = /*@__PURE__*/(function (d3chart) {
   };
 
   /**
-  * Bind data to main elements groups
-  */
-  d3sunburst.prototype.bindData = function bindData (){
-      var this$1 = this;
-
-      var partition = d3$5.partition();
-      var root = d3$5.hierarchy(this.data);
-      root.sum(function (d){ return d[this$1.cfg.value]; });
-
-      this.itemg = this.gcenter.selectAll('.chart__slice-group')
-        .data(partition(root).descendants());
-
-  };
-
-  /**
   * Add new chart's elements
   */
   d3sunburst.prototype.enterElements = function enterElements (){
-      var this$1 = this;
+    var this$1 = this;
 
 
-      var newg = this.itemg
-        .enter().append('g')
-        .attr("class", "chart__slice-group chart__slice-group--sunburst clickable")
-        .on('click', function (d) {
-          window.event.stopPropagation();
-          this$1.focusOn(d);
-        });
+    var newg = this.itemg
+      .enter().append('g')
+      .attr("class", "chart__slice-group chart__slice-group--sunburst clickable")
+      .on('click', function (d) {
+        window.event.stopPropagation();
+        this$1.focusOn(d);
+      });
 
-      // PATHS
-      newg.append("path")
-        .attr("class", "chart__slice chart__slice--sunburst")
-        .style("fill", function (d) { return this$1.colorElement(d.data); })
-        .attr("d", this.arc)
-        .on('mouseover', function (d) {
-          this$1.tooltip.html(function () {
-            return ("<div>" + (d.data[this$1.cfg.key]) + ": " + (d.value) + "</div>")
-          })
-          .classed('active', true);
-        })
-        .on('mouseout', function () {
-          this$1.tooltip.classed('active', false);
-        })
-        .on('mousemove', function () {
-          this$1.tooltip
-            .style('left', window.event['pageX'] - 28 + 'px')
-            .style('top', window.event['pageY'] - 40 + 'px');
-        });
+    // PATHS
+    newg.append("path")
+      .attr("class", "chart__slice chart__slice--sunburst")
+      .style("fill", function (d) { return this$1.colorElement(d.data); })
+      .on('mouseover', function (d) {
+       this$1.tooltip.html(function () {
+         return ("<div>" + (d.data[this$1.cfg.key]) + ": " + (d.value) + "</div>")
+       })
+       .classed('active', true);
+      })
+      .on('mouseout', function () {
+       this$1.tooltip.classed('active', false);
+      })
+      .on('mousemove', function () {
+       this$1.tooltip
+         .style('left', window.event['pageX'] - 28 + 'px')
+         .style('top', window.event['pageY'] - 40 + 'px');
+      })
+      .transition(this.transition)
+      .attrTween('d', function (d) {
+        console.log('attrTween', d);
+        var iy0 = d3$5.interpolate(0, d.y0);
+        var iy1 = d3$5.interpolate(d.y0, d.y1);
+        var ix0 = d3$5.interpolate(0, d.x0);
+        var ix1 = d3$5.interpolate(0, d.x1);
+        return function (t) {
+          d.y0 = iy0(t);
+          d.y1 = iy1(t);
+          d.x0 = ix0(t);
+          d.x1 = ix1(t);
+          return this$1.arc(d)
+        }
+      });
+
   };
 
   /**
   * Update chart's elements based on data change
   */
   d3sunburst.prototype.updateElements = function updateElements (){
-      //console.log('updateElements');
+    var this$1 = this;
+
+    this.itemg.selectAll('.chart__slice')
+      .transition(this.transition)
+      .attrTween('d', function (d) {
+        var d2 = this$1.hData.filter(function (j) { return j.data.name === d.data.name; })[0];
+        var iy0 = d3$5.interpolate(d.y0, d2.y0);
+        var iy1 = d3$5.interpolate(d.y1, d2.y1);
+        var ix0 = d3$5.interpolate(d.x0, d2.x0);
+        var ix1 = d3$5.interpolate(d.x1, d2.x1);
+        return function (t) {
+          d2.y0 = iy0(t);
+          d2.y1 = iy1(t);
+          d2.x0 = ix0(t);
+          d2.x1 = ix1(t);
+          return this$1.arc(d2)
+        }
+      })
+      .style("fill", function (d) { return this$1.colorElement(d.data); });
   };
 
   /**
   * Remove chart's elements without data
   */
   d3sunburst.prototype.exitElements = function exitElements (){
-      //console.log('exitElements');
+    this.itemg.exit()
+      .transition(this.transition)
+      .style("opacity", 0)
+      .remove();
   };
 
   /**
@@ -1994,27 +2035,33 @@ var d3sunburst = /*@__PURE__*/(function (d3chart) {
   d3sunburst.prototype.textFits = function textFits (d){
       var deltaAngle = this.xScale(d.x1) - this.xScale(d.x0);
       var r = Math.max(0, (this.yScale(d.y0) + this.yScale(d.y1)) / 2);
-
       return d.data[this.cfg.key].length * this.cfg.charSpace < r * deltaAngle;
   };
 
+  /**
+  * Transition slice on focus
+  */
   d3sunburst.prototype.focusOn = function focusOn (d){
       var this$1 = this;
 
-
+      var d2 = this.hData.filter(function (j) { return j.data.name === d.data.name; })[0];
       var transition = this.svg.transition()
         .duration(this.cfg.transition.duration)
         .ease(d3$5[this.cfg.transition.ease])
         .tween('scale', function () {
-          var xd = d3$5.interpolate(this$1.xScale.domain(), [d.x0, d.x1]);
-          var yd = d3$5.interpolate(this$1.yScale.domain(), [d.y0, 1]);
-          return function (t) { this$1.xScale.domain(xd(t)); this$1.yScale.domain(yd(t)); };
+          var xd = d3$5.interpolate(this$1.xScale.domain(), [d2.x0, d2.x1]);
+          var yd = d3$5.interpolate(this$1.yScale.domain(), [d2.y0, 1]);
+          return function (t) {
+            this$1.xScale.domain(xd(t));
+            this$1.yScale.domain(yd(t));
+          };
         });
 
       transition.selectAll('.chart__slice')
-        .attrTween('d', function (d) { return function () { return this$1.arc(d); }; });
-
-      //this.moveStackToFront(d);
+        .attrTween('d', function (d) { return function () {
+          var d3 = this$1.hData.filter(function (j) { return j.data.name === d.data.name; })[0];
+          return this$1.arc(d3)
+        }; });
   };
 
   return d3sunburst;
@@ -2033,24 +2080,20 @@ var script$4 = {
         config: {
             type: Object,
             required: true,
-            default: function (){
-                return {};
-            }
+            default: function () { return ({}); },
         },
         datum: {
-            type: Object,
+            type: Array,
             required: true,
-            default: function (){
-                return {};
-            }
+            default: function () { return ([]); },
         },
         title: {
             type: String,
-            default: ''
+            default: '',
         },
         source: {
             type: String,
-            default: ''
+            default: '',
         },
         height: {
             type: Number,
@@ -2090,7 +2133,7 @@ var __vue_staticRenderFns__$4 = [];
   /* style */
   var __vue_inject_styles__$4 = function (inject) {
     if (!inject) { return }
-    inject("data-v-cb0cd24a_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}.chart .clickable{cursor:pointer}", map: undefined, media: undefined });
+    inject("data-v-7529b31b_0", { source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}.chart .clickable{cursor:pointer}", map: undefined, media: undefined });
 
   };
   /* scoped */

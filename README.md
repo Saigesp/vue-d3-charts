@@ -1,6 +1,6 @@
 # vue-d3-charts
 
-Simply yet configurable charts build with D3
+Simply yet configurable charts build with D3.
 
 See [documentation and demo](https://saigesp.github.io/vue-d3-charts/) page.
 
