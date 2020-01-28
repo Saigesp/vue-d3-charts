@@ -12,7 +12,7 @@
 
     <section class="text">
       <h2>Introduction</h2>
-      <p>vue-d3-charts is a charts module build with reusability in mind. It has evolved from a personal bl.ocks collection to a modular charts system, to allow quick implementations and high customatization charts.</p>
+      <p>vue-d3-charts is a charts module build with reusability in mind. It has evolved from a personal bl.ocks collection to a modular charts system, to allow quick implementation and customatization.</p>
     </section>
 
     <section class="code">
