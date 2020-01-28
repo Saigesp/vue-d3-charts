@@ -58,8 +58,8 @@ export default {
           value: 554
         }]
       }],
-      chartdatadesc: 'An <strong>hierachycal object</strong> is expected',
-      chartdatacode: `chart_data = {
+      chartdatadesc: 'An <strong>array with a single hierachycal object</strong> is expected',
+      chartdatacode: `chart_data = [{
   "name": "one",
   "children": [{
     "name": "two",
@@ -71,7 +71,7 @@ export default {
       "value": 1384
     }]
   }]
-}`,
+}]`,
       chartdataconfig: '<code>key: "name", value: "value"</code>'
     }
   },
