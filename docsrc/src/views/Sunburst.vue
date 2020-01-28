@@ -72,7 +72,7 @@ export default {
     }]
   }]
 }]`,
-      chartdataconfig: '<code>key: "name", value: "value"</code>'
+      chartdataconfig: '<code>key: "name", value: "value"</code>',
     }
   },
   mounted(){
@@ -124,6 +124,6 @@ export default {
         }]
       }]
     }, 6000);
-  }
-}
+  },
+};
 </script>

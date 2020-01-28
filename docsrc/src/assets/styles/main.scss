@@ -99,6 +99,11 @@ pre {
         max-width: 870px;
         padding: 20px;
         margin: 0 auto 40px;
+        &.text {
+            &--center {
+                text-align: center;
+            }
+        }
         &.title {
             margin-bottom: 0;
         }

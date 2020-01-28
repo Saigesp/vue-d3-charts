@@ -10,6 +10,7 @@ import { timeParse, timeFormat } from 'd3-time-format';
 import { line, curveBasis, curveBundle, curveCardinal, curveCatmullRom, curveLinear, curveMonotoneX, curveMonotoneY, curveNatural, curveStep, curveStepAfter, curveStepBefore, pie, arc } from 'd3-shape';
 import { interpolate } from 'd3-interpolate';
 import { hierarchy, partition } from 'd3-hierarchy';
+import * as cloud from 'd3-cloud';
 
 //
 //
@@ -1140,7 +1141,6 @@ var d3slopechart = /*@__PURE__*/(function (d3chart) {
         // Set up scales
         this.yScale = d3$3.scaleLinear();
 
-
         // Axis group
         var axisg = this.g.append('g')
             .attr('class', 'chart__axis chart__axis--slopechart');
@@ -1994,12 +1994,209 @@ var __vue_script__$5 = script$5;
     undefined
   );
 
+var d3$6 = { select: select, selectAll: selectAll, scaleOrdinal: scaleOrdinal, scaleLinear: scaleLinear, max: max, extent: extent, transition: transition, cloud: cloud,
+  schemeCategory10: schemeCategory10, schemeAccent: schemeAccent, schemeDark2: schemeDark2, schemePaired: schemePaired, schemePastel1: schemePastel1, schemePastel2: schemePastel2,
+  schemeSet1: schemeSet1, schemeSet2: schemeSet2, schemeSet3: schemeSet3, schemeTableau10: schemeTableau10 };
+
+/**
+ * D3 Words Cloud
+ */
+var d3wordscloud = /*@__PURE__*/(function (d3chart) {
+  function d3wordscloud(selection, data, config) {
+    d3chart.call(this, selection, data, config, {
+      margin: { top: 20, right: 20, bottom: 20, left: 20 },
+      key: 'word',
+      value: 'size',
+      fontFamily: 'Arial',
+      color: { key: false, keys: false, scheme: false, current: '#1f77b4', default: '#AAA', axis: '#000' },
+      // transition: { duration: 350, ease: 'easeLinear' }
+    });
+  }
+
+  if ( d3chart ) d3wordscloud.__proto__ = d3chart;
+  d3wordscloud.prototype = Object.create( d3chart && d3chart.prototype );
+  d3wordscloud.prototype.constructor = d3wordscloud;
+
+  /**
+  * Init chart
+  */
+  d3wordscloud.prototype.initChart = function initChart () {
+    // Set up dimensions
+    this.getDimensions();
+    this.initChartFrame('wordscloud');
+
+    this.gcenter = this.g.append('g');
+
+    this.setChartDimension();
+    this.updateChart();
+  };
+
+  /**
+  * Compute data before operate
+  */
+  d3wordscloud.prototype.computeData = function computeData (){
+    var this$1 = this;
+    
+    var layout = d3$6.cloud()
+      .size([ this.cfg.width, this.cfg.height ])
+      .words(this.data.map(function (d) { return ({
+        text: d[this$1.cfg.key],
+        size: d[this$1.cfg.value],
+      }); }))
+      .rotate(function () { return this$1.angleOrtogonal(); })
+      //.spiral('rectangular')
+      .font(this.cfg.fontFamily)
+      .fontSize(function (d) { return d.size; })
+      .on("end", function (d) { this$1.tData = d; })
+      .start();
+  };  
+
+  /**
+   * Set up chart dimensions (non depending on data)
+   */
+  d3wordscloud.prototype.setChartDimension = function setChartDimension () {
+    // Resize SVG element
+    this.svg
+      .attr("viewBox", ("0 0 " + (this.cfg.width+this.cfg.margin.left+this.cfg.margin.right) + " " + (this.cfg.height+this.cfg.margin.top+this.cfg.margin.bottom)))
+      .attr("width", this.cfg.width + this.cfg.margin.left + this.cfg.margin.right)
+      .attr("height", this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom);
+
+    // Center element
+    this.gcenter.attr('transform', ("translate(" + (this.cfg.width/2) + ", " + (this.cfg.height/2) + ")"));
+  };
+
+  /**
+   * Bind data to main elements groups
+   */
+  d3wordscloud.prototype.bindData = function bindData () {
+    console.log('bindData', this.tData);
+
+    // Word group selection data
+    this.wordgroup = this.gcenter
+      .selectAll(".chart__word-group")
+      .data(this.tData, function (d) { return d.text; });
+  };
+
+  /**
+   * Set up scales
+   */
+  d3wordscloud.prototype.setScales = function setScales () {};
+
+
+/*
+  d3.select("body").append("svg")
+    .attr("width", layout.size()[0])
+    .attr("height", layout.size()[1])
+    .append("g")
+    .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+    .selectAll("text")
+    .data(words)
+    .enter().append("text")
+    .style("font-size", function(d) { return d.size + "px"; })
+    .style("font-family", "Impact")
+    .attr("text-anchor", "middle")
+    .attr("transform", function(d) {
+      return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+    })
+    .text(function(d) { return d.text; });
+*/
+
+
+  /**
+   * Add new chart's elements
+   */
+  d3wordscloud.prototype.enterElements = function enterElements () {
+    console.log('enterElements');
+
+    // Elements to add
+    var newwords = this.wordgroup
+      .enter().append('g')
+      .attr("class", "chart__word-group chart__word-group--wordscloud");
+
+    newwords.append("text")
+      .style("font-size", function (d) { return d.size + "px"; })
+      .style("font-family", function (d) { return d.font; })
+      .attr("text-anchor", "middle")
+      .attr("transform", function (d) { return ("translate(" + ([d.x, d.y]) + ")rotate(" + (d.rotate) + ")"); })
+      .text(function (d) { return d.text; });
+  };
+
+  /**
+   * Update chart's elements based on data change
+   */
+  d3wordscloud.prototype.updateElements = function updateElements () {
+    console.log('updateElements');
+  };
+
+  /**
+   * Remove chart's elements without data
+   */
+  d3wordscloud.prototype.exitElements = function exitElements () {
+    console.log('exitElements');
+  };
+
+  d3wordscloud.prototype.angleOrtogonal = function angleOrtogonal () {
+    return this.randomInt(0, 1) * 90;
+  };
+
+  d3wordscloud.prototype.randomInt = function randomInt (min, max) {
+    var i = Math.ceil(min);
+    var j = Math.floor(max);
+    return Math.floor(Math.random() * (j - i + 1)) + i;
+  };
+
+  return d3wordscloud;
+}(d3chart));
+
+var script$6 = {
+  name: 'D3WordsCloud',
+  extends: D3Chart,
+  mounted: function mounted() {
+    this.chart = new d3wordscloud(
+      this.$refs.chart,
+      JSON.parse(JSON.stringify(this.datum)),
+      this.config
+    );
+  },
+};
+
+/* script */
+var __vue_script__$6 = script$6;
+
+/* template */
+
+  /* style */
+  var __vue_inject_styles__$6 = undefined;
+  /* scoped */
+  var __vue_scope_id__$6 = undefined;
+  /* module identifier */
+  var __vue_module_identifier__$6 = undefined;
+  /* functional template */
+  var __vue_is_functional_template__$6 = undefined;
+  /* style inject */
+  
+  /* style inject SSR */
+  
+
+  
+  var D3WordsCloud = normalizeComponent_1(
+    {},
+    __vue_inject_styles__$6,
+    __vue_script__$6,
+    __vue_scope_id__$6,
+    __vue_is_functional_template__$6,
+    __vue_module_identifier__$6,
+    undefined,
+    undefined
+  );
+
 var Components = {
     D3BarChart: D3BarChart,
     D3LineChart: D3LineChart,
     D3SlopeChart: D3SlopeChart,
     D3PieChart: D3PieChart,
     D3Sunburst: D3Sunburst,
+    D3WordsCloud: D3WordsCloud,
 };
 
 Object.keys(Components).forEach(function (name) {

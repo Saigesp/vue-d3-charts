@@ -39,6 +39,7 @@
     "vue-template-compiler": "^2.6.10"
   },
   "dependencies": {
-    "d3": "^5.12.0"
+    "d3": "^5.12.0",
+    "d3-cloud": "^1.2.5"
   }
 }

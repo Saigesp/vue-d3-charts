@@ -57,7 +57,6 @@ class d3slopechart extends d3chart{
         // Set up scales
         this.yScale = d3.scaleLinear();
 
-
         // Axis group
         const axisg = this.g.append('g')
             .attr('class', 'chart__axis chart__axis--slopechart')

@@ -12,7 +12,8 @@
 
     <section class="text">
       <h2>Introduction</h2>
-      <p>vue-d3-charts is a charts module build with reusability in mind. It has evolved from a personal bl.ocks collection to a modular charts system, to allow quick implementation and customatization.</p>
+      <p>vue-d3-charts is a <strong>charts library</strong> build with reusability in mind. It has evolved from a personal bl.ocks collection to a modular charts system, to allow <strong>quick implementation and customatization</strong>.</p>
+      <p>vue-d3-charts is built on top of <a href="https://d3js.org/">d3.js</a> and <a href="https://vuejs.org/">vue.js</a> and is an <strong>open source</strong> project started by <a href="https://github.com/Saigesp">Saigesp</a> under GNU General Public License v3.0. See <a href="https://github.com/Saigesp/vue-d3-charts/blob/master/CONTRIB.md">contribution guide</a> if you want to contribute.</p>
     </section>
 
     <section class="code">
