@@ -74,7 +74,7 @@ This repository contains the charts components library (on `/src`) and the demo/
     ```
     > See [d3.chart.js](/src/d3.chart.js) for more detail, or [d3.barchart.js](/src/barchart/d3.barchart.js) for an example.
 
-2. **d3.mynewchart.vue** must be a common vue single file component that interacts with the chart:
+2. **d3.mynewchart.vue** is the single file component that interacts with the chart. It extends `/src/d3.chart.vue`:
     ```html
     <script>
     import D3Chart from '../d3.chart.vue';
