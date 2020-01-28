@@ -41,25 +41,32 @@ This repository contains the charts components library (on `/src`) and the demo/
             })
         }
 
-        initChart() { // Chart initialization
+        initChart() {
+            // Chart initialization
         }
 
-        setChartDimension(){ // Set up chart dimensions (non depending on data)
+        setChartDimension(){
+            // Set up chart dimensions (non depending on data)
         }
 
-        setScales(){ // Set up scales
+        setScales(){
+            // Set up scales
         }
 
-        bindData(){ // Data binding
+        bindData(){
+            // Data binding
         }
 
-        enterElements(){ // Elements to add
+        enterElements(){
+            // Elements to add
         }
 
-        updateElements(){ // Elements to update
+        updateElements(){
+            // Elements to update
         }
 
-        exitElements(){ // Elements to remove
+        exitElements(){
+            // Elements to remove
         }
     }
 
@@ -67,69 +74,25 @@ This repository contains the charts components library (on `/src`) and the demo/
     ```
     > See [d3.chart.js](/src/d3.chart.js) for more detail, or [d3.barchart.js](/src/barchart/d3.barchart.js) for an example.
 
-2. **d3.mynewchart.vue** must be a common vue single file component that interacts with the chart
-    ```javascript
+2. **d3.mynewchart.vue** must be a common vue single file component that interacts with the chart:
+    ```html
+    <script>
+    import D3Chart from '../d3.chart.vue';
+    import d3mynewchart from './d3.mynewchart';
+
     export default {
-        name: 'D3Mynewchart',
-        data: function(){
-            return {
-                chart: {},
-            }
-        },
-        props: {
-            config: {
-                type: Object,
-                required: true,
-                default: ()=>{
-                    return {};
-                }
-            },
-            datum: {
-                type: Array,
-                required: true,
-                default: ()=>{
-                    return [];
-                }
-            },
-            title: {
-                type: String,
-                default: ''
-            },
-            source: {
-                type: String,
-                default: ''
-            },
-            height: {
-                type: Number,
-                default: 300,
-            }
-        },
-        mounted: function(){
-            // Create chart
-            this.chart = new d3sunburst(
-                this.$refs.chart,
-                [...this.datum],
-                this.config
-            )
-        },
-        watch: {
-            config: {
-                handler(val){
-                    // Handle configuration change
-                    this.chart.updateConfig(val);
-                },
-                deep: true
-            },
-            datum(vals){
-                // Handle data change
-                this.chart.updateData([...vals]);
-            }
-        },
-        beforeDestroy: function(){
-            // Fire chart removal
-            this.chart.destroyChart();
-        }
-    }
+      name: 'D3MyNewChart',
+      extends: D3Chart,
+      mounted() {
+        this.chart = new mynewchart(
+          this.$refs.chart,
+          JSON.parse(JSON.stringify(this.datum)),
+          this.config,
+        );
+      },
+    };
+    </script>
+
     ```
     > See [d3.barchart.vue](/src/barchart/d3.barchart.vue) for an example.
 
