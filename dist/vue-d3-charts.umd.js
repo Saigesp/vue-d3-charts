@@ -402,7 +402,7 @@
   * Compute element color
   */
   d3chart.prototype.colorElement = function colorElement (d, key) {
-          if ( key === void 0 ) key=undefined;
+          if ( key === void 0 ) key = undefined;
 
       key = key ? key : this.cfg.key;
 
@@ -1989,6 +1989,14 @@
     );
 
   var d3$6 = { select: d3Selection.select, selectAll: d3Selection.selectAll, scaleOrdinal: d3Scale.scaleOrdinal, scaleLinear: d3Scale.scaleLinear, max: d3Array.max, extent: d3Array.extent, transition: d3Transition.transition, cloud: cloud,
+    easeLinear: d3Ease.easeLinear, easePolyIn: d3Ease.easePolyIn, easePolyOut: d3Ease.easePolyOut, easePoly: d3Ease.easePoly, easePolyInOut: d3Ease.easePolyInOut,
+    easeQuadIn: d3Ease.easeQuadIn, easeQuadOut: d3Ease.easeQuadOut, easeQuad: d3Ease.easeQuad, easeQuadInOut: d3Ease.easeQuadInOut, easeCubicIn: d3Ease.easeCubicIn,
+    easeCubicOut: d3Ease.easeCubicOut, easeCubic: d3Ease.easeCubic, easeCubicInOut: d3Ease.easeCubicInOut, easeSinIn: d3Ease.easeSinIn, easeSinOut: d3Ease.easeSinOut,
+    easeSin: d3Ease.easeSin, easeSinInOut: d3Ease.easeSinInOut, easeExpIn: d3Ease.easeExpIn, easeExpOut: d3Ease.easeExpOut, easeExp: d3Ease.easeExp,
+    easeExpInOut: d3Ease.easeExpInOut, easeCircleIn: d3Ease.easeCircleIn, easeCircleOut: d3Ease.easeCircleOut, easeCircle: d3Ease.easeCircle,
+    easeCircleInOut: d3Ease.easeCircleInOut, easeElasticIn: d3Ease.easeElasticIn, easeElastic: d3Ease.easeElastic, easeElasticOut: d3Ease.easeElasticOut,
+    easeElasticInOut: d3Ease.easeElasticInOut, easeBackIn: d3Ease.easeBackIn, easeBackOut: d3Ease.easeBackOut, easeBack: d3Ease.easeBack, easeBackInOut: d3Ease.easeBackInOut,
+    easeBounceIn: d3Ease.easeBounceIn, easeBounce: d3Ease.easeBounce, easeBounceOut: d3Ease.easeBounceOut, easeBounceInOut: d3Ease.easeBounceInOut,
     schemeCategory10: d3ScaleChromatic.schemeCategory10, schemeAccent: d3ScaleChromatic.schemeAccent, schemeDark2: d3ScaleChromatic.schemeDark2, schemePaired: d3ScaleChromatic.schemePaired, schemePastel1: d3ScaleChromatic.schemePastel1, schemePastel2: d3ScaleChromatic.schemePastel2,
     schemeSet1: d3ScaleChromatic.schemeSet1, schemeSet2: d3ScaleChromatic.schemeSet2, schemeSet3: d3ScaleChromatic.schemeSet3, schemeTableau10: d3ScaleChromatic.schemeTableau10 };
 
@@ -2002,8 +2010,9 @@
         key: 'word',
         value: 'size',
         fontFamily: 'Arial',
+        angle: {steps: 2, start: 0, end: 90},
         color: { key: false, keys: false, scheme: false, current: '#1f77b4', default: '#AAA', axis: '#000' },
-        // transition: { duration: 350, ease: 'easeLinear' }
+        transition: { duration: 350, ease: 'easeLinear' }
       });
     }
 
@@ -2030,15 +2039,14 @@
     */
     d3wordscloud.prototype.computeData = function computeData (){
       var this$1 = this;
-      
+
       var layout = d3$6.cloud()
         .size([ this.cfg.width, this.cfg.height ])
         .words(this.data.map(function (d) { return ({
           text: d[this$1.cfg.key],
           size: d[this$1.cfg.value],
         }); }))
-        .rotate(function () { return this$1.angleOrtogonal(); })
-        //.spiral('rectangular')
+        .rotate(function () { return this$1.wordsAngle(this$1.cfg.angle); })
         .font(this.cfg.fontFamily)
         .fontSize(function (d) { return d.size; })
         .on("end", function (d) { this$1.tData = d; })
@@ -2063,7 +2071,10 @@
      * Bind data to main elements groups
      */
     d3wordscloud.prototype.bindData = function bindData () {
-      console.log('bindData', this.tData);
+      // Set transition
+      this.transition = d3$6.transition('t')
+        .duration(this.cfg.transition.duration)
+        .ease(d3$6[this.cfg.transition.ease]);
 
       // Word group selection data
       this.wordgroup = this.gcenter
@@ -2074,33 +2085,21 @@
     /**
      * Set up scales
      */
-    d3wordscloud.prototype.setScales = function setScales () {};
-
-
-  /*
-    d3.select("body").append("svg")
-      .attr("width", layout.size()[0])
-      .attr("height", layout.size()[1])
-      .append("g")
-      .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
-      .selectAll("text")
-      .data(words)
-      .enter().append("text")
-      .style("font-size", function(d) { return d.size + "px"; })
-      .style("font-family", "Impact")
-      .attr("text-anchor", "middle")
-      .attr("transform", function(d) {
-        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-      })
-      .text(function(d) { return d.text; });
-  */
+    d3wordscloud.prototype.setScales = function setScales () {
+      if (this.cfg.color.scheme instanceof Array === true) {
+        this.colorScale = d3$6.scaleOrdinal().range(this.cfg.color.scheme);
+      } else if (typeof this.cfg.color.scheme === 'string') {
+        this.colorScale = d3$6.scaleOrdinal(d3$6[this.cfg.color.scheme]);
+      }
+    };
 
 
     /**
      * Add new chart's elements
      */
     d3wordscloud.prototype.enterElements = function enterElements () {
-      console.log('enterElements');
+      var this$1 = this;
+
 
       // Elements to add
       var newwords = this.wordgroup
@@ -2111,6 +2110,7 @@
         .style("font-size", function (d) { return d.size + "px"; })
         .style("font-family", function (d) { return d.font; })
         .attr("text-anchor", "middle")
+        .attr('fill', function (d) { return this$1.colorElement(d, 'text'); })
         .attr("transform", function (d) { return ("translate(" + ([d.x, d.y]) + ")rotate(" + (d.rotate) + ")"); })
         .text(function (d) { return d.text; });
     };
@@ -2119,18 +2119,45 @@
      * Update chart's elements based on data change
      */
     d3wordscloud.prototype.updateElements = function updateElements () {
-      console.log('updateElements');
+      var this$1 = this;
+
+      this.wordgroup.selectAll('text')
+        .data(this.tData, function (d) { return d.text; })
+        .transition(this.transition)
+        .attr('fill', function (d) { return this$1.colorElement(d, 'text'); })
+        .style("font-size", function (d) { return d.size + "px"; })
+        .attr("transform", function (d) { return ("translate(" + ([d.x, d.y]) + ")rotate(" + (d.rotate) + ")"); });
     };
 
     /**
      * Remove chart's elements without data
      */
     d3wordscloud.prototype.exitElements = function exitElements () {
-      console.log('exitElements');
+      this.wordgroup.exit()
+        .transition(this.transition)
+        .style("opacity", 0)
+        .remove();
     };
 
-    d3wordscloud.prototype.angleOrtogonal = function angleOrtogonal () {
-      return this.randomInt(0, 1) * 90;
+    /**
+     * Word's angle
+     */
+    d3wordscloud.prototype.wordsAngle = function wordsAngle (angle) {
+      if (typeof this.cfg.angle === 'number') {
+        // Config angle is fixed number
+        return this.cfg.angle;
+      } else if (typeof this.cfg.angle === 'object') {
+        if (this.cfg.angle instanceof Array === true) {
+          // Config angle is custom array
+          var idx = this.randomInt(0, this.cfg.angle.length-1);
+          return this.cfg.angle[idx];
+        } else {
+          // Config angle is custom object
+          var angle$1 = (this.cfg.angle.end - this.cfg.angle.start) / (this.cfg.angle.steps - 1);
+          return this.cfg.angle.start + (this.randomInt(0, this.cfg.angle.steps) * angle$1);
+        }
+      }
+      return 0;
     };
 
     d3wordscloud.prototype.randomInt = function randomInt (min, max) {

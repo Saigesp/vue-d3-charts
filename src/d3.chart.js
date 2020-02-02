@@ -163,7 +163,7 @@ class d3chart {
     /**
     * Compute element color
     */
-    colorElement(d, key=undefined) {
+    colorElement(d, key = undefined) {
         key = key ? key : this.cfg.key;
 
         // if key is set, return own object color key

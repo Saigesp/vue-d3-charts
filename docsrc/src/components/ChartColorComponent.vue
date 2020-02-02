@@ -25,7 +25,6 @@ chart_config = {
         <p>If <code>currentKey</code> isn't set, set all the object's color to passed value.</p>
         <div v-highlight>
             <pre class="language-js"><code>chart_config = {
-  key: 'name',
   color: {
     current: 'blue',
   }

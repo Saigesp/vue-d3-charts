@@ -4,11 +4,27 @@ import {scaleOrdinal, scaleLinear} from 'd3-scale'
 import {max, extent} from 'd3-array'
 import {transition} from 'd3-transition'
 import * as cloud from 'd3-cloud'
+import {easeLinear, easePolyIn, easePolyOut, easePoly, easePolyInOut,
+    easeQuadIn, easeQuadOut, easeQuad, easeQuadInOut, easeCubicIn,
+    easeCubicOut, easeCubic, easeCubicInOut, easeSinIn, easeSinOut,
+    easeSin, easeSinInOut, easeExpIn, easeExpOut, easeExp,
+    easeExpInOut, easeCircleIn, easeCircleOut, easeCircle,
+    easeCircleInOut, easeElasticIn, easeElastic, easeElasticOut,
+    easeElasticInOut, easeBackIn, easeBackOut, easeBack, easeBackInOut,
+    easeBounceIn, easeBounce, easeBounceOut, easeBounceInOut} from 'd3-ease'
 import {schemeCategory10, schemeAccent, schemeDark2, schemePaired,
   schemePastel1, schemePastel2, schemeSet1, schemeSet2, schemeSet3,
   schemeTableau10} from 'd3-scale-chromatic'
 
 const d3 = { select, selectAll, scaleOrdinal, scaleLinear, max, extent, transition, cloud,
+  easeLinear, easePolyIn, easePolyOut, easePoly, easePolyInOut,
+  easeQuadIn, easeQuadOut, easeQuad, easeQuadInOut, easeCubicIn,
+  easeCubicOut, easeCubic, easeCubicInOut, easeSinIn, easeSinOut,
+  easeSin, easeSinInOut, easeExpIn, easeExpOut, easeExp,
+  easeExpInOut, easeCircleIn, easeCircleOut, easeCircle,
+  easeCircleInOut, easeElasticIn, easeElastic, easeElasticOut,
+  easeElasticInOut, easeBackIn, easeBackOut, easeBack, easeBackInOut,
+  easeBounceIn, easeBounce, easeBounceOut, easeBounceInOut,
   schemeCategory10, schemeAccent, schemeDark2, schemePaired, schemePastel1, schemePastel2,
   schemeSet1, schemeSet2, schemeSet3, schemeTableau10 };
 
@@ -23,8 +39,9 @@ class d3wordscloud extends d3chart {
       key: 'word',
       value: 'size',
       fontFamily: 'Arial',
+      angle: {steps: 2, start: 0, end: 90},
       color: { key: false, keys: false, scheme: false, current: '#1f77b4', default: '#AAA', axis: '#000' },
-      // transition: { duration: 350, ease: 'easeLinear' }
+      transition: { duration: 350, ease: 'easeLinear' }
     });
   }
 
@@ -45,15 +62,14 @@ class d3wordscloud extends d3chart {
   /**
   * Compute data before operate
   */
-  computeData(){    
+  computeData(){
     let layout = d3.cloud()
       .size([ this.cfg.width, this.cfg.height ])
       .words(this.data.map(d => ({
         text: d[this.cfg.key],
         size: d[this.cfg.value],
       })))
-      .rotate(() => this.angleOrtogonal())
-      //.spiral('rectangular')
+      .rotate(() => this.wordsAngle(this.cfg.angle))
       .font(this.cfg.fontFamily)
       .fontSize(d => d.size)
       .on("end", d => { this.tData = d; })
@@ -78,7 +94,10 @@ class d3wordscloud extends d3chart {
    * Bind data to main elements groups
    */
   bindData() {
-    console.log('bindData', this.tData);
+    // Set transition
+    this.transition = d3.transition('t')
+      .duration(this.cfg.transition.duration)
+      .ease(d3[this.cfg.transition.ease]);
 
     // Word group selection data
     this.wordgroup = this.gcenter
@@ -89,33 +108,19 @@ class d3wordscloud extends d3chart {
   /**
    * Set up scales
    */
-  setScales() {}
-
-
-/*
-  d3.select("body").append("svg")
-    .attr("width", layout.size()[0])
-    .attr("height", layout.size()[1])
-    .append("g")
-    .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
-    .selectAll("text")
-    .data(words)
-    .enter().append("text")
-    .style("font-size", function(d) { return d.size + "px"; })
-    .style("font-family", "Impact")
-    .attr("text-anchor", "middle")
-    .attr("transform", function(d) {
-      return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-    })
-    .text(function(d) { return d.text; });
-*/
+  setScales() {
+    if (this.cfg.color.scheme instanceof Array === true) {
+      this.colorScale = d3.scaleOrdinal().range(this.cfg.color.scheme)
+    } else if (typeof this.cfg.color.scheme === 'string') {
+      this.colorScale = d3.scaleOrdinal(d3[this.cfg.color.scheme]);
+    }
+  }
 
 
   /**
    * Add new chart's elements
    */
   enterElements() {
-    console.log('enterElements');
 
     // Elements to add
     const newwords = this.wordgroup
@@ -126,6 +131,7 @@ class d3wordscloud extends d3chart {
       .style("font-size", d => d.size + "px")
       .style("font-family", d => d.font)
       .attr("text-anchor", "middle")
+      .attr('fill', d => this.colorElement(d, 'text'))
       .attr("transform", d => `translate(${[d.x, d.y]})rotate(${d.rotate})`)
       .text(d => d.text);
   }
@@ -134,18 +140,43 @@ class d3wordscloud extends d3chart {
    * Update chart's elements based on data change
    */
   updateElements() {
-    console.log('updateElements');
+    this.wordgroup.selectAll('text')
+      .data(this.tData, d => d.text)
+      .transition(this.transition)
+      .attr('fill', d => this.colorElement(d, 'text'))
+      .style("font-size", d => d.size + "px")
+      .attr("transform", d => `translate(${[d.x, d.y]})rotate(${d.rotate})`);
   }
 
   /**
    * Remove chart's elements without data
    */
   exitElements() {
-    console.log('exitElements');
+    this.wordgroup.exit()
+      .transition(this.transition)
+      .style("opacity", 0)
+      .remove();
   }
 
-  angleOrtogonal() {
-    return this.randomInt(0, 1) * 90;
+  /**
+   * Word's angle
+   */
+  wordsAngle(angle) {
+    if (typeof this.cfg.angle === 'number') {
+      // Config angle is fixed number
+      return this.cfg.angle;
+    } else if (typeof this.cfg.angle === 'object') {
+      if (this.cfg.angle instanceof Array === true) {
+        // Config angle is custom array
+        const idx = this.randomInt(0, this.cfg.angle.length-1);
+        return this.cfg.angle[idx];
+      } else {
+        // Config angle is custom object
+        const angle = (this.cfg.angle.end - this.cfg.angle.start) / (this.cfg.angle.steps - 1);
+        return this.cfg.angle.start + (this.randomInt(0, this.cfg.angle.steps) * angle);
+      }
+    }
+    return 0;
   }
 
   randomInt(min, max) {
