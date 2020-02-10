@@ -14,10 +14,13 @@
 
 
 <script>
-import {D3SlopeChart} from 'vue-d3-charts'
+import { D3SlopeChart } from 'vue-d3-charts';
 
 export default {
     name: 'SlopeChartExampleDataUpdate',
+    components: {
+      D3SlopeChart,
+    },
     data() {
         return {
             chart_config: { key: 'name', color: { scheme: 'schemeCategory10' }, transition: {ease: 'easeBounceOut', duration: 1000} },

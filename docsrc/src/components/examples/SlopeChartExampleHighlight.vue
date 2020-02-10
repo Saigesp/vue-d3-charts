@@ -9,10 +9,13 @@
 
 
 <script>
-import {D3SlopeChart} from 'vue-d3-charts'
+import { D3SlopeChart } from 'vue-d3-charts'
 
 export default {
     name: 'SlopeChartExampleHighlight',
+    components: {
+      D3SlopeChart,
+    },
     data() {
         return {
             title: 'Highlighted value and labeled axis',

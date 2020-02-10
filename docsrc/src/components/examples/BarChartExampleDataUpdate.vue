@@ -19,6 +19,9 @@ import {D3BarChart} from 'vue-d3-charts'
 
 export default {
   name: 'BarChartExampleDataUpdate',
+  components: {
+    D3BarChart,
+  },
   data() {
     return {
       chart_config: {

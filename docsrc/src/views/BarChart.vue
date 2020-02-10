@@ -26,10 +26,13 @@
 
 
 <script>
-import {D3BarChart} from 'vue-d3-charts'
+import { D3BarChart } from 'vue-d3-charts'
 
 export default {
   name: 'BarChart',
+  components: {
+    D3BarChart,
+  },
   data(){
     return {
       chartname: 'D3BarChart',

@@ -24,6 +24,9 @@ import {D3BarChart} from 'vue-d3-charts'
 
 export default {
   name: 'BarChartExampleBasic',
+  components: {
+    D3BarChart,
+  },
   data() {
     return {
       customtitle: 'Your title goes here',

@@ -27,10 +27,13 @@
 
 
 <script>
-import {D3LineChart} from 'vue-d3-charts'
+import { D3LineChart } from 'vue-d3-charts';
 
 export default {
     name: 'LineChart',
+    components: {
+      D3LineChart,
+    },
     data(){
       return {
         chartname: 'D3LineChart',

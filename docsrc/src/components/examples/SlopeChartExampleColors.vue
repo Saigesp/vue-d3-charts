@@ -11,6 +11,9 @@ import { D3SlopeChart } from 'vue-d3-charts'
 
 export default {
   name: 'SlopeChartExampleColors',
+  components: {
+    D3SlopeChart,
+  },
   data() {
     return {
       title: 'Color scheme, currentKey and color keys',

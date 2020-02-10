@@ -24,10 +24,13 @@
   </div>
 </template>
 <script>
-import {D3Sunburst} from 'vue-d3-charts'
+import { D3Sunburst } from 'vue-d3-charts';
 
 export default {
   name: 'Sunburst',
+  components: {
+    D3Sunburst,
+  },
   data() {
     return {
       chartname: 'D3Sunburst',

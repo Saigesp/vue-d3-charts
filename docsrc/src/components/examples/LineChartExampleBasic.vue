@@ -13,6 +13,9 @@ import {D3LineChart} from 'vue-d3-charts'
 
 export default {
     name: 'LineChartExampleBasic',
+    components: {
+      D3LineChart,
+    },
     data() {
         return {
             title: 'Basic line chart without points',

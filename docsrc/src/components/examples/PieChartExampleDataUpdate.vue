@@ -15,10 +15,13 @@
 
 
 <script>
-import {D3PieChart} from 'vue-d3-charts'
+import { D3PieChart } from 'vue-d3-charts'
 
 export default {
   name: 'PieChartExampleDataUpdate',
+  components: {
+    D3PieChart,
+  },
   data() {
     return {
       chart_config: {

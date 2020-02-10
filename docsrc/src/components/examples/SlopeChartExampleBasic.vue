@@ -9,10 +9,13 @@
 
 
 <script>
-import {D3SlopeChart} from 'vue-d3-charts'
+import { D3SlopeChart } from 'vue-d3-charts'
 
 export default {
     name: 'SlopeChartExampleBasic',
+    components: {
+      D3SlopeChart,
+    },
     data() {
         return {
             title: 'Basic slope chart',

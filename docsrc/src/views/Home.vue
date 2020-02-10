@@ -46,10 +46,13 @@
 </template>
 
 <script>
-import {D3BarChart} from 'vue-d3-charts'
+import { D3BarChart } from 'vue-d3-charts';
 
 export default {
   name: 'HomeView',
+  components: {
+    D3BarChart,
+  },
   data(){
     return {
       bartext: '<D3BarChart :config="chart_config" :datum="chart_data"></D3BarChart>',

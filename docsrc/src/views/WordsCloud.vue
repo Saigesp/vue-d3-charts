@@ -28,10 +28,13 @@
   </div>
 </template>
 <script>
-import {D3WordsCloud} from 'vue-d3-charts'
+import { D3WordsCloud } from 'vue-d3-charts';
 
 export default {
   name: 'WordsCloud',
+  components: {
+    D3WordsCloud,
+  },
   data() {
     return {
       chartname: 'D3WordsCloud',

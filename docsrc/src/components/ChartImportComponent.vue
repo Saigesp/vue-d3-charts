@@ -8,21 +8,21 @@
 
 <script>
 export default {
-    name: 'ChartImportComponent',
-    props: {
-        code: {
-            type: String,
-            required: true,
-        },
-        link: {
-            type: String,
-            required: false
-        },
+  name: 'ChartImportComponent',
+  props: {
+    code: {
+      type: String,
+      required: true,
     },
-    computed: {
-        chartcode(){
-            return `import {${this.code}} from 'vue-d3-charts'`;
-        }
-    }
-}
+    link: {
+      type: String,
+      required: false,
+    },
+  },
+  computed: {
+    chartcode(){
+      return `import {${this.code}} from 'vue-d3-charts'`;
+    },
+  },
+};
 </script>

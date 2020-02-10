@@ -33,10 +33,13 @@
 
 
 <script>
-import {D3PieChart} from 'vue-d3-charts'
+import { D3PieChart } from 'vue-d3-charts';
 
 export default {
   name: 'PieChart',
+  components: {
+    D3PieChart,
+  },
   data(){
     return {
       chartname: 'D3PieChart',
