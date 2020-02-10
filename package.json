@@ -1,6 +1,6 @@
 {
   "name": "vue-d3-charts",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "",
   "main": "dist/vue-d3-charts.ssr.js",
   "browser": "dist/vue-d3-charts.esm.js",
