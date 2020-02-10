@@ -19,7 +19,17 @@
     <section class="code">
       <h2>How to use</h2>
       <p>First import your desired charts:</p>
-      <div v-highlight><pre class="language-javascript"><code>import {D3BarChart} from 'vue-d3-charts'</code></pre></div>
+      <div v-highlight>
+        <pre class="language-javascript"><code>import { D3BarChart } from 'vue-d3-charts';
+
+export default {
+  name: 'LoremIpsumComponent',
+  components: {
+    D3BarChart,
+  },
+  // ...
+};</code></pre>
+      </div>
       <p>And then use it on your project, passing them a configuratioin object and a data array:</p>
       <div v-highlight><pre class="language-html"><code>{{bartext}}</code></pre></div>
       <p>Each chart has it's own configuration options. For example, the <strong>bar chart</strong> has these:</p>

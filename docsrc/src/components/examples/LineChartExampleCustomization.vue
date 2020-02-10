@@ -56,9 +56,12 @@ export default {
     <D3LineChart :config="chart_config" :datum="chart_data"></D3LineChart>
   </div>
 </template>`,
-            codejs:`import {D3LineChart} from 'vue-d3-charts'
+            codejs:`import { D3LineChart } from 'vue-d3-charts';
 
 export default {
+  components: {
+    D3LineChart,
+  },
   data() {
     return {
       chart_data: [

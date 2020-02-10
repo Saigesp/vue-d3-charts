@@ -21,7 +21,14 @@ export default {
   },
   computed: {
     chartcode(){
-      return `import {${this.code}} from 'vue-d3-charts'`;
+      return `import { ${this.code} } from 'vue-d3-charts';
+
+export default {
+  components: {
+    ${this.code},
+  },
+  // ...
+};`;
     },
   },
 };

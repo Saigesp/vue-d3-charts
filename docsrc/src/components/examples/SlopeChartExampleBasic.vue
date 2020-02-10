@@ -30,9 +30,12 @@ export default {
     <D3SlopeChart :config="chart_config" :datum="chart_data"></D3SlopeChart>
   </div>
 </template>`,
-            codejs:`import {D3SlopeChart} from 'vue-d3-charts'
+            codejs:`import { D3SlopeChart } from 'vue-d3-charts';
 
 export default {
+  components: {
+    D3SlopeChart,
+  },
   data() {
     return {
       chart_data: [

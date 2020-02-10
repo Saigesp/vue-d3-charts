@@ -55,9 +55,12 @@ export default {
 
   </div>
 </template>`,
-      codejs:`import {D3BarChart} from 'vue-d3-charts'
+      codejs:`import { D3BarChart } from 'vue-d3-charts';
 
 export default {
+  components: {
+    D3BarChart,
+  },
   data() {
     return {
       chart_data: [

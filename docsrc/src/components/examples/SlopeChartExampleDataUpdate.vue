@@ -37,9 +37,12 @@ export default {
       <button @click="removeData()">Remove</button>
   </div>
 </template>`,
-            codejs:`import {D3SlopeChart} from 'vue-d3-charts'
+            codejs:`import { D3SlopeChart } from 'vue-d3-charts';
 
 export default {
+  components: {
+    D3SlopeChart,
+  },
   data() {
     return {
       chart_config: {
