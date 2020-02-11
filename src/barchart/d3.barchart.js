@@ -63,6 +63,7 @@ class d3barchart extends d3chart {
 
     // Set up scales
     this.xScale = d3.scaleBand();
+    this.xScaleInn = d3.scaleBand();
     this.yScale = d3.scaleLinear();
 
     // Axis group
@@ -98,10 +99,10 @@ class d3barchart extends d3chart {
       .paddingInner(0.1)
       .domain(this.data.map(d => d[this.cfg.key]));
 
-    this.xScaleInn = d3.scaleBand()
+    this.xScaleInn
       .domain(this.cfg.values)
       .rangeRound([0, this.xScale.bandwidth()])
-      .padding(0.05)
+      .padding(0.02)
 
     this.yScale
       .rangeRound([0, this.cfg.height])
@@ -226,6 +227,7 @@ class d3barchart extends d3chart {
     // Bars
     this.g
       .selectAll('.chart__bar')
+      .attr('x', (d, i) => this.xScaleInn(this.cfg.values[i % this.cfg.values.length]))
       .transition(this.transition)
       .attr('fill', (d, i) => this.colorElement(d, this.cfg.values[i % this.cfg.values.length]))
       .attr('width', this.xScaleInn.bandwidth())

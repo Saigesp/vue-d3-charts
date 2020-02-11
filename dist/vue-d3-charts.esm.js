@@ -608,6 +608,7 @@ class d3barchart extends d3chart {
     this.initChartFrame('barchart'); // Set up scales
 
     this.xScale = d3$1.scaleBand();
+    this.xScaleInn = d3$1.scaleBand();
     this.yScale = d3$1.scaleLinear(); // Axis group
 
     this.axisg = this.g.append('g').attr('class', 'chart__axis chart__axis--barchart'); // Horizontal grid
@@ -627,7 +628,7 @@ class d3barchart extends d3chart {
 
   setScales() {
     this.xScale.rangeRound([0, this.cfg.width]).paddingInner(0.1).domain(this.data.map(d => d[this.cfg.key]));
-    this.xScaleInn = d3$1.scaleBand().domain(this.cfg.values).rangeRound([0, this.xScale.bandwidth()]).padding(0.05);
+    this.xScaleInn.domain(this.cfg.values).rangeRound([0, this.xScale.bandwidth()]).padding(0.02);
     this.yScale.rangeRound([0, this.cfg.height]).domain([d3$1.max(this.data, d => d3$1.max(this.cfg.values.map(v => d[v]))), 0]);
 
     if (this.cfg.color.scheme instanceof Array === true) {
@@ -699,7 +700,7 @@ class d3barchart extends d3chart {
     // Bars groups
     this.itemg.transition(this.transition).attr('transform', d => `translate(${this.xScale(d[this.cfg.key])},0)`); // Bars
 
-    this.g.selectAll('.chart__bar').transition(this.transition).attr('fill', (d, i) => this.colorElement(d, this.cfg.values[i % this.cfg.values.length])).attr('width', this.xScaleInn.bandwidth()).attr('y', (d, i) => {
+    this.g.selectAll('.chart__bar').attr('x', (d, i) => this.xScaleInn(this.cfg.values[i % this.cfg.values.length])).transition(this.transition).attr('fill', (d, i) => this.colorElement(d, this.cfg.values[i % this.cfg.values.length])).attr('width', this.xScaleInn.bandwidth()).attr('y', (d, i) => {
       return this.yScale(+d[this.cfg.values[i % this.cfg.values.length]]);
     }).attr('height', (d, i) => {
       return this.cfg.height - this.yScale(+d[this.cfg.values[i % this.cfg.values.length]]);

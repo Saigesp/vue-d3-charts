@@ -799,6 +799,7 @@ function (_d3chart) {
       this.initChartFrame('barchart'); // Set up scales
 
       this.xScale = d3$1.scaleBand();
+      this.xScaleInn = d3$1.scaleBand();
       this.yScale = d3$1.scaleLinear(); // Axis group
 
       this.axisg = this.g.append('g').attr('class', 'chart__axis chart__axis--barchart'); // Horizontal grid
@@ -823,7 +824,7 @@ function (_d3chart) {
       this.xScale.rangeRound([0, this.cfg.width]).paddingInner(0.1).domain(this.data.map(function (d) {
         return d[_this.cfg.key];
       }));
-      this.xScaleInn = d3$1.scaleBand().domain(this.cfg.values).rangeRound([0, this.xScale.bandwidth()]).padding(0.05);
+      this.xScaleInn.domain(this.cfg.values).rangeRound([0, this.xScale.bandwidth()]).padding(0.02);
       this.yScale.rangeRound([0, this.cfg.height]).domain([d3$1.max(this.data, function (d) {
         return d3$1.max(_this.cfg.values.map(function (v) {
           return d[v];
@@ -920,7 +921,9 @@ function (_d3chart) {
         return "translate(".concat(_this4.xScale(d[_this4.cfg.key]), ",0)");
       }); // Bars
 
-      this.g.selectAll('.chart__bar').transition(this.transition).attr('fill', function (d, i) {
+      this.g.selectAll('.chart__bar').attr('x', function (d, i) {
+        return _this4.xScaleInn(_this4.cfg.values[i % _this4.cfg.values.length]);
+      }).transition(this.transition).attr('fill', function (d, i) {
         return _this4.colorElement(d, _this4.cfg.values[i % _this4.cfg.values.length]);
       }).attr('width', this.xScaleInn.bandwidth()).attr('y', function (d, i) {
         return _this4.yScale(+d[_this4.cfg.values[i % _this4.cfg.values.length]]);
