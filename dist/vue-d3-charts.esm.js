@@ -570,7 +570,7 @@ class d3barchart extends d3chart {
       },
       key: 'key',
       currentKey: false,
-      value: 'value',
+      values: [],
       labelRotation: 0,
       color: {
         key: false,
@@ -626,8 +626,9 @@ class d3barchart extends d3chart {
 
 
   setScales() {
-    this.xScale.rangeRound([0, this.cfg.width]).padding(0.1).domain(this.data.map(d => d[this.cfg.key]));
-    this.yScale.rangeRound([0, this.cfg.height]).domain([d3$1.max(this.data, d => +d[this.cfg.value]), 0]);
+    this.xScale.rangeRound([0, this.cfg.width]).paddingInner(0.1).domain(this.data.map(d => d[this.cfg.key]));
+    this.xScaleInn = d3$1.scaleBand().domain(this.cfg.values).rangeRound([0, this.xScale.bandwidth()]).padding(0.05);
+    this.yScale.rangeRound([0, this.cfg.height]).domain([d3$1.max(this.data, d => d3$1.max(this.cfg.values.map(v => d[v]))), 0]);
 
     if (this.cfg.color.scheme instanceof Array === true) {
       this.colorScale = d3$1.scaleOrdinal().range(this.cfg.color.scheme);
@@ -636,7 +637,7 @@ class d3barchart extends d3chart {
     } // Horizontal grid
 
 
-    this.yGrid.call(d3$1.axisLeft(this.yScale).tickSize(-this.cfg.width).ticks(this.cfg.axis.yTicks, this.cfg.axis.yFormat)); // Bottom axis
+    this.yGrid.transition(this.transition).call(d3$1.axisLeft(this.yScale).tickSize(-this.cfg.width).ticks(this.cfg.axis.yTicks, this.cfg.axis.yFormat)); // Bottom axis
 
     this.xAxis.attr("transform", `translate(0,${this.cfg.height})`).call(d3$1.axisBottom(this.xScale));
   }
@@ -671,9 +672,17 @@ class d3barchart extends d3chart {
 
   enterElements() {
     const newbars = this.itemg.enter().append('g').attr('class', 'chart__bar-group chart__bar-group--barchart').attr('transform', d => `translate(${this.xScale(d[this.cfg.key])},0)`);
-    const rects = newbars.append('rect').attr('class', 'chart__bar chart__bar--barchart').classed('chart__bar--current', d => this.cfg.currentKey && d[this.cfg.key] == this.cfg.currentKey).attr('x', 0).attr('y', this.cfg.height).attr('height', 0).on('mouseover', d => {
+    const rects = newbars.selectAll('.chart__bar').data(d => this.cfg.values.map(v => {
+      const dat = { ...d
+      };
+      dat[this.cfg.key] = d[this.cfg.key];
+      return dat;
+    })).enter().append('rect').attr('class', 'chart__bar chart__bar--barchart').classed('chart__bar--current', d => {
+      return this.cfg.currentKey && d[this.cfg.key] === this.cfg.currentKey;
+    }).attr('x', (d, i) => this.xScaleInn(this.cfg.values[i % this.cfg.values.length])).attr('y', this.cfg.height).attr('height', 0).on('mouseover', (d, i) => {
+      const key = this.cfg.values[i % this.cfg.values.length];
       this.tooltip.html(() => {
-        return `<div>${d[this.cfg.key]}: ${d[this.cfg.value]}</div>`;
+        return `<div>${key}: ${d[key]}</div>`;
       }).classed('active', true);
     }).on('mouseout', () => {
       this.tooltip.classed('active', false);
@@ -690,7 +699,11 @@ class d3barchart extends d3chart {
     // Bars groups
     this.itemg.transition(this.transition).attr('transform', d => `translate(${this.xScale(d[this.cfg.key])},0)`); // Bars
 
-    this.g.selectAll('.chart__bar').transition(this.transition).attr('fill', d => this.colorElement(d)).attr('width', this.xScale.bandwidth()).attr('y', d => this.yScale(+d[this.cfg.value])).attr('height', d => this.cfg.height - this.yScale(+d[this.cfg.value]));
+    this.g.selectAll('.chart__bar').transition(this.transition).attr('fill', (d, i) => this.colorElement(d, this.cfg.values[i % this.cfg.values.length])).attr('width', this.xScaleInn.bandwidth()).attr('y', (d, i) => {
+      return this.yScale(+d[this.cfg.values[i % this.cfg.values.length]]);
+    }).attr('height', (d, i) => {
+      return this.cfg.height - this.yScale(+d[this.cfg.values[i % this.cfg.values.length]]);
+    });
   }
   /**
    * Remove chart's elements without data

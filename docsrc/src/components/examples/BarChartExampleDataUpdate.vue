@@ -26,7 +26,7 @@ export default {
     return {
       chart_config: {
         key: 'year',
-        value: 'hours'
+        values: ['hours']
       },
       chart_data: [
         {hours: 238, year: '2000'},
@@ -71,7 +71,7 @@ export default {
       ],
       chart_config: {
         key: 'year',
-        value: 'hours'
+        values: ['hours']
       },
       count: 2010
     }

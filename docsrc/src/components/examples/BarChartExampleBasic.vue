@@ -4,8 +4,8 @@
     <p v-if="desc">{{desc}}</p>
     <D3BarChart :config="config" :datum="data" :title="customtitle" :source="customsource"></D3BarChart>
     <div class="example__controls">
-      <select v-model="config.value">
-        <option :value="d" v-for="d in ['hours', 'production']">{{d}}</option>
+      <select v-model="config.values">
+        <option :value="[d]" v-for="d in ['hours', 'production']">{{d}}</option>
       </select>
       <select v-model="config.currentKey">
         <option :value="d.year" v-for="d in data">{{d.year}}</option>
@@ -34,7 +34,7 @@ export default {
       config: {
         key: 'year',
         currentKey: '2004',
-        value: 'hours',
+        values: ['hours'],
         axis: {
           yTicks: 4
         },
@@ -50,7 +50,7 @@ export default {
         {hours: 2524, production: 6841, year: '2006'},
         {hours: 1648, production: 9613, year: '2007'},
         {hours: 2479, production: 6315, year: '2008'},
-        {hours: 3200, production: 2541, year: '2009'},
+        {hours: 3200, production: 20541, year: '2009'},
       ],
       codehtml: `<template>
   <div class="my-app">
@@ -64,8 +64,8 @@ export default {
     ></D3BarChart>
 
     <!-- value control -->
-    <select v-model="config.value">
-      <option :value="d" v-for="d in ['hours', 'production']">{{d}}</option>
+    <select v-model="config.values">
+      <option :value="[d]" v-for="d in ['hours', 'production']">{{d}}</option>
     </select>
 
     <!-- current control -->
@@ -100,7 +100,7 @@ export default {
       chart_config: {
         key: 'year',
         currentKey: '2004',
-        value: 'hours',
+        values: ['hours'],
         axis: {
           yTicks: 3
         },

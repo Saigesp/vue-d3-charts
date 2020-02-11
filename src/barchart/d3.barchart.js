@@ -43,7 +43,7 @@ class d3barchart extends d3chart {
       margin: { top: 10, right: 30, bottom: 20, left: 40 },
       key: 'key',
       currentKey: false,
-      value: 'value',
+      values: [],
       labelRotation: 0,
       color: { key: false, keys: false, scheme: false, current: "#1f77b4", default: "#AAA", axis: "#000" },
       axis: { yTitle: false, xTitle: false, yFormat: ".0f", xFormat: ".0f", yTicks: 10, xTicks: 10 },
@@ -95,12 +95,17 @@ class d3barchart extends d3chart {
 
     this.xScale
       .rangeRound([0, this.cfg.width])
-      .padding(0.1)
+      .paddingInner(0.1)
       .domain(this.data.map(d => d[this.cfg.key]));
+
+    this.xScaleInn = d3.scaleBand()
+      .domain(this.cfg.values)
+      .rangeRound([0, this.xScale.bandwidth()])
+      .padding(0.05)
 
     this.yScale
       .rangeRound([0, this.cfg.height])
-      .domain([d3.max(this.data, d => +d[this.cfg.value]), 0]);
+      .domain([d3.max(this.data, d => d3.max(this.cfg.values.map(v => d[v]))), 0]);
 
     if (this.cfg.color.scheme instanceof Array === true) {
       this.colorScale = d3.scaleOrdinal().range(this.cfg.color.scheme)
@@ -110,6 +115,7 @@ class d3barchart extends d3chart {
 
     // Horizontal grid
     this.yGrid
+      .transition(this.transition)
       .call(
         d3.axisLeft(this.yScale)
           .tickSize(-this.cfg.width)
@@ -174,25 +180,35 @@ class d3barchart extends d3chart {
       .attr('class', 'chart__bar-group chart__bar-group--barchart')
       .attr('transform', d => `translate(${this.xScale(d[this.cfg.key])},0)`);
       
-    const rects = newbars.append('rect')
+    const rects = newbars.selectAll('.chart__bar')
+      .data(d => this.cfg.values.map(v => {
+        const dat = { ...d };
+        dat[this.cfg.key] = d[this.cfg.key];
+        return dat;
+      }))
+      .enter()
+    .append('rect')
       .attr('class', 'chart__bar chart__bar--barchart')
-      .classed('chart__bar--current', d => this.cfg.currentKey && d[this.cfg.key] == this.cfg.currentKey)
-      .attr('x', 0)
+      .classed('chart__bar--current', (d) => {
+        return this.cfg.currentKey && d[this.cfg.key] === this.cfg.currentKey;
+      })
+      .attr('x', (d, i) => this.xScaleInn(this.cfg.values[i % this.cfg.values.length]))
       .attr('y', this.cfg.height)
       .attr('height', 0)
-      .on('mouseover', d => {
+      .on('mouseover', (d, i) => {
+        const key = this.cfg.values[i % this.cfg.values.length];
         this.tooltip.html(() => {
-          return `<div>${d[this.cfg.key]}: ${d[this.cfg.value]}</div>`
+          return `<div>${key}: ${d[key]}</div>`
         })
-        .classed('active', true);
+       .classed('active', true);
       })
       .on('mouseout', () => {
-        this.tooltip.classed('active', false)
+       this.tooltip.classed('active', false)
       })
       .on('mousemove', () => {
-        this.tooltip
-          .style('left', window.event['pageX'] - 28 + 'px')
-          .style('top', window.event['pageY'] - 40 + 'px')
+       this.tooltip
+         .style('left', window.event['pageX'] - 28 + 'px')
+         .style('top', window.event['pageY'] - 40 + 'px')
       })
 
   }
@@ -201,6 +217,7 @@ class d3barchart extends d3chart {
    * Update chart's elements based on data change
    */
   updateElements() {
+
     // Bars groups
     this.itemg
       .transition(this.transition)
@@ -210,10 +227,14 @@ class d3barchart extends d3chart {
     this.g
       .selectAll('.chart__bar')
       .transition(this.transition)
-      .attr('fill', d => this.colorElement(d))
-      .attr('width', this.xScale.bandwidth())
-      .attr('y', d => this.yScale(+d[this.cfg.value]))
-      .attr('height', d => this.cfg.height - this.yScale(+d[this.cfg.value]))
+      .attr('fill', (d, i) => this.colorElement(d, this.cfg.values[i % this.cfg.values.length]))
+      .attr('width', this.xScaleInn.bandwidth())
+      .attr('y', (d, i) => {
+        return this.yScale(+d[this.cfg.values[i % this.cfg.values.length]]);
+      })
+      .attr('height', (d, i) => {
+        return this.cfg.height - this.yScale(+d[this.cfg.values[i % this.cfg.values.length]]);
+      })
 
   }
 

@@ -36,6 +36,55 @@ function _createClass(Constructor, protoProps, staticProps) {
   return Constructor;
 }
 
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    if (enumerableOnly) symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    });
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
+
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
     throw new TypeError("Super expression must either be null or a function");
@@ -710,7 +759,7 @@ function (_d3chart) {
       },
       key: 'key',
       currentKey: false,
-      value: 'value',
+      values: [],
       labelRotation: 0,
       color: {
         key: false,
@@ -771,11 +820,14 @@ function (_d3chart) {
     value: function setScales() {
       var _this = this;
 
-      this.xScale.rangeRound([0, this.cfg.width]).padding(0.1).domain(this.data.map(function (d) {
+      this.xScale.rangeRound([0, this.cfg.width]).paddingInner(0.1).domain(this.data.map(function (d) {
         return d[_this.cfg.key];
       }));
+      this.xScaleInn = d3$1.scaleBand().domain(this.cfg.values).rangeRound([0, this.xScale.bandwidth()]).padding(0.05);
       this.yScale.rangeRound([0, this.cfg.height]).domain([d3$1.max(this.data, function (d) {
-        return +d[_this.cfg.value];
+        return d3$1.max(_this.cfg.values.map(function (v) {
+          return d[v];
+        }));
       }), 0]);
 
       if (this.cfg.color.scheme instanceof Array === true) {
@@ -785,7 +837,7 @@ function (_d3chart) {
       } // Horizontal grid
 
 
-      this.yGrid.call(d3$1.axisLeft(this.yScale).tickSize(-this.cfg.width).ticks(this.cfg.axis.yTicks, this.cfg.axis.yFormat)); // Bottom axis
+      this.yGrid.transition(this.transition).call(d3$1.axisLeft(this.yScale).tickSize(-this.cfg.width).ticks(this.cfg.axis.yTicks, this.cfg.axis.yFormat)); // Bottom axis
 
       this.xAxis.attr("transform", "translate(0,".concat(this.cfg.height, ")")).call(d3$1.axisBottom(this.xScale));
     }
@@ -831,11 +883,22 @@ function (_d3chart) {
       var newbars = this.itemg.enter().append('g').attr('class', 'chart__bar-group chart__bar-group--barchart').attr('transform', function (d) {
         return "translate(".concat(_this3.xScale(d[_this3.cfg.key]), ",0)");
       });
-      var rects = newbars.append('rect').attr('class', 'chart__bar chart__bar--barchart').classed('chart__bar--current', function (d) {
-        return _this3.cfg.currentKey && d[_this3.cfg.key] == _this3.cfg.currentKey;
-      }).attr('x', 0).attr('y', this.cfg.height).attr('height', 0).on('mouseover', function (d) {
+      var rects = newbars.selectAll('.chart__bar').data(function (d) {
+        return _this3.cfg.values.map(function (v) {
+          var dat = _objectSpread2({}, d);
+
+          dat[_this3.cfg.key] = d[_this3.cfg.key];
+          return dat;
+        });
+      }).enter().append('rect').attr('class', 'chart__bar chart__bar--barchart').classed('chart__bar--current', function (d) {
+        return _this3.cfg.currentKey && d[_this3.cfg.key] === _this3.cfg.currentKey;
+      }).attr('x', function (d, i) {
+        return _this3.xScaleInn(_this3.cfg.values[i % _this3.cfg.values.length]);
+      }).attr('y', this.cfg.height).attr('height', 0).on('mouseover', function (d, i) {
+        var key = _this3.cfg.values[i % _this3.cfg.values.length];
+
         _this3.tooltip.html(function () {
-          return "<div>".concat(d[_this3.cfg.key], ": ").concat(d[_this3.cfg.value], "</div>");
+          return "<div>".concat(key, ": ").concat(d[key], "</div>");
         }).classed('active', true);
       }).on('mouseout', function () {
         _this3.tooltip.classed('active', false);
@@ -857,12 +920,12 @@ function (_d3chart) {
         return "translate(".concat(_this4.xScale(d[_this4.cfg.key]), ",0)");
       }); // Bars
 
-      this.g.selectAll('.chart__bar').transition(this.transition).attr('fill', function (d) {
-        return _this4.colorElement(d);
-      }).attr('width', this.xScale.bandwidth()).attr('y', function (d) {
-        return _this4.yScale(+d[_this4.cfg.value]);
-      }).attr('height', function (d) {
-        return _this4.cfg.height - _this4.yScale(+d[_this4.cfg.value]);
+      this.g.selectAll('.chart__bar').transition(this.transition).attr('fill', function (d, i) {
+        return _this4.colorElement(d, _this4.cfg.values[i % _this4.cfg.values.length]);
+      }).attr('width', this.xScaleInn.bandwidth()).attr('y', function (d, i) {
+        return _this4.yScale(+d[_this4.cfg.values[i % _this4.cfg.values.length]]);
+      }).attr('height', function (d, i) {
+        return _this4.cfg.height - _this4.yScale(+d[_this4.cfg.values[i % _this4.cfg.values.length]]);
       });
     }
     /**

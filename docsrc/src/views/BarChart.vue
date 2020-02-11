@@ -38,7 +38,7 @@ export default {
       chartname: 'D3BarChart',
       chartdesc: 'A bar chart presents categorical data with rectangular bars with heights proportional to the values that they represent.',
       chartcode: '<D3BarChart :config="chart_config" :datum="chart_data"></D3BarChart>',
-      chartoptions: ['margin', 'key', 'value', 'color', 'transition', 'axis', 'labelRotation', 'tooltip', 'currentKey'],
+      chartoptions: ['margin', 'key', 'values', 'color', 'transition', 'axis', 'labelRotation', 'tooltip', 'currentKey'],
       chartcustomoptions: {
         tooltip: {
           required: false,
@@ -50,7 +50,7 @@ export default {
       },
       chartconfig: {
         key: 'name',
-        value: 'total',
+        values: ['total'],
         color: {current: '#41B882'},
         axis: {yTitle: 'Lorem ipsum dolor sit amet', yTicks: 10, yFormat: '.0s'},
         transition: {ease: 'easeBounceOut', duration: 1000}
@@ -83,7 +83,7 @@ export default {
   name: "Dolor",
   total: 20
 }]`,
-      chartdataconfig: '<code>key: "name", value: "total"</code>'
+      chartdataconfig: '<code>key: "name", values: ["total"]</code>'
     }
   }
 }
