@@ -69,6 +69,7 @@ class d3linechart extends d3chart {
         // Init scales
         this.yScale = d3.scaleLinear();
         this.xScale = d3.scaleTime();
+        this.line = d3.line();
 
         // Axis group
         this.axisg = this.g.append('g')
@@ -112,7 +113,7 @@ class d3linechart extends d3chart {
         this.data.forEach(d => { d.jsdate = this.parseTime(d[this.cfg.date.key]) });
         this.data.sort((a, b) => b.jsdate - a.jsdate);
 
-        this.data.forEach(d => {
+        this.data.forEach((d, c) => {
             d.min = 9999999999999999999;
             d.max = -9999999999999999999;
             this.cfg.values.forEach((j, i) => {
@@ -163,7 +164,7 @@ class d3linechart extends d3chart {
         }
 
         // Set up line function
-        this.line = d3.line()
+        this.line
             .x(d => this.xScale(d.x))
             .y(d => this.yScale(d.y))
             .curve(d3[this.cfg.curve])
@@ -198,10 +199,10 @@ class d3linechart extends d3chart {
 
         // Lines group
         this.linesgroup = this.g.selectAll(".chart__lines-group")
-            .data(this.tData);
+            .data(this.tData, d => d.key);
 
         // Don't continue if points are disabled
-        if(this.cfg.points===false)
+        if(this.cfg.points === false)
           return;
         
         // Set points store
@@ -224,10 +225,12 @@ class d3linechart extends d3chart {
         newgroups.append('path')
             .attr("class", "chart__line chart__line--linechart")
             .attr('fill', 'transparent')
-            .attr("d", d => this.line(d.values.map(v => {return { y: 0, x: v.x, k: v.k}})))
+            .attr("d", d => this.line(
+                d.values.map(v => ({ y: 0, x: v.x, k: v.k }))
+            ));
 
         // Don't continue if points are disabled
-        if(this.cfg.points===false)
+        if(this.cfg.points === false)
           return;
 
         this.cfg.values.forEach((k, i) => {
@@ -283,7 +286,7 @@ class d3linechart extends d3chart {
 
         // Redraw lines
         this.g.selectAll('.chart__line')
-            .attr('stroke', d => { return this.colorElement(d, 'key') })
+            .attr('stroke', d => this.colorElement(d, 'key'))
             .transition(this.transition)
             .attr("d", d => this.line(d.values))
 

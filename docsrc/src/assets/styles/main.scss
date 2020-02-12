@@ -122,6 +122,14 @@ pre {
                 color: #7d7d7d;
             }
         }
+        &.examples {
+            > div {
+                margin-top: 180px;
+                &:first-of-type {
+                    margin-top: 20px;
+                }
+            }
+        }
     }
 }
 

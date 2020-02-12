@@ -11,9 +11,9 @@
       </div>
     </section>
 
-    <section v-if="currentComponent">
+    <div v-if="currentComponent">
       <component v-bind:is="currentComponent"></component>
-    </section>
+    </div>
 
   </div>
 </template>

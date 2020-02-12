@@ -1,7 +1,8 @@
 <template>
-    <section class="chart code">
+    <section class="chart code examples">
       <h3>Bar chart examples</h3>
       <BarChartExampleBasic/>
+      <BarChartExampleGroup/>
       <BarChartExampleDataUpdate/>
     </section>
 </template>

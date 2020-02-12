@@ -1,5 +1,5 @@
 <template>
-    <section class="chart code">
+    <section class="chart code examples">
       <h3>Line chart examples</h3>
       <LineChartExampleBasic/>
       <LineChartExampleCustomization/>

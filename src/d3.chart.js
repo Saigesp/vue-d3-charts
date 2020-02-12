@@ -182,9 +182,12 @@ class d3chart {
         // if keys is an object, base color is color key if exists
         if(this.cfg.color.keys
             && this.cfg.color.keys instanceof Object
-            && this.cfg.color.keys instanceof Array === false
-            && this.cfg.color.keys[d[key]]){
-            baseColor = this.cfg.color.keys[d[key]];
+            && this.cfg.color.keys instanceof Array === false) {
+            if (typeof this.cfg.color.keys[key] == 'string') {
+                baseColor = this.cfg.color.keys[key];
+            } else if (typeof this.cfg.color.keys[d[key]] == 'string') {
+                baseColor = this.cfg.color.keys[d[key]];
+            }
         }
 
         // if current key is set and key is current, base color is current

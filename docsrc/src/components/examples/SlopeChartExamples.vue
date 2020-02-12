@@ -1,5 +1,5 @@
 <template>
-    <section class="chart code">
+    <section class="chart code examples">
       <h3>Slope chart examples</h3>
       <SlopeChartExampleBasic/>
       <SlopeChartExampleHighlight/>

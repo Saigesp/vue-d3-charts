@@ -441,8 +441,12 @@ class d3chart {
     } // if keys is an object, base color is color key if exists
 
 
-    if (this.cfg.color.keys && this.cfg.color.keys instanceof Object && this.cfg.color.keys instanceof Array === false && this.cfg.color.keys[d[key]]) {
-      baseColor = this.cfg.color.keys[d[key]];
+    if (this.cfg.color.keys && this.cfg.color.keys instanceof Object && this.cfg.color.keys instanceof Array === false) {
+      if (typeof this.cfg.color.keys[key] == 'string') {
+        baseColor = this.cfg.color.keys[key];
+      } else if (typeof this.cfg.color.keys[d[key]] == 'string') {
+        baseColor = this.cfg.color.keys[d[key]];
+      }
     } // if current key is set and key is current, base color is current
 
 
@@ -887,7 +891,8 @@ class d3linechart extends d3chart {
     this.formatTime = d3$2.timeFormat(this.cfg.date.outputFormat); // Init scales
 
     this.yScale = d3$2.scaleLinear();
-    this.xScale = d3$2.scaleTime(); // Axis group
+    this.xScale = d3$2.scaleTime();
+    this.line = d3$2.line(); // Axis group
 
     this.axisg = this.g.append('g').attr('class', 'chart__axis chart__axis--linechart'); // Horizontal grid
 
@@ -918,7 +923,7 @@ class d3linechart extends d3chart {
       d.jsdate = this.parseTime(d[this.cfg.date.key]);
     });
     this.data.sort((a, b) => b.jsdate - a.jsdate);
-    this.data.forEach(d => {
+    this.data.forEach((d, c) => {
       d.min = 9999999999999999999;
       d.max = -9999999999999999999;
       this.cfg.values.forEach((j, i) => {
@@ -962,7 +967,7 @@ class d3linechart extends d3chart {
     } // Set up line function
 
 
-    this.line = d3$2.line().x(d => this.xScale(d.x)).y(d => this.yScale(d.y)).curve(d3$2[this.cfg.curve]); // Redraw grid
+    this.line.x(d => this.xScale(d.x)).y(d => this.yScale(d.y)).curve(d3$2[this.cfg.curve]); // Redraw grid
 
     this.yGrid.call(d3$2.axisLeft(this.yScale).tickSize(-this.cfg.width).ticks(this.cfg.axis.yTicks, this.cfg.axis.yFormat)); // Redraw horizontal axis
 
@@ -977,7 +982,7 @@ class d3linechart extends d3chart {
     // Set transition
     this.transition = d3$2.transition('t').duration(this.cfg.transition.duration).ease(d3$2[this.cfg.transition.ease]); // Lines group
 
-    this.linesgroup = this.g.selectAll(".chart__lines-group").data(this.tData); // Don't continue if points are disabled
+    this.linesgroup = this.g.selectAll(".chart__lines-group").data(this.tData, d => d.key); // Don't continue if points are disabled
 
     if (this.cfg.points === false) return; // Set points store
 
@@ -994,13 +999,11 @@ class d3linechart extends d3chart {
     // Elements to add
     const newgroups = this.linesgroup.enter().append('g').attr("class", "chart__lines-group chart__lines-group--linechart"); // Lines
 
-    newgroups.append('path').attr("class", "chart__line chart__line--linechart").attr('fill', 'transparent').attr("d", d => this.line(d.values.map(v => {
-      return {
-        y: 0,
-        x: v.x,
-        k: v.k
-      };
-    }))); // Don't continue if points are disabled
+    newgroups.append('path').attr("class", "chart__line chart__line--linechart").attr('fill', 'transparent').attr("d", d => this.line(d.values.map(v => ({
+      y: 0,
+      x: v.x,
+      k: v.k
+    })))); // Don't continue if points are disabled
 
     if (this.cfg.points === false) return;
     this.cfg.values.forEach((k, i) => {
@@ -1036,9 +1039,7 @@ class d3linechart extends d3chart {
     // Color lines
     this.linesgroup.attr('stroke', d => this.colorElement(d, 'key')); // Redraw lines
 
-    this.g.selectAll('.chart__line').attr('stroke', d => {
-      return this.colorElement(d, 'key');
-    }).transition(this.transition).attr("d", d => this.line(d.values)); // Don't continue if points are disabled
+    this.g.selectAll('.chart__line').attr('stroke', d => this.colorElement(d, 'key')).transition(this.transition).attr("d", d => this.line(d.values)); // Don't continue if points are disabled
 
     if (this.cfg.points === false) return; // Redraw points
 

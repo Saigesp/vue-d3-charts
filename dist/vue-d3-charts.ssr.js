@@ -620,8 +620,12 @@ function () {
       } // if keys is an object, base color is color key if exists
 
 
-      if (this.cfg.color.keys && this.cfg.color.keys instanceof Object && this.cfg.color.keys instanceof Array === false && this.cfg.color.keys[d[key]]) {
-        baseColor = this.cfg.color.keys[d[key]];
+      if (this.cfg.color.keys && this.cfg.color.keys instanceof Object && this.cfg.color.keys instanceof Array === false) {
+        if (typeof this.cfg.color.keys[key] == 'string') {
+          baseColor = this.cfg.color.keys[key];
+        } else if (typeof this.cfg.color.keys[d[key]] == 'string') {
+          baseColor = this.cfg.color.keys[d[key]];
+        }
       } // if current key is set and key is current, base color is current
 
 
@@ -1115,7 +1119,8 @@ function (_d3chart) {
       this.formatTime = d3$2.timeFormat(this.cfg.date.outputFormat); // Init scales
 
       this.yScale = d3$2.scaleLinear();
-      this.xScale = d3$2.scaleTime(); // Axis group
+      this.xScale = d3$2.scaleTime();
+      this.line = d3$2.line(); // Axis group
 
       this.axisg = this.g.append('g').attr('class', 'chart__axis chart__axis--linechart'); // Horizontal grid
 
@@ -1151,7 +1156,7 @@ function (_d3chart) {
       this.data.sort(function (a, b) {
         return b.jsdate - a.jsdate;
       });
-      this.data.forEach(function (d) {
+      this.data.forEach(function (d, c) {
         d.min = 9999999999999999999;
         d.max = -9999999999999999999;
 
@@ -1204,7 +1209,7 @@ function (_d3chart) {
       } // Set up line function
 
 
-      this.line = d3$2.line().x(function (d) {
+      this.line.x(function (d) {
         return _this2.xScale(d.x);
       }).y(function (d) {
         return _this2.yScale(d.y);
@@ -1224,7 +1229,9 @@ function (_d3chart) {
       // Set transition
       this.transition = d3$2.transition('t').duration(this.cfg.transition.duration).ease(d3$2[this.cfg.transition.ease]); // Lines group
 
-      this.linesgroup = this.g.selectAll(".chart__lines-group").data(this.tData); // Don't continue if points are disabled
+      this.linesgroup = this.g.selectAll(".chart__lines-group").data(this.tData, function (d) {
+        return d.key;
+      }); // Don't continue if points are disabled
 
       if (this.cfg.points === false) return; // Set points store
 
