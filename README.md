@@ -15,7 +15,7 @@ npm i vue-d3-charts --save
 Import:
 
 ```javascript
-import {D3BarChart} from 'vue-d3-charts'
+import { D3BarChart } from 'vue-d3-charts';
 ```
 
 Template:

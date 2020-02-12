@@ -75,8 +75,7 @@ This repository contains the charts components library (on `/src`) and the demo/
     > See [d3.chart.js](/src/d3.chart.js) for more detail, or [d3.barchart.js](/src/barchart/d3.barchart.js) for an example.
 
 2. **d3.mynewchart.vue** is the single file component that interacts with the chart. It extends `/src/d3.chart.vue`:
-    ```html
-    <script>
+    ```javascript
     import D3Chart from '../d3.chart.vue';
     import d3mynewchart from './d3.mynewchart';
 
@@ -84,39 +83,24 @@ This repository contains the charts components library (on `/src`) and the demo/
       name: 'D3MyNewChart',
       extends: D3Chart,
       mounted() {
-        this.chart = new mynewchart(
+        this.chart = new d3mynewchart(
           this.$refs.chart,
           JSON.parse(JSON.stringify(this.datum)),
           this.config,
         );
       },
     };
-    </script>
-
     ```
     > See [d3.barchart.vue](/src/barchart/d3.barchart.vue) for an example.
 
 3. Add component to `/src/index.js`:
 
     ```javascript
-    import Vue from "vue";
-    //...
-    import D3Mynewchart from "./mynewchart/d3.mynewchart.vue";
-
-    const Components = {
-        //...
-        D3Mynewchart
-    }
-
-    Object.keys(Components).forEach(name => {
-        Vue.component(name, Components[name]);
-    });
-
-    export default Components;
+    export { default as D3Mynewchart } from './mynewchart/d3.mynewchart.vue';
     ```
 
 3. Build package:
-    ```
+    ```bash
     npm run build
     ```
 
@@ -136,21 +120,24 @@ This repository contains the charts components library (on `/src`) and the demo/
 7. Develop documentation page and examples (TBD)
 
 8. Once documentation page is finished, build it:
-    ```
+    ```bash
     cd docsrc/
+    rm -rf node_modules/vue-d3-charts/ && npm i # update charts components
     npm run build
     ```
 
-## Build and replace docs files
+## Demo and documentation page
 
-Build and copy files to test on `doc`:
+Documentation source files are located in `/docsrc` folder, and compiles to `/docs`.
+
+It has `"vue-d3-charts": "../",` as dependency in package.json
+
+#### Get new components on demo page
+
 ```bash
-npm run build && rm -rf docsrc/node_modules/vue-d3-charts/dist/ && cp -r dist/ docsrc/node_modules/vue-d3-charts/
+cd docsrc/
+rm -rf node_modules/vue-d3-charts/ && npm i
 ```
-
-## Documentation page
-
-Documentation source files are located in `/docsrc` folder
 
 ##### Serve files
 ```bash
