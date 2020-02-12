@@ -29,6 +29,7 @@ Vue.component('BarChartExamples',                   require('./examples/BarChart
 Vue.component('BarChartExampleBasic',               require('./examples/BarChartExampleBasic').default);
 Vue.component('BarChartExampleGroup',               require('./examples/BarChartExampleGroup').default);
 Vue.component('BarChartExampleDataUpdate',          require('./examples/BarChartExampleDataUpdate').default);
+Vue.component('BarChartExampleHorizontal',          require('./examples/BarChartExampleHorizontal').default);
 
 Vue.component('PieChartExamples',                   require('./examples/PieChartExamples').default);
 Vue.component('PieChartExampleDataUpdate',          require('./examples/PieChartExampleDataUpdate').default);

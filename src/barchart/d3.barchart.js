@@ -44,6 +44,7 @@ class d3barchart extends d3chart {
       key: 'key',
       currentKey: false,
       values: [],
+      orientation: 'vertical',
       labelRotation: 0,
       color: { key: false, keys: false, scheme: false, current: "#1f77b4", default: "#AAA", axis: "#000" },
       axis: { yTitle: false, xTitle: false, yFormat: ".0f", xFormat: ".0f", yTicks: 10, xTicks: 10 },
@@ -95,17 +96,17 @@ class d3barchart extends d3chart {
   setScales() {
 
     this.xScale
-      .rangeRound([0, this.cfg.width])
+      .rangeRound(this.cfg.orientation !== 'horizontal' ? [0, this.cfg.width] : [0, this.cfg.height])
       .paddingInner(0.1)
       .domain(this.data.map(d => d[this.cfg.key]));
 
     this.xScaleInn
       .domain(this.cfg.values)
       .rangeRound([0, this.xScale.bandwidth()])
-      .padding(0.02)
+      .paddingInner(0.05)
 
     this.yScale
-      .rangeRound([0, this.cfg.height])
+      .rangeRound(this.cfg.orientation !== 'horizontal' ? [0, this.cfg.height] : [0, this.cfg.width])
       .domain([d3.max(this.data, d => d3.max(this.cfg.values.map(v => d[v]))), 0]);
 
     if (this.cfg.color.scheme instanceof Array === true) {
@@ -114,19 +115,28 @@ class d3barchart extends d3chart {
       this.colorScale = d3.scaleOrdinal(d3[this.cfg.color.scheme]);
     }
 
-    // Horizontal grid
-    this.yGrid
-      .transition(this.transition)
-      .call(
-        d3.axisLeft(this.yScale)
+    const yGridFunction = this.cfg.orientation !== 'horizontal'
+      ? d3.axisLeft(this.yScale)
           .tickSize(-this.cfg.width)
           .ticks(this.cfg.axis.yTicks, this.cfg.axis.yFormat)
-      );
+      : d3.axisBottom(this.yScale)
+          .tickSize(-this.cfg.height)
+          .ticks(this.cfg.axis.yTicks, this.cfg.axis.yFormat);
+
+    const xAxisFunction = this.cfg.orientation !== 'horizontal'
+      ? d3.axisBottom(this.xScale)
+      : d3.axisLeft(this.xScale)
+
+    // Horizontal grid
+    this.yGrid
+      .attr("transform", this.cfg.orientation !== 'horizontal' ? 'translate(0,0)' : `translate(0,${this.cfg.height})`)
+      .transition(this.transition)
+      .call(yGridFunction);
 
     // Bottom axis
     this.xAxis
-        .attr("transform", `translate(0,${this.cfg.height})`)
-        .call(d3.axisBottom(this.xScale))
+        .attr("transform", this.cfg.orientation !== 'horizontal' ? `translate(0,${this.cfg.height})` : 'translate(0,0)')
+        .call(xAxisFunction)
   }
 
   /**
@@ -147,7 +157,7 @@ class d3barchart extends d3chart {
         .text(this.cfg.axis.yTitle);
 
     // Bottom axis label rotation
-    if(this.cfg.labelRotation!=0)
+    if(this.cfg.labelRotation !== 0)
       this.xAxis.selectAll('text')
         .attr("y", Math.cos(this.cfg.labelRotation*Math.PI/180)*9)
         .attr("x", Math.sin(this.cfg.labelRotation*Math.PI/180)*9)
@@ -179,7 +189,12 @@ class d3barchart extends d3chart {
     const newbars = this.itemg
       .enter().append('g')
       .attr('class', 'chart__bar-group chart__bar-group--barchart')
-      .attr('transform', d => `translate(${this.xScale(d[this.cfg.key])},0)`);
+      .attr('transform', d => {
+        if (this.cfg.orientation !== 'horizontal'){
+          return `translate(${this.xScale(d[this.cfg.key])},0)`;
+        }
+        return `translate(0,${this.xScale(d[this.cfg.key])})`;
+      });
       
     const rects = newbars.selectAll('.chart__bar')
       .data(d => this.cfg.values.map(v => {
@@ -193,9 +208,18 @@ class d3barchart extends d3chart {
       .classed('chart__bar--current', (d) => {
         return this.cfg.currentKey && d[this.cfg.key] === this.cfg.currentKey;
       })
-      .attr('x', (d, i) => this.xScaleInn(this.cfg.values[i % this.cfg.values.length]))
-      .attr('y', this.cfg.height)
+      .attr('x', (d, i) => {
+        return this.cfg.orientation !== 'horizontal'
+          ? this.xScaleInn(this.cfg.values[i % this.cfg.values.length])
+          : 0;
+      })
+      .attr('y', (d, i) => {
+        return this.cfg.orientation !== 'horizontal'
+          ? this.cfg.height
+          : this.xScaleInn(this.cfg.values[i % this.cfg.values.length]);
+      })
       .attr('height', 0)
+      .attr('width', 0)
       .on('mouseover', (d, i) => {
         const key = this.cfg.values[i % this.cfg.values.length];
         this.tooltip.html(() => {
@@ -222,22 +246,36 @@ class d3barchart extends d3chart {
     // Bars groups
     this.itemg
       .transition(this.transition)
-      .attr('transform', d => `translate(${this.xScale(d[this.cfg.key])},0)`)
-
+      .attr('transform', (d) => {
+        return this.cfg.orientation !== 'horizontal'
+          ? `translate(${this.xScale(d[this.cfg.key])},0)`
+          : `translate(0,${this.xScale(d[this.cfg.key])})`;
+      })
     // Bars
     this.g
       .selectAll('.chart__bar')
-      .attr('x', (d, i) => this.xScaleInn(this.cfg.values[i % this.cfg.values.length]))
       .transition(this.transition)
       .attr('fill', (d, i) => this.colorElement(d, this.cfg.values[i % this.cfg.values.length]))
-      .attr('width', this.xScaleInn.bandwidth())
+      .attr('x', (d, i) => {
+        return this.cfg.orientation !== 'horizontal'
+          ? this.xScaleInn(this.cfg.values[i % this.cfg.values.length])
+          : 0;
+      })
       .attr('y', (d, i) => {
-        return this.yScale(+d[this.cfg.values[i % this.cfg.values.length]]);
+        return this.cfg.orientation !== 'horizontal'
+          ? this.yScale(+d[this.cfg.values[i % this.cfg.values.length]])
+          : this.xScaleInn(this.cfg.values[i % this.cfg.values.length]);
+      })
+      .attr('width', (d, i) => {
+        return this.cfg.orientation !== 'horizontal'
+          ? this.xScaleInn.bandwidth()
+          : this.cfg.width - this.yScale(+d[this.cfg.values[i % this.cfg.values.length]]);
       })
       .attr('height', (d, i) => {
-        return this.cfg.height - this.yScale(+d[this.cfg.values[i % this.cfg.values.length]]);
+        return this.cfg.orientation !== 'horizontal'
+          ? this.cfg.height - this.yScale(+d[this.cfg.values[i % this.cfg.values.length]])
+          : this.xScaleInn.bandwidth();
       })
-
   }
 
   /**

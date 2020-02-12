@@ -9,13 +9,13 @@
         <div v-highlight>
             <pre class="language-js"><code>chart_data = [
   {name: 'Anna', teamColor: '#55D6BE'},
-  {name: 'Mikel', teamColor: '#00FF35'}
+  {name: 'Mikel', teamColor: '#00FF35'},
 ]
 
 chart_config = {
   color: {
-    key: 'teamColor'
-  }
+    key: 'teamColor',
+  },
 }</code></pre>
         </div>
         <!-- end color key -->
@@ -27,7 +27,7 @@ chart_config = {
             <pre class="language-js"><code>chart_config = {
   color: {
     current: 'blue',
-  }
+  },
 }</code></pre>
         </div>
         <!-- end current color -->
@@ -55,16 +55,16 @@ chart_config = {
         <div v-highlight>
             <pre class="language-js"><code>chart_config = {
   color: {
-    scheme: 'schemeSet1'
-  }
+    scheme: 'schemeSet1',
+  },
 }</code></pre>
         </div>
         <p>If the <strong>passed value is an array</strong>, a custom color scale will be used.</p>
         <div v-highlight>
             <pre class="language-js"><code>chart_config = {
   color: {
-    scheme: ['#55D6BE', '#ACFCD9', '#7D5BA6', '#DDDDDD', '#FC6471']
-  }
+    scheme: ['#55D6BE', '#ACFCD9', '#7D5BA6', '#DDDDDD', '#FC6471'],
+  },
 }</code></pre>
         </div>
         <p class="note">Fancy color palettes can be generated easily with <a href="https://coolors.co/app">Coolors</a>.</p>
@@ -79,9 +79,9 @@ chart_config = {
     keys: {
       'Success': '#339900',
       'Warning': '#ffcc00',
-      'Error': '#cc3300'
-    }
-  }
+      'Error': '#cc3300',
+    },
+  },
 }</code></pre>
         </div>
         <p class="note">Note that <code>color.scheme</code>, <code>color.keys</code> and <code>currentKey</code> can be used together.</p>

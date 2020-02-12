@@ -57,15 +57,15 @@ export default {
         margin: {
           required: false,
           default: `margin: {
-    top: 20,
-    right: 20,
-    bottom: 20,
-    left: 20,
-  }`,
+  top: 20,
+  right: 20,
+  bottom: 20,
+  left: 20,
+}`,
           type: 'Object',
           desc: "Chart's margins based on d3 margins convention.",
           link: 'https://bl.ocks.org/mbostock/3019563',
-          example: '<code>margin: {top: 100, bottom: 20}</code>'
+          example: '<code>margin: { top: 100, bottom: 20 }</code>'
         },
         key: {
           required: true,
@@ -79,7 +79,7 @@ export default {
           default: 'keys: false',
           type: 'String array',
           desc: "Fields to use as identificator.",
-          example: '<code>key: "name"</code>'
+          example: '<code>keys: ["name"]</code>'
         },
         value: {
           required: true,
@@ -105,39 +105,39 @@ export default {
         date: {
           required: true,
           default: `date: {
-    key: false,
-    inputFormat: "%Y-%m-%d",
-    outputFormat: "%Y-%m-%d",
-  }`,
+  key: false,
+  inputFormat: "%Y-%m-%d",
+  outputFormat: "%Y-%m-%d",
+}`,
           type: 'Object',
           desc: "Chart's date handler convention based on d3-time-format. See below.",
           link: "https://github.com/d3/d3-time-format",
-          example: '<code>date: {key: "time", outputFormat: "%M:%S"}</code>'
+          example: '<code>date: { key: "time", outputFormat: "%M:%S" }</code>'
         },
         color: {
           required: false,
           default: `color: {
-    key: false,
-    keys: false,
-    scheme: false,
-    current: "#1f77b4",
-    default: "#AAA",
-    axis: "#000",
-  }`,
+  key: false,
+  keys: false,
+  scheme: false,
+  current: "#1f77b4",
+  default: "#AAA",
+  axis: "#000",
+}`,
           type: 'Object',
           desc: "Chart's color convention. See below.",
-          example: '<code>color: {scheme: "schemeCategory10", current: "red"}</code>'
+          example: '<code>color: { scheme: "schemeCategory10", current: "red" }</code>'
         },
         transition: {
           required: false,
           default: `transition: {
-    duration: 350,
-    ease: "easeLinear",
-  }`,
+  duration: 350,
+  ease: "easeLinear",
+}`,
           type: 'Object',
           desc: "Chart's transition options. <code>ease</code> must be a d3-ease function name.",
           link: 'https://github.com/d3/d3-ease',
-          example: '<code>transition: {ease: "easeBounceOut"}</code>'
+          example: '<code>transition: { ease: "easeBounceOut" }</code>'
         },
         curve: {
           required: false,
@@ -150,16 +150,16 @@ export default {
         axis: {
           required: false,
           default: `axis: {
-    yTitle: false,
-    xTitle: false,
-    yFormat: ".0f",
-    xFormat: ".0f",
-    yTicks: 10,
-    xTicks: 10,
-  }`,
+  yTitle: false,
+  xTitle: false,
+  yFormat: ".0f",
+  xFormat: ".0f",
+  yTicks: 10,
+  xTicks: 10,
+}`,
           type: 'Object',
           desc: "Chart's axis convention. See below.",
-          example: '<code>axis {yTitle: "Total amount", yFormat: ".0f", yTicks: 5, xTicks: 0}</code>'
+          example: '<code>axis { yTitle: "Total amount", yFormat: ".0f", yTicks: 5, xTicks: 0 }</code>'
         },
         opacity: {
           required: false,
@@ -172,32 +172,32 @@ export default {
         points: {
           required: false,
           default: `points: {
-    visibleSize: 3,
-    hoverSize: 6,
-  }`,
+  visibleSize: 3,
+  hoverSize: 6,
+}`,
           type: 'Object',
           limits: 'min: <code>0</code>',
           desc: "Points radius",
-          example: '<code>points: {visibleSize: 8}</code>',
+          example: '<code>points: { visibleSize: 8 }</code>',
         },
         tooltip: {
           required: false,
           default: `tooltip: {
-    labels: false,
-  }`,
+  labels: false,
+}`,
           type: 'Object',
           desc: "Tooltip options convention. <code>labels</code>: label to overrige each value in the tooltip. If set to false, labels will be each value name. See below.",
-          example: '<code>tooltip: {labels: ["iPhone", "Android"]}</code>',
+          example: '<code>tooltip: { labels: ["iPhone", "Android"] }</code>',
         },
         radius: {
           required: false,
           default: `radius: {
-    inner: false,
-    outter: false,
-  }`,
+  inner: false,
+  outter: false,
+}`,
           type: 'Object',
           desc: "Radius options convention.<br><code>inner</code>: inner circle radius. If set to false, chart will be a pie.<br><code>outter</code>: outter circle radius. If set to false, radius will be automatically set up.",
-          example: '<code>radius: {inner: 40, outter: false}</code>',
+          example: '<code>radius: { inner: 40, outter: false }</code>',
         },
         labelRotation: {
           required: false,
@@ -212,14 +212,21 @@ export default {
           default: 'fontFamily: "monospace"',
           type: 'String',
           desc: "Text font family.",
-          example: '<code>fontFamily: "monospace"</code>',
+          example: '<code>fontFamily: "sans-serif"</code>',
         },
         angle: {
           required: false,
-          default: 'angle: {start: 0, end: 90, steps: 2}',
+          default: 'angle: { start: 0, end: 90, steps: 2 }',
           type: 'Object',
           desc: "Angle configuration.",
-          example: '<code>angle: {start: -90, end: 90, steps: 3}</code>',
+          example: '<code>angle: { start: -90, end: 90, steps: 3 }</code>',
+        },
+        orientation: {
+          required: false,
+          default: 'orientation: "vertical"',
+          type: 'String',
+          desc: "Chart\'s orientation",
+          example: '<code>orientation: "horizontal"</code>',
         }
       }
     }

@@ -34,7 +34,7 @@ export default {
       default: '',
     },
     height: {
-      type: Number,
+      type: [Number, String],
       default: 300,
     },
   },

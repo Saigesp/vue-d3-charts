@@ -231,7 +231,7 @@ var script = {
       default: ''
     },
     height: {
-      type: Number,
+      type: [Number, String],
       default: 300
     }
   },
@@ -385,7 +385,7 @@ var __vue_staticRenderFns__ = [];
 
 var __vue_inject_styles__ = function __vue_inject_styles__(inject) {
   if (!inject) return;
-  inject("data-v-12ef7492_0", {
+  inject("data-v-52bb9522_0", {
     source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}.chart .clickable{cursor:pointer}",
     map: undefined,
     media: undefined
@@ -397,7 +397,7 @@ var __vue_inject_styles__ = function __vue_inject_styles__(inject) {
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-12ef7492";
+var __vue_module_identifier__ = "data-v-52bb9522";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
@@ -764,6 +764,7 @@ function (_d3chart) {
       key: 'key',
       currentKey: false,
       values: [],
+      orientation: 'vertical',
       labelRotation: 0,
       color: {
         key: false,
@@ -825,11 +826,11 @@ function (_d3chart) {
     value: function setScales() {
       var _this = this;
 
-      this.xScale.rangeRound([0, this.cfg.width]).paddingInner(0.1).domain(this.data.map(function (d) {
+      this.xScale.rangeRound(this.cfg.orientation !== 'horizontal' ? [0, this.cfg.width] : [0, this.cfg.height]).paddingInner(0.1).domain(this.data.map(function (d) {
         return d[_this.cfg.key];
       }));
-      this.xScaleInn.domain(this.cfg.values).rangeRound([0, this.xScale.bandwidth()]).padding(0.02);
-      this.yScale.rangeRound([0, this.cfg.height]).domain([d3$1.max(this.data, function (d) {
+      this.xScaleInn.domain(this.cfg.values).rangeRound([0, this.xScale.bandwidth()]).paddingInner(0.05);
+      this.yScale.rangeRound(this.cfg.orientation !== 'horizontal' ? [0, this.cfg.height] : [0, this.cfg.width]).domain([d3$1.max(this.data, function (d) {
         return d3$1.max(_this.cfg.values.map(function (v) {
           return d[v];
         }));
@@ -839,12 +840,14 @@ function (_d3chart) {
         this.colorScale = d3$1.scaleOrdinal().range(this.cfg.color.scheme);
       } else if (typeof this.cfg.color.scheme === 'string') {
         this.colorScale = d3$1.scaleOrdinal(d3$1[this.cfg.color.scheme]);
-      } // Horizontal grid
+      }
 
+      var yGridFunction = this.cfg.orientation !== 'horizontal' ? d3$1.axisLeft(this.yScale).tickSize(-this.cfg.width).ticks(this.cfg.axis.yTicks, this.cfg.axis.yFormat) : d3$1.axisBottom(this.yScale).tickSize(-this.cfg.height).ticks(this.cfg.axis.yTicks, this.cfg.axis.yFormat);
+      var xAxisFunction = this.cfg.orientation !== 'horizontal' ? d3$1.axisBottom(this.xScale) : d3$1.axisLeft(this.xScale); // Horizontal grid
 
-      this.yGrid.transition(this.transition).call(d3$1.axisLeft(this.yScale).tickSize(-this.cfg.width).ticks(this.cfg.axis.yTicks, this.cfg.axis.yFormat)); // Bottom axis
+      this.yGrid.attr("transform", this.cfg.orientation !== 'horizontal' ? 'translate(0,0)' : "translate(0,".concat(this.cfg.height, ")")).transition(this.transition).call(yGridFunction); // Bottom axis
 
-      this.xAxis.attr("transform", "translate(0,".concat(this.cfg.height, ")")).call(d3$1.axisBottom(this.xScale));
+      this.xAxis.attr("transform", this.cfg.orientation !== 'horizontal' ? "translate(0,".concat(this.cfg.height, ")") : 'translate(0,0)').call(xAxisFunction);
     }
     /**
      * Set chart dimensional sizes
@@ -858,7 +861,7 @@ function (_d3chart) {
 
       if (this.cfg.axis.yTitle) this.yAxisTitle.attr("y", -this.cfg.margin.left + 10).attr("x", -this.cfg.height / 2).text(this.cfg.axis.yTitle); // Bottom axis label rotation
 
-      if (this.cfg.labelRotation != 0) this.xAxis.selectAll('text').attr("y", Math.cos(this.cfg.labelRotation * Math.PI / 180) * 9).attr("x", Math.sin(this.cfg.labelRotation * Math.PI / 180) * 9).attr("dy", ".35em").attr("transform", "rotate(".concat(this.cfg.labelRotation, ")")).style("text-anchor", "start");
+      if (this.cfg.labelRotation !== 0) this.xAxis.selectAll('text').attr("y", Math.cos(this.cfg.labelRotation * Math.PI / 180) * 9).attr("x", Math.sin(this.cfg.labelRotation * Math.PI / 180) * 9).attr("dy", ".35em").attr("transform", "rotate(".concat(this.cfg.labelRotation, ")")).style("text-anchor", "start");
     }
     /**
      * Bind data to main elements groups
@@ -886,7 +889,11 @@ function (_d3chart) {
       var _this3 = this;
 
       var newbars = this.itemg.enter().append('g').attr('class', 'chart__bar-group chart__bar-group--barchart').attr('transform', function (d) {
-        return "translate(".concat(_this3.xScale(d[_this3.cfg.key]), ",0)");
+        if (_this3.cfg.orientation !== 'horizontal') {
+          return "translate(".concat(_this3.xScale(d[_this3.cfg.key]), ",0)");
+        }
+
+        return "translate(0,".concat(_this3.xScale(d[_this3.cfg.key]), ")");
       });
       var rects = newbars.selectAll('.chart__bar').data(function (d) {
         return _this3.cfg.values.map(function (v) {
@@ -898,8 +905,10 @@ function (_d3chart) {
       }).enter().append('rect').attr('class', 'chart__bar chart__bar--barchart').classed('chart__bar--current', function (d) {
         return _this3.cfg.currentKey && d[_this3.cfg.key] === _this3.cfg.currentKey;
       }).attr('x', function (d, i) {
-        return _this3.xScaleInn(_this3.cfg.values[i % _this3.cfg.values.length]);
-      }).attr('y', this.cfg.height).attr('height', 0).on('mouseover', function (d, i) {
+        return _this3.cfg.orientation !== 'horizontal' ? _this3.xScaleInn(_this3.cfg.values[i % _this3.cfg.values.length]) : 0;
+      }).attr('y', function (d, i) {
+        return _this3.cfg.orientation !== 'horizontal' ? _this3.cfg.height : _this3.xScaleInn(_this3.cfg.values[i % _this3.cfg.values.length]);
+      }).attr('height', 0).attr('width', 0).on('mouseover', function (d, i) {
         var key = _this3.cfg.values[i % _this3.cfg.values.length];
 
         _this3.tooltip.html(function () {
@@ -922,17 +931,19 @@ function (_d3chart) {
 
       // Bars groups
       this.itemg.transition(this.transition).attr('transform', function (d) {
-        return "translate(".concat(_this4.xScale(d[_this4.cfg.key]), ",0)");
+        return _this4.cfg.orientation !== 'horizontal' ? "translate(".concat(_this4.xScale(d[_this4.cfg.key]), ",0)") : "translate(0,".concat(_this4.xScale(d[_this4.cfg.key]), ")");
       }); // Bars
 
-      this.g.selectAll('.chart__bar').attr('x', function (d, i) {
-        return _this4.xScaleInn(_this4.cfg.values[i % _this4.cfg.values.length]);
-      }).transition(this.transition).attr('fill', function (d, i) {
+      this.g.selectAll('.chart__bar').transition(this.transition).attr('fill', function (d, i) {
         return _this4.colorElement(d, _this4.cfg.values[i % _this4.cfg.values.length]);
-      }).attr('width', this.xScaleInn.bandwidth()).attr('y', function (d, i) {
-        return _this4.yScale(+d[_this4.cfg.values[i % _this4.cfg.values.length]]);
+      }).attr('x', function (d, i) {
+        return _this4.cfg.orientation !== 'horizontal' ? _this4.xScaleInn(_this4.cfg.values[i % _this4.cfg.values.length]) : 0;
+      }).attr('y', function (d, i) {
+        return _this4.cfg.orientation !== 'horizontal' ? _this4.yScale(+d[_this4.cfg.values[i % _this4.cfg.values.length]]) : _this4.xScaleInn(_this4.cfg.values[i % _this4.cfg.values.length]);
+      }).attr('width', function (d, i) {
+        return _this4.cfg.orientation !== 'horizontal' ? _this4.xScaleInn.bandwidth() : _this4.cfg.width - _this4.yScale(+d[_this4.cfg.values[i % _this4.cfg.values.length]]);
       }).attr('height', function (d, i) {
-        return _this4.cfg.height - _this4.yScale(+d[_this4.cfg.values[i % _this4.cfg.values.length]]);
+        return _this4.cfg.orientation !== 'horizontal' ? _this4.cfg.height - _this4.yScale(+d[_this4.cfg.values[i % _this4.cfg.values.length]]) : _this4.xScaleInn.bandwidth();
       });
     }
     /**
