@@ -634,7 +634,7 @@ class d3barchart extends d3chart {
   setScales() {
     this.xScale.rangeRound(this.cfg.orientation !== 'horizontal' ? [0, this.cfg.width] : [0, this.cfg.height]).paddingInner(0.1).domain(this.data.map(d => d[this.cfg.key]));
     this.xScaleInn.domain(this.cfg.values).rangeRound([0, this.xScale.bandwidth()]).paddingInner(0.05);
-    this.yScale.rangeRound(this.cfg.orientation !== 'horizontal' ? [0, this.cfg.height] : [0, this.cfg.width]).domain([d3$1.max(this.data, d => d3$1.max(this.cfg.values.map(v => d[v]))), 0]);
+    this.yScale.rangeRound(this.cfg.orientation !== 'horizontal' ? [0, this.cfg.height] : [this.cfg.width, 0]).domain([d3$1.max(this.data, d => d3$1.max(this.cfg.values.map(v => d[v]))), 0]);
 
     if (this.cfg.color.scheme instanceof Array === true) {
       this.colorScale = d3$1.scaleOrdinal().range(this.cfg.color.scheme);
@@ -724,7 +724,7 @@ class d3barchart extends d3chart {
     }).attr('y', (d, i) => {
       return this.cfg.orientation !== 'horizontal' ? this.yScale(+d[this.cfg.values[i % this.cfg.values.length]]) : this.xScaleInn(this.cfg.values[i % this.cfg.values.length]);
     }).attr('width', (d, i) => {
-      return this.cfg.orientation !== 'horizontal' ? this.xScaleInn.bandwidth() : this.cfg.width - this.yScale(+d[this.cfg.values[i % this.cfg.values.length]]);
+      return this.cfg.orientation !== 'horizontal' ? this.xScaleInn.bandwidth() : this.yScale(+d[this.cfg.values[i % this.cfg.values.length]]);
     }).attr('height', (d, i) => {
       return this.cfg.orientation !== 'horizontal' ? this.cfg.height - this.yScale(+d[this.cfg.values[i % this.cfg.values.length]]) : this.xScaleInn.bandwidth();
     });

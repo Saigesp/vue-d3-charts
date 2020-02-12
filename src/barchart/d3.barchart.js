@@ -106,7 +106,7 @@ class d3barchart extends d3chart {
       .paddingInner(0.05)
 
     this.yScale
-      .rangeRound(this.cfg.orientation !== 'horizontal' ? [0, this.cfg.height] : [0, this.cfg.width])
+      .rangeRound(this.cfg.orientation !== 'horizontal' ? [0, this.cfg.height] : [this.cfg.width, 0])
       .domain([d3.max(this.data, d => d3.max(this.cfg.values.map(v => d[v]))), 0]);
 
     if (this.cfg.color.scheme instanceof Array === true) {
@@ -269,7 +269,7 @@ class d3barchart extends d3chart {
       .attr('width', (d, i) => {
         return this.cfg.orientation !== 'horizontal'
           ? this.xScaleInn.bandwidth()
-          : this.cfg.width - this.yScale(+d[this.cfg.values[i % this.cfg.values.length]]);
+          : this.yScale(+d[this.cfg.values[i % this.cfg.values.length]]);
       })
       .attr('height', (d, i) => {
         return this.cfg.orientation !== 'horizontal'

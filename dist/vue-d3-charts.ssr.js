@@ -830,7 +830,7 @@ function (_d3chart) {
         return d[_this.cfg.key];
       }));
       this.xScaleInn.domain(this.cfg.values).rangeRound([0, this.xScale.bandwidth()]).paddingInner(0.05);
-      this.yScale.rangeRound(this.cfg.orientation !== 'horizontal' ? [0, this.cfg.height] : [0, this.cfg.width]).domain([d3$1.max(this.data, function (d) {
+      this.yScale.rangeRound(this.cfg.orientation !== 'horizontal' ? [0, this.cfg.height] : [this.cfg.width, 0]).domain([d3$1.max(this.data, function (d) {
         return d3$1.max(_this.cfg.values.map(function (v) {
           return d[v];
         }));
@@ -941,7 +941,7 @@ function (_d3chart) {
       }).attr('y', function (d, i) {
         return _this4.cfg.orientation !== 'horizontal' ? _this4.yScale(+d[_this4.cfg.values[i % _this4.cfg.values.length]]) : _this4.xScaleInn(_this4.cfg.values[i % _this4.cfg.values.length]);
       }).attr('width', function (d, i) {
-        return _this4.cfg.orientation !== 'horizontal' ? _this4.xScaleInn.bandwidth() : _this4.cfg.width - _this4.yScale(+d[_this4.cfg.values[i % _this4.cfg.values.length]]);
+        return _this4.cfg.orientation !== 'horizontal' ? _this4.xScaleInn.bandwidth() : _this4.yScale(+d[_this4.cfg.values[i % _this4.cfg.values.length]]);
       }).attr('height', function (d, i) {
         return _this4.cfg.orientation !== 'horizontal' ? _this4.cfg.height - _this4.yScale(+d[_this4.cfg.values[i % _this4.cfg.values.length]]) : _this4.xScaleInn.bandwidth();
       });
