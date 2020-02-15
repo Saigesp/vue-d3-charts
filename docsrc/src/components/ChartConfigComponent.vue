@@ -110,7 +110,7 @@ export default {
     outputFormat: "%Y-%m-%d",
   }`,
           type: 'Object',
-          desc: "Chart's date handler convention based on d3-time-format. See below.",
+          desc: "Chart's date handler convention based on d3-time-format.",
           link: "https://github.com/d3/d3-time-format",
           example: '<code>date: { key: "time", outputFormat: "%M:%S" }</code>'
         },
@@ -135,7 +135,7 @@ export default {
     ease: "easeLinear",
   }`,
           type: 'Object',
-          desc: "Chart's transition options. <code>ease</code> must be a d3-ease function name.",
+          desc: "Chart's transition options.<br><code>duration</code>: transition duration in miliseconds.<br><code>ease</code>: a d3-ease function name.",
           link: 'https://github.com/d3/d3-ease',
           example: '<code>transition: { ease: "easeBounceOut" }</code>'
         },
@@ -158,7 +158,7 @@ export default {
     xTicks: 10,
   }`,
           type: 'Object',
-          desc: "Chart's axis convention. See below.",
+          desc: "Chart's axis convention.",
           example: '<code>axis { yTitle: "Total amount", yFormat: ".0f", yTicks: 5, xTicks: 0 }</code>'
         },
         opacity: {
@@ -186,7 +186,7 @@ export default {
     labels: false,
   }`,
           type: 'Object',
-          desc: "Tooltip options convention. <code>labels</code>: label to overrige each value in the tooltip. If set to false, labels will be each value name. See below.",
+          desc: "Tooltip options convention. <code>labels</code>: label to overrige each value in the tooltip. If set to false, labels will be each value name.",
           example: '<code>tooltip: { labels: ["iPhone", "Android"] }</code>',
         },
         radius: {
