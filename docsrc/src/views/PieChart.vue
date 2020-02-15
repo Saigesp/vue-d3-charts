@@ -14,7 +14,7 @@
       </div>
     </section>
 
-    <ChartImportComponent :code="chartname" link="https://github.com/Saigesp/vue-d3-charts/blob/master/src/barchart/d3.barchart.js"></ChartImportComponent>
+    <ChartImportComponent :code="chartname" link="https://github.com/Saigesp/vue-d3-charts/blob/master/src/piechart/d3.piechart.js"></ChartImportComponent>
 
     <ChartTemplateComponent :template="chartcode"></ChartTemplateComponent>
 
