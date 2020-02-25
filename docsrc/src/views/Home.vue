@@ -3,7 +3,7 @@
 
     <section class="code">
       <h2>Install</h2>
-      <div v-highlight><pre class="language-shell align-center"><code>npm i d3-vue-charts --save</code></pre></div>
+      <div v-highlight><pre class="language-shell align-center"><code>npm i vue-d3-charts --save</code></pre></div>
     </section>
 
     <section class="chart">
