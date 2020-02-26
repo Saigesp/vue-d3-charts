@@ -1058,7 +1058,7 @@ class d3linechart extends d3chart {
     // Color lines
     this.linesgroup.attr('stroke', d => this.colorElement(d, 'key')); // Redraw lines
 
-    this.g.selectAll('.chart__line').attr('stroke', d => this.colorElement(d, 'key')).transition(this.transition).attr("d", d => this.line(d.values)); // Don't continue if points are disabled
+    this.g.selectAll('.chart__line').attr('stroke', d => this.colorElement(d, 'key')).transition(this.transition).attr("d", (d, i) => this.line(this.tData[i].values)); // Don't continue if points are disabled
 
     if (this.cfg.points === false) return; // Redraw points
 
