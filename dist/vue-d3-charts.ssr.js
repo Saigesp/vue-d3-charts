@@ -2856,7 +2856,18 @@ function (_d3chart) {
 
       var newg = this.itemg.enter().append('g').attr("class", "chart__slice-group chart__slice-group--sliceschart"); // BACKGROUNDS
 
-      newg.append("path").attr("class", "chart__slice chart__slice--sliceschart").transition(this.transition).delay(function (d, i) {
+      newg.append("path").attr("class", "chart__slice chart__slice--sliceschart").on('mouseover', function (d, i) {
+        var key = d.data[_this3.cfg.key];
+        var value = d.data[_this3.cfg.value];
+
+        _this3.tooltip.html(function () {
+          return "<div>".concat(key, ": ").concat(value, "</div>");
+        }).classed('active', true);
+      }).on('mouseout', function () {
+        _this3.tooltip.classed('active', false);
+      }).on('mousemove', function () {
+        _this3.tooltip.style('left', window.event['pageX'] - 28 + 'px').style('top', window.event['pageY'] - 40 + 'px');
+      }).transition(this.transition).delay(function (d, i) {
         return i * _this3.cfg.transition.duration;
       }).attrTween('d', function (d) {
         var i = d3$7.interpolate(d.startAngle + 0.1, d.endAngle);
@@ -2879,7 +2890,7 @@ function (_d3chart) {
         };
       }).style("fill", function (d) {
         return _this3.colorElement(d.data);
-      }).style('opacity', 1);
+      }).style('pointer-events', 'none').style('opacity', 1);
     }
     /**
     * Update chart's elements based on data change

@@ -2354,7 +2354,17 @@ class d3sliceschart extends d3chart {
   enterElements() {
     const newg = this.itemg.enter().append('g').attr("class", "chart__slice-group chart__slice-group--sliceschart"); // BACKGROUNDS
 
-    newg.append("path").attr("class", "chart__slice chart__slice--sliceschart").transition(this.transition).delay((d, i) => i * this.cfg.transition.duration).attrTween('d', d => {
+    newg.append("path").attr("class", "chart__slice chart__slice--sliceschart").on('mouseover', (d, i) => {
+      const key = d.data[this.cfg.key];
+      const value = d.data[this.cfg.value];
+      this.tooltip.html(() => {
+        return `<div>${key}: ${value}</div>`;
+      }).classed('active', true);
+    }).on('mouseout', () => {
+      this.tooltip.classed('active', false);
+    }).on('mousemove', () => {
+      this.tooltip.style('left', window.event['pageX'] - 28 + 'px').style('top', window.event['pageY'] - 40 + 'px');
+    }).transition(this.transition).delay((d, i) => i * this.cfg.transition.duration).attrTween('d', d => {
       const i = d3$7.interpolate(d.startAngle + 0.1, d.endAngle);
       return t => {
         d.endAngle = i(t);
@@ -2369,7 +2379,7 @@ class d3sliceschart extends d3chart {
         d.endAngle = i(t);
         return arc(d);
       };
-    }).style("fill", d => this.colorElement(d.data)).style('opacity', 1);
+    }).style("fill", d => this.colorElement(d.data)).style('pointer-events', 'none').style('opacity', 1);
   }
   /**
   * Update chart's elements based on data change

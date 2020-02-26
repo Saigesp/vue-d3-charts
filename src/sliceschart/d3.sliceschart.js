@@ -148,6 +148,22 @@ class d3sliceschart extends d3chart{
         // BACKGROUNDS
         newg.append("path")
             .attr("class", "chart__slice chart__slice--sliceschart")
+            .on('mouseover', (d, i) => {
+                const key = d.data[this.cfg.key];
+                const value = d.data[this.cfg.value];
+                this.tooltip.html(() => {
+                   return `<div>${key}: ${value}</div>`
+                })
+                .classed('active', true);
+            })
+            .on('mouseout', () => {
+               this.tooltip.classed('active', false)
+            })
+            .on('mousemove', () => {
+               this.tooltip
+                   .style('left', window.event['pageX'] - 28 + 'px')
+                   .style('top', window.event['pageY'] - 40 + 'px')
+            })
             .transition(this.transition)
             .delay((d,i) => i * this.cfg.transition.duration)
             .attrTween('d', d => {
@@ -177,7 +193,9 @@ class d3sliceschart extends d3chart{
                 }
             })
             .style("fill", d=> this.colorElement(d.data))
+            .style('pointer-events', 'none')
             .style('opacity', 1);
+
     }
 
     /**
