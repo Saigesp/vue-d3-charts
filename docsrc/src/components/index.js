@@ -23,6 +23,7 @@ Vue.component('SlopeChartExampleDataUpdate',        require('./examples/SlopeCha
 
 Vue.component('LineChartExamples',                  require('./examples/LineChartExamples').default);
 Vue.component('LineChartExampleBasic',              require('./examples/LineChartExampleBasic').default);
+Vue.component('LineChartExampleUpdate',              require('./examples/LineChartExampleUpdate').default);
 Vue.component('LineChartExampleCustomization',      require('./examples/LineChartExampleCustomization').default);
 
 Vue.component('BarChartExamples',                   require('./examples/BarChartExamples').default);
