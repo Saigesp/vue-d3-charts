@@ -21,6 +21,7 @@ export default {
         {chart: 'BarChart', routername: 'barchart'},
         {chart: 'LineChart', routername: 'linechart'},
         {chart: 'PieChart', routername: 'piechart'},
+        {chart: 'SlicesChart', routername: 'sliceschart'},
         {chart: 'SlopeChart', routername: 'slopechart'},
         {chart: 'Sunburst', routername: 'sunburst'},
         {chart: 'WordsCloud', routername: 'wordscloud'},

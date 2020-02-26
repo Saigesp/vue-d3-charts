@@ -57,11 +57,11 @@ export default {
         margin: {
           required: false,
           default: `margin: {
-  top: 20,
-  right: 20,
-  bottom: 20,
-  left: 20,
-}`,
+    top: 20,
+    right: 20,
+    bottom: 20,
+    left: 20,
+  }`,
           type: 'Object',
           desc: "Chart's margins based on d3 margins convention.",
           link: 'https://bl.ocks.org/mbostock/3019563',
@@ -105,25 +105,25 @@ export default {
         date: {
           required: true,
           default: `date: {
-  key: false,
-  inputFormat: "%Y-%m-%d",
-  outputFormat: "%Y-%m-%d",
-}`,
+    key: false,
+    inputFormat: "%Y-%m-%d",
+    outputFormat: "%Y-%m-%d",
+  }`,
           type: 'Object',
-          desc: "Chart's date handler convention based on d3-time-format. See below.",
+          desc: "Chart's date handler convention based on d3-time-format.",
           link: "https://github.com/d3/d3-time-format",
           example: '<code>date: { key: "time", outputFormat: "%M:%S" }</code>'
         },
         color: {
           required: false,
           default: `color: {
-  key: false,
-  keys: false,
-  scheme: false,
-  current: "#1f77b4",
-  default: "#AAA",
-  axis: "#000",
-}`,
+    key: false,
+    keys: false,
+    scheme: false,
+    current: "#1f77b4",
+    default: "#AAA",
+    axis: "#000",
+  }`,
           type: 'Object',
           desc: "Chart's color convention. See below.",
           example: '<code>color: { scheme: "schemeCategory10", current: "red" }</code>'
@@ -131,11 +131,11 @@ export default {
         transition: {
           required: false,
           default: `transition: {
-  duration: 350,
-  ease: "easeLinear",
-}`,
+    duration: 350,
+    ease: "easeLinear",
+  }`,
           type: 'Object',
-          desc: "Chart's transition options. <code>ease</code> must be a d3-ease function name.",
+          desc: "Chart's transition options.<br><code>duration</code>: transition duration in miliseconds.<br><code>ease</code>: a d3-ease function name.",
           link: 'https://github.com/d3/d3-ease',
           example: '<code>transition: { ease: "easeBounceOut" }</code>'
         },
@@ -150,15 +150,15 @@ export default {
         axis: {
           required: false,
           default: `axis: {
-  yTitle: false,
-  xTitle: false,
-  yFormat: ".0f",
-  xFormat: ".0f",
-  yTicks: 10,
-  xTicks: 10,
-}`,
+    yTitle: false,
+    xTitle: false,
+    yFormat: ".0f",
+    xFormat: ".0f",
+    yTicks: 10,
+    xTicks: 10,
+  }`,
           type: 'Object',
-          desc: "Chart's axis convention. See below.",
+          desc: "Chart's axis convention.",
           example: '<code>axis { yTitle: "Total amount", yFormat: ".0f", yTicks: 5, xTicks: 0 }</code>'
         },
         opacity: {
@@ -172,9 +172,9 @@ export default {
         points: {
           required: false,
           default: `points: {
-  visibleSize: 3,
-  hoverSize: 6,
-}`,
+    visibleSize: 3,
+    hoverSize: 6,
+  }`,
           type: 'Object',
           limits: 'min: <code>0</code>',
           desc: "Points radius",
@@ -183,21 +183,23 @@ export default {
         tooltip: {
           required: false,
           default: `tooltip: {
-  labels: false,
-}`,
+    labels: false,
+  }`,
           type: 'Object',
-          desc: "Tooltip options convention. <code>labels</code>: label to overrige each value in the tooltip. If set to false, labels will be each value name. See below.",
+          desc: "Tooltip options convention. <code>labels</code>: label to overrige each value in the tooltip. If set to false, labels will be each value name.",
           example: '<code>tooltip: { labels: ["iPhone", "Android"] }</code>',
         },
         radius: {
           required: false,
           default: `radius: {
-  inner: false,
-  outter: false,
-}`,
+    inner: false,
+    outter: false,
+    padding: 0,
+    round: 0,
+  }`,
           type: 'Object',
-          desc: "Radius options convention.<br><code>inner</code>: inner circle radius. If set to false, chart will be a pie.<br><code>outter</code>: outter circle radius. If set to false, radius will be automatically set up.",
-          example: '<code>radius: { inner: 40, outter: false }</code>',
+          desc: "Radius options convention.<br><code>inner</code>: inner circle radius. If set to false, chart will be a pie.<br><code>outter</code>: outter circle radius. If set to false, radius will be automatically set up.<br><code>padding</code>: padding between slices.<br><code>round</code>: corner's rounded radius.",
+          example: '<code>radius: { inner: 40, outter: false, padding: 0.05, round: 5 }</code>',
         },
         labelRotation: {
           required: false,

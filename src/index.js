@@ -5,3 +5,4 @@ export { default as D3PieChart } from './piechart/d3.piechart.vue';
 export { default as D3SlopeChart } from './slopechart/d3.slopechart.vue';
 export { default as D3Sunburst } from './sunburst/d3.sunburst.vue';
 export { default as D3WordsCloud } from './wordscloud/d3.wordscloud.vue';
+export { default as D3SlicesChart } from './sliceschart/d3.sliceschart.vue';

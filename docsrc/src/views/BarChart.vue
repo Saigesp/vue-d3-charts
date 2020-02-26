@@ -42,10 +42,10 @@ export default {
       chartcustomoptions: {
         tooltip: {
           required: false,
-          default: 'tooltip: {label: false}',
+          default: 'tooltip: { label: false }',
           type: 'Object',
-          desc: "Tooltip options convention.<br><code>label</code>: (string). label to overrige key value in the tooltip. If set to false, label will be key field value. See below.",
-          example: '<code>tooltip: {label: "displayName"]}</code>',
+          desc: "Tooltip options convention.<br><code>label</code>: object field to override the label in the tooltip. If set to false, label will be the key field.",
+          example: '<code>tooltip: { label: "displayName" }</code>',
         },
       },
       chartconfig: {

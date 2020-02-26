@@ -29,9 +29,9 @@ const d3 = {select, selectAll, scaleLinear, scaleOrdinal, max, min, transition, 
     schemeTableau10}
 
 /**
-* D3 Pie Chart
+* D3 Slices Chart
 */
-class d3piechart extends d3chart{
+class d3sliceschart extends d3chart{
 
     constructor(selection, data, config) {
         super(selection, data, config, {
@@ -51,14 +51,14 @@ class d3piechart extends d3chart{
 
         // Set up dimensions
         this.getDimensions();
-        this.initChartFrame('piechart');
+        this.initChartFrame('sliceschart');
 
         this.cScale = d3.scaleOrdinal();
+        this.rScale = d3.scaleLinear();
         this.arc = d3.arc();
-        this.outerArc = d3.arc();
         this.pie = d3.pie()
             .sort(null)
-            .value(d => d[this.cfg.value])
+            .value(() => 1)
             .padAngle(this.cfg.radius.padding);
 
         if(this.cfg.radius && this.cfg.radius.inner){
@@ -108,20 +108,20 @@ class d3piechart extends d3chart{
 
         // Set up radius
         this.cfg.radius.outter = this.cfg.radius && this.cfg.radius.outter ? this.cfg.radius.outter : Math.min(this.cfg.width, this.cfg.height) / 2;
-        let inRadius = this.cfg.radius && this.cfg.radius.inner ? this.cfg.radius.inner : 0;
+        this.inRadius = this.cfg.radius && this.cfg.radius.inner ? this.cfg.radius.inner : 0;
         if(this.cfg.radius.relation){
-            inRadius = this.cfg.radius.outter * this.cfg.radius.relation;
+            this.inRadius = this.cfg.radius.outter * this.cfg.radius.relation;
         }
 
         // Set up arcs
         this.arc = d3.arc()
             .outerRadius(this.cfg.radius.outter)
-            .innerRadius(inRadius)
+            .innerRadius(this.inRadius)
             .cornerRadius(this.cfg.radius.round);
 
-        this.outerArc = d3.arc()
-            .outerRadius(this.cfg.radius.outter*1.1)
-            .innerRadius(this.cfg.radius.outter*1.1);
+        this.rScale
+          .range([this.inRadius, this.cfg.radius.outter])
+          .domain([0, d3.max(this.data, d => d[this.cfg.value])])
 
         // Set up color scheme
         if(this.cfg.color.scheme){
@@ -143,11 +143,27 @@ class d3piechart extends d3chart{
 
         const newg = this.itemg
             .enter().append('g')
-            .attr("class", "chart__slice-group chart__slice-group--piechart")
+            .attr("class", "chart__slice-group chart__slice-group--sliceschart")
 
-        // PATHS
+        // BACKGROUNDS
         newg.append("path")
-            .attr("class", "chart__slice chart__slice--piechart")
+            .attr("class", "chart__slice chart__slice--sliceschart")
+            .on('mouseover', (d, i) => {
+                const key = d.data[this.cfg.key];
+                const value = d.data[this.cfg.value];
+                this.tooltip.html(() => {
+                   return `<div>${key}: ${value}</div>`
+                })
+                .classed('active', true);
+            })
+            .on('mouseout', () => {
+               this.tooltip.classed('active', false)
+            })
+            .on('mousemove', () => {
+               this.tooltip
+                   .style('left', window.event['pageX'] - 28 + 'px')
+                   .style('top', window.event['pageY'] - 40 + 'px')
+            })
             .transition(this.transition)
             .delay((d,i) => i * this.cfg.transition.duration)
             .attrTween('d', d => {
@@ -157,47 +173,40 @@ class d3piechart extends d3chart{
                     return this.arc(d)
                 }
             })
+            .style("fill", d=> this.cfg.color.default)
+            .style('opacity', 1);
+
+        // FILLS
+        newg.append("path")
+            .attr("class", "chart__slice chart__slice--sliceschart")
+            .transition(this.transition)
+            .delay((d,i) => i * this.cfg.transition.duration)
+            .attrTween('d', d => {
+                const i = d3.interpolate(d.startAngle+0.1, d.endAngle);
+                const arc = d3.arc()
+                    .outerRadius(this.rScale(d.data[this.cfg.value]))
+                    .innerRadius(this.inRadius)
+                    .cornerRadius(this.cfg.radius.round);
+                return t => {
+                    d.endAngle = i(t); 
+                    return arc(d)
+                }
+            })
             .style("fill", d=> this.colorElement(d.data))
-            .style('opacity', 1)
+            .style('pointer-events', 'none')
+            .style('opacity', 1);
 
-        // LABELS
-        newg.append('text')
-            .attr("class", "chart__label chart__label--piechart")
-            .style('opacity', 0)
-            .attr("transform", d => {
-                let pos = this.outerArc.centroid(d);
-                pos[0] = this.cfg.radius.outter * (this.midAngle(d) < Math.PI ? 1.1 : -1.1);
-                return "translate("+pos+")";
-            })
-            .attr('text-anchor', d => this.midAngle(d) < Math.PI ? 'start' : 'end')
-            .text(d => d.data[this.cfg.key])
-            .transition(this.transition)
-            .delay((d,i) => i * this.cfg.transition.duration)
-            .style('opacity', 1)
-
-        // LINES
-        newg.append('polyline')
-            .attr("class", "chart__line chart__line--piechart")
-            .style('opacity', 0)
-            .attr('points', d => {
-                let pos = this.outerArc.centroid(d);
-                pos[0] = this.cfg.radius.outter * 0.95 * (this.midAngle(d) < Math.PI ? 1.1 : -1.1);
-                return [this.arc.centroid(d), this.outerArc.centroid(d), pos]
-            })
-            .transition(this.transition)
-            .delay((d,i) => i * this.cfg.transition.duration)
-            .style('opacity', 1)
     }
 
     /**
     * Update chart's elements based on data change
     */
     updateElements(){
-
+/*
         // PATHS
         this.itemg.selectAll(".chart__slice")
             .style('opacity', 0)
-            .data(this.pie(this.data), d=> d.data[this.cfg.key])
+            .data(this.pie(this.data), d => d.data[this.cfg.key])
             .transition(this.transition)
             .delay((d,i) => i * this.cfg.transition.duration)
             .attrTween('d', d => {
@@ -207,30 +216,9 @@ class d3piechart extends d3chart{
                     return this.arc(d)
                 }
             })
-            .style("fill", d=> this.colorElement(d.data))
-            .style('opacity', 1)
-
-        // LABELS
-        this.itemg.selectAll(".chart__label")
-            .data(this.pie(this.data), d=> d.data[this.cfg.key])
-            .text(d => d.data[this.cfg.key])
-            .transition(this.transition)
-            .attr("transform", d => {
-                let pos = this.outerArc.centroid(d);
-                pos[0] = this.cfg.radius.outter * (this.midAngle(d) < Math.PI ? 1.1 : -1.1);
-                return "translate("+pos+")";
-            })
-            .attr('text-anchor', d => this.midAngle(d) < Math.PI ? 'start' : 'end')
-
-        // LINES
-        this.itemg.selectAll(".chart__line")
-            .data(this.pie(this.data), d=> d.data[this.cfg.key])
-            .transition(this.transition)
-            .attr('points', d => {
-                let pos = this.outerArc.centroid(d);
-                pos[0] = this.cfg.radius.outter * 0.95 * (this.midAngle(d) < Math.PI ? 1.1 : -1.1);
-                return [this.arc.centroid(d), this.outerArc.centroid(d), pos]
-            })
+            .style("fill", this.cfg.color.default)
+            .style('opacity', 1);
+*/
     }
 
     /**
@@ -260,4 +248,4 @@ class d3piechart extends d3chart{
 
 }
 
-export default d3piechart
+export default d3sliceschart

@@ -1433,7 +1433,7 @@ var __vue_component__$2 = normalizeComponent({}, __vue_inject_styles__$2, __vue_
   schemeTableau10: d3ScaleChromatic.schemeTableau10
 };
 /**
-* D3 Slope Chart
+* D3 Pie Chart
 */
 
 var d3piechart =
@@ -1452,7 +1452,6 @@ function (_d3chart) {
         left: 20
       },
       key: '',
-      currentKey: false,
       value: 'value',
       color: {
         key: false,
@@ -1464,7 +1463,9 @@ function (_d3chart) {
       },
       radius: {
         inner: false,
-        outter: false
+        outter: false,
+        padding: 0,
+        round: 0
       },
       transition: {
         duration: 350,
@@ -1490,7 +1491,7 @@ function (_d3chart) {
       this.outerArc = d3$3.arc();
       this.pie = d3$3.pie().sort(null).value(function (d) {
         return d[_this.cfg.value];
-      });
+      }).padAngle(this.cfg.radius.padding);
 
       if (this.cfg.radius && this.cfg.radius.inner) {
         var outRadius = this.cfg.radius.outter ? this.cfg.radius.outter : Math.min(this.cfg.width, this.cfg.height) / 2;
@@ -1546,12 +1547,8 @@ function (_d3chart) {
       } // Set up arcs
 
 
-      this.arc = d3$3.arc().outerRadius(this.cfg.radius.outter).innerRadius(inRadius);
-      this.outerArc = d3$3.arc().outerRadius(this.cfg.radius.outter * 1.1).innerRadius(this.cfg.radius.outter * 1.1); // Set up pie
-
-      this.pie = d3$3.pie().sort(null).value(function (d) {
-        return d[_this3.cfg.value];
-      }); // Set up color scheme
+      this.arc = d3$3.arc().outerRadius(this.cfg.radius.outter).innerRadius(inRadius).cornerRadius(this.cfg.radius.round);
+      this.outerArc = d3$3.arc().outerRadius(this.cfg.radius.outter * 1.1).innerRadius(this.cfg.radius.outter * 1.1); // Set up color scheme
 
       if (this.cfg.color.scheme) {
         if (this.cfg.color.scheme instanceof Array === true) {
@@ -2659,7 +2656,334 @@ var __vue_is_functional_template__$6 = undefined;
 
 /* style inject shadow dom */
 
-var __vue_component__$6 = normalizeComponent({}, __vue_inject_styles__$6, __vue_script__$6, __vue_scope_id__$6, __vue_is_functional_template__$6, __vue_module_identifier__$6, false, undefined, undefined, undefined);/* eslint-disable import/prefer-default-export */var components=/*#__PURE__*/Object.freeze({__proto__:null,D3BarChart: __vue_component__$1,D3LineChart: __vue_component__$2,D3PieChart: __vue_component__$3,D3SlopeChart: __vue_component__$4,D3Sunburst: __vue_component__$5,D3WordsCloud: __vue_component__$6});var install = function installVueD3Charts(Vue) {
+var __vue_component__$6 = normalizeComponent({}, __vue_inject_styles__$6, __vue_script__$6, __vue_scope_id__$6, __vue_is_functional_template__$6, __vue_module_identifier__$6, false, undefined, undefined, undefined);var d3$7 = {
+  select: d3Selection.select,
+  selectAll: d3Selection.selectAll,
+  scaleLinear: d3Scale.scaleLinear,
+  scaleOrdinal: d3Scale.scaleOrdinal,
+  max: d3Array.max,
+  min: d3Array.min,
+  transition: d3Transition.transition,
+  pie: d3Shape.pie,
+  arc: d3Shape.arc,
+  interpolate: d3Interpolate.interpolate,
+  easeLinear: d3Ease.easeLinear,
+  easePolyIn: d3Ease.easePolyIn,
+  easePolyOut: d3Ease.easePolyOut,
+  easePoly: d3Ease.easePoly,
+  easePolyInOut: d3Ease.easePolyInOut,
+  easeQuadIn: d3Ease.easeQuadIn,
+  easeQuadOut: d3Ease.easeQuadOut,
+  easeQuad: d3Ease.easeQuad,
+  easeQuadInOut: d3Ease.easeQuadInOut,
+  easeCubicIn: d3Ease.easeCubicIn,
+  easeCubicOut: d3Ease.easeCubicOut,
+  easeCubic: d3Ease.easeCubic,
+  easeCubicInOut: d3Ease.easeCubicInOut,
+  easeSinIn: d3Ease.easeSinIn,
+  easeSinOut: d3Ease.easeSinOut,
+  easeSin: d3Ease.easeSin,
+  easeSinInOut: d3Ease.easeSinInOut,
+  easeExpIn: d3Ease.easeExpIn,
+  easeExpOut: d3Ease.easeExpOut,
+  easeExp: d3Ease.easeExp,
+  easeExpInOut: d3Ease.easeExpInOut,
+  easeCircleIn: d3Ease.easeCircleIn,
+  easeCircleOut: d3Ease.easeCircleOut,
+  easeCircle: d3Ease.easeCircle,
+  easeCircleInOut: d3Ease.easeCircleInOut,
+  easeElasticIn: d3Ease.easeElasticIn,
+  easeElastic: d3Ease.easeElastic,
+  easeElasticOut: d3Ease.easeElasticOut,
+  easeElasticInOut: d3Ease.easeElasticInOut,
+  easeBackIn: d3Ease.easeBackIn,
+  easeBackOut: d3Ease.easeBackOut,
+  easeBack: d3Ease.easeBack,
+  easeBackInOut: d3Ease.easeBackInOut,
+  easeBounceIn: d3Ease.easeBounceIn,
+  easeBounce: d3Ease.easeBounce,
+  easeBounceOut: d3Ease.easeBounceOut,
+  easeBounceInOut: d3Ease.easeBounceInOut,
+  schemeCategory10: d3ScaleChromatic.schemeCategory10,
+  schemeAccent: d3ScaleChromatic.schemeAccent,
+  schemeDark2: d3ScaleChromatic.schemeDark2,
+  schemePaired: d3ScaleChromatic.schemePaired,
+  schemePastel1: d3ScaleChromatic.schemePastel1,
+  schemePastel2: d3ScaleChromatic.schemePastel2,
+  schemeSet1: d3ScaleChromatic.schemeSet1,
+  schemeSet2: d3ScaleChromatic.schemeSet2,
+  schemeSet3: d3ScaleChromatic.schemeSet3,
+  schemeTableau10: d3ScaleChromatic.schemeTableau10
+};
+/**
+* D3 Slices Chart
+*/
+
+var d3sliceschart =
+/*#__PURE__*/
+function (_d3chart) {
+  _inherits(d3sliceschart, _d3chart);
+
+  function d3sliceschart(selection, data, config) {
+    _classCallCheck(this, d3sliceschart);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(d3sliceschart).call(this, selection, data, config, {
+      margin: {
+        top: 40,
+        right: 20,
+        bottom: 40,
+        left: 20
+      },
+      key: '',
+      value: 'value',
+      color: {
+        key: false,
+        keys: false,
+        scheme: false,
+        current: '#1f77b4',
+        default: '#AAA',
+        axis: '#000'
+      },
+      radius: {
+        inner: false,
+        outter: false,
+        padding: 0,
+        round: 0
+      },
+      transition: {
+        duration: 350,
+        ease: 'easeLinear'
+      }
+    }));
+  }
+  /**
+  * Init chart
+  */
+
+
+  _createClass(d3sliceschart, [{
+    key: "initChart",
+    value: function initChart() {
+      // Set up dimensions
+      this.getDimensions();
+      this.initChartFrame('sliceschart');
+      this.cScale = d3$7.scaleOrdinal();
+      this.rScale = d3$7.scaleLinear();
+      this.arc = d3$7.arc();
+      this.pie = d3$7.pie().sort(null).value(function () {
+        return 1;
+      }).padAngle(this.cfg.radius.padding);
+
+      if (this.cfg.radius && this.cfg.radius.inner) {
+        var outRadius = this.cfg.radius.outter ? this.cfg.radius.outter : Math.min(this.cfg.width, this.cfg.height) / 2;
+        this.cfg.radius.relation = this.cfg.radius.inner ? this.cfg.radius.inner / outRadius : 0;
+      }
+
+      this.gcenter = this.g.append('g');
+      this.setChartDimension();
+      this.updateChart();
+    }
+    /**
+    * Set up chart dimensions (non depending on data)
+    */
+
+  }, {
+    key: "setChartDimension",
+    value: function setChartDimension() {
+      // SVG element
+      this.svg.attr("viewBox", "0 0 ".concat(this.cfg.width + this.cfg.margin.left + this.cfg.margin.right, " ").concat(this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom)).attr("width", this.cfg.width + this.cfg.margin.left + this.cfg.margin.right).attr("height", this.cfg.height + this.cfg.margin.top + this.cfg.margin.bottom); // Center element
+
+      this.gcenter.attr('transform', "translate(".concat(this.cfg.width / 2, ", ").concat(this.cfg.height / 2, ")"));
+    }
+    /**
+    * Bind data to main elements groups
+    */
+
+  }, {
+    key: "bindData",
+    value: function bindData() {
+      var _this = this;
+
+      this.itemg = this.gcenter.selectAll('.chart__slice-group').data(this.pie(this.data), function (d) {
+        return d.data[_this.cfg.key];
+      }); // Set transition
+
+      this.transition = d3$7.transition('t').duration(this.cfg.transition.duration).ease(d3$7[this.cfg.transition.ease]);
+    }
+    /**
+    * Set up scales
+    */
+
+  }, {
+    key: "setScales",
+    value: function setScales() {
+      var _this2 = this;
+
+      // Set up radius
+      this.cfg.radius.outter = this.cfg.radius && this.cfg.radius.outter ? this.cfg.radius.outter : Math.min(this.cfg.width, this.cfg.height) / 2;
+      this.inRadius = this.cfg.radius && this.cfg.radius.inner ? this.cfg.radius.inner : 0;
+
+      if (this.cfg.radius.relation) {
+        this.inRadius = this.cfg.radius.outter * this.cfg.radius.relation;
+      } // Set up arcs
+
+
+      this.arc = d3$7.arc().outerRadius(this.cfg.radius.outter).innerRadius(this.inRadius).cornerRadius(this.cfg.radius.round);
+      this.rScale.range([this.inRadius, this.cfg.radius.outter]).domain([0, d3$7.max(this.data, function (d) {
+        return d[_this2.cfg.value];
+      })]); // Set up color scheme
+
+      if (this.cfg.color.scheme) {
+        if (this.cfg.color.scheme instanceof Array === true) {
+          this.colorScale = d3$7.scaleOrdinal().domain(this.data.map(function (d) {
+            return d[_this2.cfg.key];
+          })).range(this.cfg.color.scheme);
+        } else {
+          this.colorScale = d3$7.scaleOrdinal(d3$7[this.cfg.color.scheme]).domain(this.data.map(function (d) {
+            return d[_this2.cfg.key];
+          }));
+        }
+      }
+    }
+    /**
+    * Add new chart's elements
+    */
+
+  }, {
+    key: "enterElements",
+    value: function enterElements() {
+      var _this3 = this;
+
+      var newg = this.itemg.enter().append('g').attr("class", "chart__slice-group chart__slice-group--sliceschart"); // BACKGROUNDS
+
+      newg.append("path").attr("class", "chart__slice chart__slice--sliceschart").on('mouseover', function (d, i) {
+        var key = d.data[_this3.cfg.key];
+        var value = d.data[_this3.cfg.value];
+
+        _this3.tooltip.html(function () {
+          return "<div>".concat(key, ": ").concat(value, "</div>");
+        }).classed('active', true);
+      }).on('mouseout', function () {
+        _this3.tooltip.classed('active', false);
+      }).on('mousemove', function () {
+        _this3.tooltip.style('left', window.event['pageX'] - 28 + 'px').style('top', window.event['pageY'] - 40 + 'px');
+      }).transition(this.transition).delay(function (d, i) {
+        return i * _this3.cfg.transition.duration;
+      }).attrTween('d', function (d) {
+        var i = d3$7.interpolate(d.startAngle + 0.1, d.endAngle);
+        return function (t) {
+          d.endAngle = i(t);
+          return _this3.arc(d);
+        };
+      }).style("fill", function (d) {
+        return _this3.cfg.color.default;
+      }).style('opacity', 1); // FILLS
+
+      newg.append("path").attr("class", "chart__slice chart__slice--sliceschart").transition(this.transition).delay(function (d, i) {
+        return i * _this3.cfg.transition.duration;
+      }).attrTween('d', function (d) {
+        var i = d3$7.interpolate(d.startAngle + 0.1, d.endAngle);
+        var arc = d3$7.arc().outerRadius(_this3.rScale(d.data[_this3.cfg.value])).innerRadius(_this3.inRadius).cornerRadius(_this3.cfg.radius.round);
+        return function (t) {
+          d.endAngle = i(t);
+          return arc(d);
+        };
+      }).style("fill", function (d) {
+        return _this3.colorElement(d.data);
+      }).style('pointer-events', 'none').style('opacity', 1);
+    }
+    /**
+    * Update chart's elements based on data change
+    */
+
+  }, {
+    key: "updateElements",
+    value: function updateElements() {}
+    /*
+            // PATHS
+            this.itemg.selectAll(".chart__slice")
+                .style('opacity', 0)
+                .data(this.pie(this.data), d => d.data[this.cfg.key])
+                .transition(this.transition)
+                .delay((d,i) => i * this.cfg.transition.duration)
+                .attrTween('d', d => {
+                    const i = d3.interpolate(d.startAngle+0.1, d.endAngle);
+                    return t => {
+                        d.endAngle = i(t); 
+                        return this.arc(d)
+                    }
+                })
+                .style("fill", this.cfg.color.default)
+                .style('opacity', 1);
+    */
+
+    /**
+    * Remove chart's elements without data
+    */
+
+  }, {
+    key: "exitElements",
+    value: function exitElements() {
+      this.itemg.exit().transition(this.transition).style("opacity", 0).remove();
+    }
+  }, {
+    key: "midAngle",
+    value: function midAngle(d) {
+      return d.startAngle + (d.endAngle - d.startAngle) / 2;
+    }
+    /**
+    * Store the displayed angles in _current.
+    * Then, interpolate from _current to the new angles.
+    * During the transition, _current is updated in-place by d3.interpolate.
+    */
+
+  }, {
+    key: "arcTween",
+    value: function arcTween(a) {
+      var _this4 = this;
+
+      var i = d3$7.interpolate(this._current, a);
+      this._current = i(0);
+      return function (t) {
+        return _this4.arc(i(t));
+      };
+    }
+  }]);
+
+  return d3sliceschart;
+}(d3chart);var script$7 = {
+  name: 'D3SlicesChart',
+  extends: __vue_component__,
+  mounted: function mounted() {
+    this.chart = new d3sliceschart(this.$refs.chart, JSON.parse(JSON.stringify(this.datum)), this.config);
+  }
+};/* script */
+var __vue_script__$7 = script$7;
+/* template */
+
+/* style */
+
+var __vue_inject_styles__$7 = function __vue_inject_styles__(inject) {
+  if (!inject) return;
+  inject("data-v-6a52c448_0", {
+    source: ".chart__wrapper{margin:20px 0}.chart__wrap{margin:0}.chart__title{text-align:center;font-weight:700}.chart__source{font-size:12px}.chart__tooltip{position:absolute;pointer-events:none;display:none}.chart__tooltip.active{display:block}.chart__tooltip>div{background:#2b2b2b;color:#fff;padding:6px 10px;border-radius:3px}.chart__axis{font-size:12px;shape-rendering:crispEdges}.chart__grid .domain{stroke:none;fill:none}.chart__grid .tick line{opacity:.2}.chart__label{font-size:12px}.chart .clickable{cursor:pointer}",
+    map: undefined,
+    media: undefined
+  });
+};
+/* scoped */
+
+
+var __vue_scope_id__$7 = undefined;
+/* module identifier */
+
+var __vue_module_identifier__$7 = "data-v-6a52c448";
+/* functional template */
+
+var __vue_is_functional_template__$7 = undefined;
+/* style inject shadow dom */
+
+var __vue_component__$7 = normalizeComponent({}, __vue_inject_styles__$7, __vue_script__$7, __vue_scope_id__$7, __vue_is_functional_template__$7, __vue_module_identifier__$7, false, undefined, createInjectorSSR, undefined);/* eslint-disable import/prefer-default-export */var components=/*#__PURE__*/Object.freeze({__proto__:null,D3BarChart: __vue_component__$1,D3LineChart: __vue_component__$2,D3PieChart: __vue_component__$3,D3SlopeChart: __vue_component__$4,D3Sunburst: __vue_component__$5,D3WordsCloud: __vue_component__$6,D3SlicesChart: __vue_component__$7});var install = function installVueD3Charts(Vue) {
   if (install.installed) return;
   install.installed = true;
   Object.entries(components).forEach(function (_ref) {
@@ -2690,4 +3014,4 @@ if (typeof window !== 'undefined') {
 if (GlobalVue) {
   GlobalVue.use(plugin);
 } // Default export is library as a whole, registered via Vue.use()
-exports.D3BarChart=__vue_component__$1;exports.D3LineChart=__vue_component__$2;exports.D3PieChart=__vue_component__$3;exports.D3SlopeChart=__vue_component__$4;exports.D3Sunburst=__vue_component__$5;exports.D3WordsCloud=__vue_component__$6;exports.default=plugin;
+exports.D3BarChart=__vue_component__$1;exports.D3LineChart=__vue_component__$2;exports.D3PieChart=__vue_component__$3;exports.D3SlicesChart=__vue_component__$7;exports.D3SlopeChart=__vue_component__$4;exports.D3Sunburst=__vue_component__$5;exports.D3WordsCloud=__vue_component__$6;exports.default=plugin;
