@@ -246,13 +246,13 @@ class d3linechart extends d3chart {
                 .attr('class', 'chart__point-hover chart__point-hover--linechart')
                 .attr('fill', 'transparent')
                 .attr('r', this.cfg.points.hoverSize)
-                .on('mouseover', d => {
+                .on('mouseover', (d, j) => {
                     this.tooltip.html(_ => {
-                            const label = this.cfg.tooltip.labels && this.cfg.tooltip.labels[i] ?
-                                this.cfg.tooltip.labels[i] :
-                                k;
+                            const label = this.cfg.tooltip.labels && this.cfg.tooltip.labels[i]
+                                ? this.cfg.tooltip.labels[i]
+                                : k;
                             return `
-                            <div>${label}: ${d[k]}</div>
+                            <div>${label}: ${this.tData[i].values[j].y}</div>
                         `
                         })
                         .classed('active', true);

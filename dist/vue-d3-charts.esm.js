@@ -1029,11 +1029,11 @@ class d3linechart extends d3chart {
       // Point group
       let gp = this.g.selectAll('.chart__points-group--' + k).data(this.data).enter().append('g').attr('class', 'chart__points-group chart__points-group--linechart chart__points-group--' + k).attr('transform', d => `translate(${this.xScale(d.jsdate)},${this.cfg.height})`); // Hover point
 
-      gp.append('circle').attr('class', 'chart__point-hover chart__point-hover--linechart').attr('fill', 'transparent').attr('r', this.cfg.points.hoverSize).on('mouseover', d => {
+      gp.append('circle').attr('class', 'chart__point-hover chart__point-hover--linechart').attr('fill', 'transparent').attr('r', this.cfg.points.hoverSize).on('mouseover', (d, j) => {
         this.tooltip.html(_ => {
           const label = this.cfg.tooltip.labels && this.cfg.tooltip.labels[i] ? this.cfg.tooltip.labels[i] : k;
           return `
-                            <div>${label}: ${d[k]}</div>
+                            <div>${label}: ${this.tData[i].values[j].y}</div>
                         `;
         }).classed('active', true);
       }).on('mouseout', _ => {

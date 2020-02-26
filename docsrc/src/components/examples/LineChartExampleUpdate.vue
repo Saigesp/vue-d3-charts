@@ -52,6 +52,7 @@ export default {
       codehtml: `<template>
   <div class="my-app">
     <D3LineChart :config="chart_config" :datum="chart_data"></D3LineChart>
+    <button @click="addData()">Add</button>
   </div>
 </template>`,
       codejs:`import { D3LineChart } from 'vue-d3-charts';
@@ -85,16 +86,25 @@ export default {
         axis: {
           yTicks: 3,
         }
-      }
+      },
+      count: 2010,
     }
+  },
+  methods: {
+    addData() {
+      const hours = Math.floor(Math.random() * 1000 * 3);
+      const production = Math.floor(Math.random() * 1000 * 3);
+      const date = this.count++;
+      this.chart_data.push({hours, production, date});
+    },
   }
 }`
     }
   },
   methods: {
     addData() {
-      const hours = Math.floor(Math.random() * 1000);
-      const production = Math.floor(Math.random() * 1000);
+      const hours = Math.floor(Math.random() * 1000 * 3);
+      const production = Math.floor(Math.random() * 1000 * 3);
       const date = this.count++;
       this.chart_data.push({hours, production, date});
     },

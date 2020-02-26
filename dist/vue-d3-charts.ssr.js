@@ -1280,10 +1280,10 @@ function (_d3chart) {
         }); // Hover point
 
 
-        gp.append('circle').attr('class', 'chart__point-hover chart__point-hover--linechart').attr('fill', 'transparent').attr('r', _this3.cfg.points.hoverSize).on('mouseover', function (d) {
+        gp.append('circle').attr('class', 'chart__point-hover chart__point-hover--linechart').attr('fill', 'transparent').attr('r', _this3.cfg.points.hoverSize).on('mouseover', function (d, j) {
           _this3.tooltip.html(function (_) {
             var label = _this3.cfg.tooltip.labels && _this3.cfg.tooltip.labels[i] ? _this3.cfg.tooltip.labels[i] : k;
-            return "\n                            <div>".concat(label, ": ").concat(d[k], "</div>\n                        ");
+            return "\n                            <div>".concat(label, ": ").concat(_this3.tData[i].values[j].y, "</div>\n                        ");
           }).classed('active', true);
         }).on('mouseout', function (_) {
           _this3.tooltip.classed('active', false);
