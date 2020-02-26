@@ -1315,8 +1315,8 @@ function (_d3chart) {
 
       this.g.selectAll('.chart__line').attr('stroke', function (d) {
         return _this4.colorElement(d, 'key');
-      }).transition(this.transition).attr("d", function (d) {
-        return _this4.line(d.values);
+      }).transition(this.transition).attr("d", function (d, i) {
+        return _this4.line(_this4.tData[i].values);
       }); // Don't continue if points are disabled
 
       if (this.cfg.points === false) return; // Redraw points
