@@ -111,7 +111,7 @@ class d3linechart extends d3chart {
         });
 
         this.data.forEach(d => { d.jsdate = this.parseTime(d[this.cfg.date.key]) });
-        this.data.sort((a, b) => b.jsdate - a.jsdate);
+        this.data.sort((a, b) => a.jsdate - b.jsdate);
 
         this.data.forEach((d, c) => {
             d.min = 9999999999999999999;
