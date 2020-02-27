@@ -1165,7 +1165,7 @@ function (_d3chart) {
         d.jsdate = _this.parseTime(d[_this.cfg.date.key]);
       });
       this.data.sort(function (a, b) {
-        return b.jsdate - a.jsdate;
+        return a.jsdate - b.jsdate;
       });
       this.data.forEach(function (d, c) {
         d.min = 9999999999999999999;
