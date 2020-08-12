@@ -222,8 +222,9 @@ class d3barchart extends d3chart {
       .attr('width', 0)
       .on('mouseover', (d, i) => {
         const key = this.cfg.values[i % this.cfg.values.length];
+        const label = this.cfg.tooltip ? d[this.cfg.tooltip.label] : key;
         this.tooltip.html(() => {
-          return `<div>${key}: ${d[key]}</div>`
+          return `<div>${label}: ${d[key]}</div>`
         })
        .classed('active', true);
       })
