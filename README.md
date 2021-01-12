@@ -1,8 +1,8 @@
 # vue-d3-charts
 
-Simply yet configurable charts build with D3.
+**The development of this library is frozen for now. When I have more time I will continue its development. Any contribution is welcome**
 
-**The development of this library is frozen for now. When I have more time I will continue its development. Any contribution is wellcome**
+Simply yet configurable charts build with D3.
 
 See [documentation and demo](https://saigesp.github.io/vue-d3-charts/) page.
 
