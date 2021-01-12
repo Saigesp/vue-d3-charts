@@ -28,6 +28,7 @@ Vue.component('LineChartExampleCustomization',      require('./examples/LineChar
 
 Vue.component('BarChartExamples',                   require('./examples/BarChartExamples').default);
 Vue.component('BarChartExampleBasic',               require('./examples/BarChartExampleBasic').default);
+Vue.component('BarChartExampleTooltipOverride',     require('./examples/BarChartExampleTooltipOverride').default);
 Vue.component('BarChartExampleGroup',               require('./examples/BarChartExampleGroup').default);
 Vue.component('BarChartExampleDataUpdate',          require('./examples/BarChartExampleDataUpdate').default);
 Vue.component('BarChartExampleHorizontal',          require('./examples/BarChartExampleHorizontal').default);
