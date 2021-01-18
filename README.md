@@ -55,4 +55,4 @@ See [contribution guide](CONTRIB.md).
 
 ### License
 
-This repository is available under **GNU General Public License v3.0**. See [details](LICENSE.md).
+This repository is available under **GNU LESSER GENERAL PUBLIC LICENSE v2.1** (LGPL). See [details](LICENSE.md).
